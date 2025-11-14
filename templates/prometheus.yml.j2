@@ -1,0 +1,8 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    restart: always
+    volumes:
+      - ./config.yml:/etc/prometheus/prometheus.yml

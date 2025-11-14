@@ -1,0 +1,16 @@
+---
+linuxhosts:
+  hosts:
+    melinoe:
+      ansible_host: melinoe
+      ansible_connection: ssh
+      ansible_user: ansible
+    truenas:
+      ansible_host: truenas
+      ansible_connection: ssh
+      ansible_user: julian
+otherhosts:
+  hosts:
+    kvasir:
+      ansible_host: 100.104.77.50
+

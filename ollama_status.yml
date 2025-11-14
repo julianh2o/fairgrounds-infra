@@ -1,0 +1,61 @@
+---
+- name: Check Ollama Service Status
+  hosts: all
+  become: yes
+  vars:
+    ollama_host: "kvasir"
+    ollama_port: 11434
+    test_model: "qwen3:4b"
+    test_prompt: "Hello, how are you?"
+    api_endpoint: "/v1/completions"
+    
+  tasks:
+    - name: Check if Ollama service is running
+      uri:
+        url: "http://{{ ollama_host }}:{{ ollama_port }}/api/tags"
+        method: GET
+        status_code: 200
+        timeout: 10
+      register: ollama_api_response
+      ignore_errors: yes
+      
+    - name: Display Ollama service status
+      debug:
+        msg: "Ollama service is {{ 'active' if ollama_api_response.status == 200 else 'inactive' }}"
+
+    - name: Test Ollama API endpoint with a simple request
+      uri:
+        url: "http://{{ ollama_host }}:{{ ollama_port }}{{ api_endpoint }}"
+        method: POST
+        body_format: json
+        body:
+          model: "{{ test_model }}"
+          prompt: "{{ test_prompt }}"
+        status_code: 200
+        timeout: 30
+      register: api_test_response
+      ignore_errors: yes
+      
+    - name: Display API test results
+      debug:
+        msg: |
+          API Test Status: {{ 'SUCCESS' if api_test_response.status == 200 else 'FAILED' }}
+          Response: {{ api_test_response.content if api_test_response.content else 'No content' }}
+          
+    - name: Verify model exists
+      uri:
+        url: "http://{{ ollama_host }}:{{ ollama_port }}/api/tags"
+        method: GET
+        status_code: 200
+        timeout: 10
+      register: model_check_response
+      ignore_errors: yes
+      
+    - name: Display model availability
+      debug:
+        msg: "Model {{ test_model }} is {{ 'available' if model_check_response.status == 200 else 'not available' }}"
+
+    - name: Overall service health check
+      fail:
+        msg: "Ollama service is not properly responding"
+      when: ollama_api_response.status != 200 or api_test_response.status != 200

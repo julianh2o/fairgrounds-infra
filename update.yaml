@@ -1,0 +1,12 @@
+---
+- name: Update melinoe
+  hosts: melinoe
+  remote_user: julian
+
+  tasks:
+    - name: Update and upgrade apt packages
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: yes # This performs the equivalent of apt-get upgrade
+        cache_valid_time: 3600
+      become: true
