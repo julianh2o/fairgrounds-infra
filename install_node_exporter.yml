@@ -1,0 +1,6 @@
+    - name: Install Node Exporter
+      hosts: melinoe
+      become: yes
+
+      roles:
+        - role: geerlingguy.node_exporter
