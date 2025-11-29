@@ -1,0 +1,21 @@
+- name: My first playbook
+  hosts: linuxhosts
+  tasks:
+    - name: Ping my hosts
+      ansible.builtin.ping:
+
+    - name: Print message
+      ansible.builtin.debug:
+        msg: Hello world
+
+    - name: Print message
+      ansible.builtin.debug:
+        msg: Hello world
+
+    - name: Run Whoami
+      ansible.builtin.shell: whoami
+      register: whoami
+
+    - name: Display the standard output
+      ansible.builtin.debug:
+        var: whoami.stdout
