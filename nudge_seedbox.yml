@@ -1,0 +1,33 @@
+- name: Nudge Seedbox
+  hosts: melinoe
+  become: yes
+
+  #delete cookies file
+  #output IP address
+  #create new MAM session with IP address
+  #retrieve mam_id
+  #update docker_compose file, docker compose down/up seedboxapi
+  tasks:
+    - name: Docker Compose down seedboxapi
+      community.docker.docker_compose_v2:
+        project_src: /opt/myflix
+        services:
+          - seedboxapi
+        state: absent
+    - name: Delete MAM.cookies file
+      ansible.builtin.file:
+        path: /opt/myflix/seedboxapi/MAM.cookies
+        state: absent
+    - name: Get public IP address via VPN container
+      community.docker.docker_container_exec:
+        container: vpn
+        command: curl -s https://api.ipify.org?format=txt
+      register: vpn_ip_result
+
+    - name: Set vpn_ip variable
+      set_fact:
+        vpn_ip: "{{ vpn_ip_result.stdout }}"
+
+    - name: Output public IP address from VPN
+      debug:
+        msg: "Public IP address via VPN is: {{ vpn_ip }}"
