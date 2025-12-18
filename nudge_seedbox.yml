@@ -1,6 +1,8 @@
 - name: Nudge Seedbox
   hosts: melinoe
   become: yes
+  vars:
+    mam_id: "IstIjova8WUOm4EbJ_MgQxUghL8q54qOBTDjAkKCsoYBdMsaQZWq4y3jgxwYnzlPQSIJtppfZefHzriEWZT0n-ttunWtV7llgGTfNaVbZON-1_V2oCKMHaEzBMeQtQeKMdV-h3bjtQk7wEVe4xFy4rr8i3RGCDBnmCH2iObrX5iVDGasenf-M2lvfThghVUUx6Nchijlh6j5A09zb3UIjeoBSc86A7sP1kO7hNH7la4Cd0t_vHFy5-6Dt8XW64LDOJeO0srPUYUJempYX29eVf-ukzH438kuaon_"
 
   #delete cookies file
   #output IP address
@@ -14,20 +16,36 @@
         services:
           - seedboxapi
         state: absent
+
     - name: Delete MAM.cookies file
       ansible.builtin.file:
         path: /opt/myflix/seedboxapi/MAM.cookies
         state: absent
-    - name: Get public IP address via VPN container
-      community.docker.docker_container_exec:
-        container: vpn
-        command: curl -s https://api.ipify.org?format=txt
-      register: vpn_ip_result
 
-    - name: Set vpn_ip variable
-      set_fact:
-        vpn_ip: "{{ vpn_ip_result.stdout }}"
+    # - name: Get public IP address via VPN container
+    #   community.docker.docker_container_exec:
+    #     container: vpn
+    #     command: curl -s https://api.ipify.org?format=txt
+    #   register: vpn_ip_result
 
-    - name: Output public IP address from VPN
-      debug:
-        msg: "Public IP address via VPN is: {{ vpn_ip }}"
+    # - name: Set vpn_ip variable
+    #   set_fact:
+    #     vpn_ip: "{{ vpn_ip_result.stdout }}"
+
+    # - name: Output public IP address from VPN
+    #   debug:
+    #     msg: "Public IP address via VPN is: {{ vpn_ip }}"
+
+    - name: Replace mam_id in config file
+      ansible.builtin.lineinfile:
+        path: /opt/myflix/docker-compose.yml
+        regexp: "^mam_id=.*"
+        line: "      mam_id={{ mam_id }}"
+        backup: yes
+
+    - name: Docker Compose up seedboxapi
+      community.docker.docker_compose_v2:
+        project_src: /opt/myflix
+        services:
+          - seedboxapi
+        state: present
