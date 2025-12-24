@@ -4,11 +4,9 @@ linuxhosts:
     melinoe:
       ansible_host: melinoe
       ansible_connection: ssh
-      ansible_user: julian
     truenas:
-      ansible_host: truenas
+      ansible_host: 100.92.92.16
       ansible_connection: ssh
-      ansible_user: julian
 otherhosts:
   hosts:
     kvasir:

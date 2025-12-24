@@ -1,0 +1,18 @@
+services:
+  caddy:
+    # Using custom build with Cloudflare DNS module for DNS-01 ACME challenges
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+      - 443:443/udp  # HTTP/3 support
+    restart: always
+    environment:
+      - CLOUDFLARE_API_TOKEN={{ cloudflare_api_token }}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./data:/data  # Certificate storage
+      - ./config:/config  # Caddy configuration storage
+      - ./logs:/logs  # Log files

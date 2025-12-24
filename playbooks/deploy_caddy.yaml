@@ -1,0 +1,75 @@
+---
+- name: Deploy Caddy
+  hosts: melinoe
+  become: yes
+
+  vars:
+    services_file: "../config/services.yaml"
+    # acme_email: "admin@julianverse.net"  # Set this or pass as --extra-vars
+    # cloudflare_api_token: "your_token_here"  # REQUIRED: Set via --extra-vars or vault
+
+  vars_files:
+    - "../secrets/cloudflare.yml"  # Optional: Store cloudflare_api_token in encrypted vault
+
+  tasks:
+    - name: Load proxy configurations from file
+      include_vars:
+        file: "{{ services_file }}"
+        name: services
+
+    - name: Ensure Caddy directory
+      ansible.builtin.file:
+        path: /opt/caddy/
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Ensure Caddy data directory
+      ansible.builtin.file:
+        path: /opt/caddy/data
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Ensure Caddy config directory
+      ansible.builtin.file:
+        path: /opt/caddy/config
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Ensure Caddy logs directory
+      ansible.builtin.file:
+        path: /opt/caddy/logs
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Ensure Dockerfile
+      ansible.builtin.template:
+        src: ../templates/Dockerfile.caddy.j2
+        dest: /opt/caddy/Dockerfile
+        mode: "0644"
+
+    - name: Ensure docker-compose.yml
+      ansible.builtin.template:
+        src: ../templates/caddy-compose.yml.j2
+        dest: /opt/caddy/docker-compose.yml
+        mode: "0644"
+
+    - name: Ensure Caddyfile
+      ansible.builtin.template:
+        src: ../templates/caddy.j2
+        dest: /opt/caddy/Caddyfile
+        mode: "0644"
+
+    - name: Build and start Docker Compose application
+      community.docker.docker_compose_v2:
+        project_name: caddy
+        project_src: /opt/caddy
+        build: always
+        state: restarted
