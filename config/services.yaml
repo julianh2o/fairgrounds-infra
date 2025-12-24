@@ -1,0 +1,10 @@
+---
+services:
+  sabnzbd:
+    hostname: sabnzbd.bawdyshop.space
+    machine: 192.168.0.203
+    port: 20630
+  deluge:
+    hostname: sabnzbd.bawdyshop.space
+    machine: 192.168.0.203
+    port: 8112
