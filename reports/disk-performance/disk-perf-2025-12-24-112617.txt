@@ -1,0 +1,59 @@
+================================================================================
+DISK PERFORMANCE REPORT
+================================================================================
+Host: melinoe
+Test Location: /mnt/Store
+Test Date: 2025-12-24T19:26:17Z
+Report File: /Users/julian/Documents/code/fairgrounds-infra/playbooks/maintenance/../../reports/disk-performance/disk-perf-2025-12-24-112617.txt
+
+TEST PARAMETERS:
+  - Test 1: Sequential Write Only (size=8GB, bs=1M, runtime=60s, direct=1)
+  - Test 2: Sequential Read/Write (size=1GB, bs=1M, runtime=60s, direct=1)
+  - Test 3: Random Read/Write (size=1GB, bs=4k, numjobs=4, runtime=60s, direct=1)
+
+DISK SPACE:
+Filesystem             Size  Used Avail Use% Mounted on
+//192.168.0.100/Store   23T 1023G   22T   5% /mnt/Store
+
+--------------------------------------------------------------------------------
+TEST 1: FIO Sequential Write Only (8GB, 1M blocks, 60 seconds)
+--------------------------------------------------------------------------------
+Write:
+  - Bandwidth: 329.44 MB/s
+  - IOPS: 329.44
+  - Latency (avg): 3.03 ms
+  - Latency (95th percentile): 4.23 ms
+
+--------------------------------------------------------------------------------
+TEST 2: FIO Sequential Read/Write (1GB, 1M blocks, 60 seconds)
+--------------------------------------------------------------------------------
+Read:
+  - Bandwidth: 333.66 MB/s
+  - IOPS: 333.66
+  - Latency (avg): 1.36 ms
+
+Write:
+  - Bandwidth: 334.16 MB/s
+  - IOPS: 334.16
+  - Latency (avg): 1.63 ms
+
+--------------------------------------------------------------------------------
+TEST 3: FIO Random Read/Write (4k blocks, 4 jobs, 60 seconds)
+--------------------------------------------------------------------------------
+Read:
+  - Bandwidth: 11.15 MB/s
+  - IOPS: 2855.59
+  - Latency (avg): 0.17 ms
+
+Write:
+  - Bandwidth: 11.14 MB/s
+  - IOPS: 2852.64
+  - Latency (avg): 0.17 ms
+
+================================================================================
+SUMMARY
+================================================================================
+Sequential Write:          329.44 MB/s (329.44 IOPS)
+Sequential R/W:            333.66 MB/s read, 334.16 MB/s write
+Random R/W:                2855.59 IOPS read, 2852.64 IOPS write
+================================================================================

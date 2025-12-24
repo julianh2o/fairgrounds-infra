@@ -13,3 +13,6 @@ secrets/id_ed25519
 # What's gitignored:
 # - Decrypted private keys (secrets/id_ed25519)
 # - .vault_pass (decryption key)
+
+# Claude Code local settings (machine-specific)
+.claude/settings.local.json

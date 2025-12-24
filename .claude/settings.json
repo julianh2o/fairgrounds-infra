@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(*)",
+      "Bash(dig:*)",
+      "Bash(nslookup:*)",
+      "Bash(curl:*)",
+      "Bash(ansible-vault encrypt:*)",
+      "Bash(ansible-vault view:*)",
+      "Bash(ansible-vault encrypt_string:*)"
+    ]
+  }
+}

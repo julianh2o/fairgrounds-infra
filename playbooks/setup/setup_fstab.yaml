@@ -1,0 +1,87 @@
+---
+- name: Configure fstab mounts on melinoe
+  hosts: melinoe
+  become: yes
+  vars_files:
+    - "{{ inventory_dir }}/secrets/vault_vars.yml"
+
+  vars:
+    smb_server: "192.168.0.100"
+    credentials_file: "/mnt/smbcredentials"
+
+    # Common performance options for all CIFS mounts
+    common_cifs_opts: "vers=3.1.1,cache=loose,actimeo=30,rsize=4194304,wsize=4194304,file_mode=0755,dir_mode=0755"
+
+    mounts:
+      - name: Media
+        src: "//{{ smb_server }}/Media"
+        path: /mnt/Media
+        opts: "nobrl,credentials={{ credentials_file }},uid=root,gid=root,{{ common_cifs_opts }}"
+
+      - name: Store
+        src: "//{{ smb_server }}/Store"
+        path: /mnt/Store
+        opts: "credentials={{ credentials_file }},uid=root,gid=root,{{ common_cifs_opts }}"
+
+      - name: Photos
+        src: "//{{ smb_server }}/Photos"
+        path: /mnt/Photos
+        opts: "credentials={{ credentials_file }},uid=root,gid=root,{{ common_cifs_opts }}"
+
+      - name: EricBackup
+        src: "//{{ smb_server }}/EricBackup"
+        path: /mnt/EricBackup
+        opts: "credentials={{ credentials_file }},uid=eric,gid=eric,{{ common_cifs_opts }}"
+
+  tasks:
+    - name: Ensure cifs-utils is installed
+      ansible.builtin.package:
+        name: cifs-utils
+        state: present
+
+    - name: Deploy SMB credentials file
+      ansible.builtin.template:
+        src: "{{ inventory_dir }}/templates/smbcredentials.j2"
+        dest: "{{ credentials_file }}"
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Create mount point directories
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: directory
+        mode: "0755"
+      loop: "{{ mounts }}"
+
+    - name: Configure fstab entries for CIFS mounts
+      ansible.posix.mount:
+        src: "{{ item.src }}"
+        path: "{{ item.path }}"
+        fstype: cifs
+        opts: "{{ item.opts }}"
+        dump: "0"
+        passno: "0"
+        state: present
+      loop: "{{ mounts }}"
+
+    - name: Mount all filesystems
+      ansible.builtin.command:
+        cmd: mount -a
+      changed_when: false
+      failed_when: false
+
+    - name: Verify mounts are active
+      ansible.builtin.command:
+        cmd: "mountpoint -q {{ item.path }}"
+      loop: "{{ mounts }}"
+      register: mount_check
+      changed_when: false
+      failed_when: false
+
+    - name: Display mount status
+      ansible.builtin.debug:
+        msg: "{{ item.item.name }}: {{ 'MOUNTED' if item.rc == 0 else 'NOT MOUNTED' }}"
+      loop: "{{ mount_check.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"

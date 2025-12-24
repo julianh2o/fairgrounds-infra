@@ -1,0 +1,194 @@
+---
+- name: Disk Performance Testing
+  hosts: melinoe,truenas
+  become: yes
+
+  vars:
+    # Host-specific test paths
+    host_test_paths:
+      melinoe: /mnt/Store
+      truenas: /mnt/Robust/Store
+
+    test_path: "{{ host_test_paths[inventory_hostname] }}"
+    test_dir: "{{ test_path }}/disk_benchmark_temp"
+    fio_cmd: "fio"
+    reports_dir: "{{ inventory_dir }}/reports/disk-performance"
+    cleanup: yes
+
+  tasks:
+    - name: Ensure fio is installed
+      ansible.builtin.package:
+        name: fio
+        state: present
+      when: inventory_hostname != 'truenas'
+
+    - name: Create test directory
+      ansible.builtin.file:
+        path: "{{ test_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Create reports directory (local)
+      ansible.builtin.file:
+        path: "{{ reports_dir }}"
+        state: directory
+        mode: "0755"
+      delegate_to: localhost
+      become: no
+
+    - name: Get initial disk space
+      ansible.builtin.command:
+        cmd: df -h {{ test_path }}
+      register: disk_space_before
+      changed_when: false
+
+    - name: "Test 1: FIO Sequential Write (8GB, 1M blocks, 60s)"
+      ansible.builtin.shell:
+        cmd: >
+          {{ fio_cmd }} --name=seqwrite
+          --filename={{ test_dir }}/fiotest_write
+          --size=8G
+          --rw=write
+          --bs=1M
+          --direct=1
+          --numjobs=1
+          --time_based
+          --runtime=60
+          --output-format=json
+      register: fio_write
+      changed_when: false
+
+    - name: "Test 2: FIO Sequential Read/Write (1GB, 1M blocks, 60s)"
+      ansible.builtin.shell:
+        cmd: >
+          {{ fio_cmd }} --name=seqtest
+          --filename={{ test_dir }}/fiotest
+          --size=1G
+          --rw=readwrite
+          --bs=1M
+          --direct=1
+          --numjobs=1
+          --time_based
+          --runtime=60
+          --output-format=json
+      register: fio_seq
+      changed_when: false
+
+    - name: "Test 3: FIO Random Read/Write (1GB, 4k blocks, 4 jobs, 60s)"
+      ansible.builtin.shell:
+        cmd: >
+          {{ fio_cmd }} --name=randtest
+          --filename={{ test_dir }}/fiotest_rand
+          --size=1G
+          --rw=randrw
+          --bs=4k
+          --direct=1
+          --numjobs=4
+          --time_based
+          --runtime=60
+          --output-format=json
+      register: fio_rand
+      changed_when: false
+
+    - name: Parse FIO sequential write test results
+      ansible.builtin.set_fact:
+        fio_write_json: "{{ fio_write.stdout | from_json }}"
+
+    - name: Parse FIO sequential read/write test results
+      ansible.builtin.set_fact:
+        fio_seq_json: "{{ fio_seq.stdout | from_json }}"
+
+    - name: Parse FIO random test results
+      ansible.builtin.set_fact:
+        fio_rand_json: "{{ fio_rand.stdout | from_json }}"
+
+    - name: Get final disk space
+      ansible.builtin.command:
+        cmd: df -h {{ test_path }}
+      register: disk_space_after
+      changed_when: false
+
+    - name: Generate report filename
+      ansible.builtin.set_fact:
+        report_file: "{{ reports_dir }}/{{ inventory_hostname }}-disk-{{ ansible_date_time.date }}-{{ ansible_date_time.hour }}{{ ansible_date_time.minute }}.txt"
+
+    - name: Write performance report to file (local)
+      ansible.builtin.copy:
+        content: |
+          ================================================================================
+          DISK PERFORMANCE REPORT
+          ================================================================================
+          Host: {{ inventory_hostname }}
+          Test Location: {{ test_path }}
+          Test Date: {{ ansible_date_time.iso8601 }}
+          Report File: {{ report_file }}
+
+          TEST PARAMETERS:
+            - Test 1: Sequential Write Only (size=8GB, bs=1M, runtime=60s, direct=1)
+            - Test 2: Sequential Read/Write (size=1GB, bs=1M, runtime=60s, direct=1)
+            - Test 3: Random Read/Write (size=1GB, bs=4k, numjobs=4, runtime=60s, direct=1)
+
+          DISK SPACE:
+          {{ disk_space_after.stdout }}
+
+          --------------------------------------------------------------------------------
+          TEST 1: FIO Sequential Write Only (8GB, 1M blocks, 60 seconds)
+          --------------------------------------------------------------------------------
+          Write:
+            - Bandwidth: {{ (fio_write_json.jobs[0].write.bw / 1024) | round(2) }} MB/s
+            - IOPS: {{ fio_write_json.jobs[0].write.iops | round(2) }}
+            - Latency (avg): {{ (fio_write_json.jobs[0].write.lat_ns.mean / 1000000) | round(2) }} ms
+            - Latency (95th percentile): {{ (fio_write_json.jobs[0].write.clat_ns.percentile['95.000000'] / 1000000) | round(2) }} ms
+
+          --------------------------------------------------------------------------------
+          TEST 2: FIO Sequential Read/Write (1GB, 1M blocks, 60 seconds)
+          --------------------------------------------------------------------------------
+          Read:
+            - Bandwidth: {{ (fio_seq_json.jobs[0].read.bw / 1024) | round(2) }} MB/s
+            - IOPS: {{ fio_seq_json.jobs[0].read.iops | round(2) }}
+            - Latency (avg): {{ (fio_seq_json.jobs[0].read.lat_ns.mean / 1000000) | round(2) }} ms
+
+          Write:
+            - Bandwidth: {{ (fio_seq_json.jobs[0].write.bw / 1024) | round(2) }} MB/s
+            - IOPS: {{ fio_seq_json.jobs[0].write.iops | round(2) }}
+            - Latency (avg): {{ (fio_seq_json.jobs[0].write.lat_ns.mean / 1000000) | round(2) }} ms
+
+          --------------------------------------------------------------------------------
+          TEST 3: FIO Random Read/Write (4k blocks, 4 jobs, 60 seconds)
+          --------------------------------------------------------------------------------
+          Read:
+            - Bandwidth: {{ (fio_rand_json.jobs[0].read.bw / 1024) | round(2) }} MB/s
+            - IOPS: {{ fio_rand_json.jobs[0].read.iops | round(2) }}
+            - Latency (avg): {{ (fio_rand_json.jobs[0].read.lat_ns.mean / 1000000) | round(2) }} ms
+
+          Write:
+            - Bandwidth: {{ (fio_rand_json.jobs[0].write.bw / 1024) | round(2) }} MB/s
+            - IOPS: {{ fio_rand_json.jobs[0].write.iops | round(2) }}
+            - Latency (avg): {{ (fio_rand_json.jobs[0].write.lat_ns.mean / 1000000) | round(2) }} ms
+
+          ================================================================================
+          SUMMARY
+          ================================================================================
+          Sequential Write:          {{ (fio_write_json.jobs[0].write.bw / 1024) | round(2) }} MB/s ({{ fio_write_json.jobs[0].write.iops | round(2) }} IOPS)
+          Sequential R/W:            {{ (fio_seq_json.jobs[0].read.bw / 1024) | round(2) }} MB/s read, {{ (fio_seq_json.jobs[0].write.bw / 1024) | round(2) }} MB/s write
+          Random R/W:                {{ fio_rand_json.jobs[0].read.iops | round(2) }} IOPS read, {{ fio_rand_json.jobs[0].write.iops | round(2) }} IOPS write
+          ================================================================================
+        dest: "{{ report_file }}"
+        mode: "0644"
+      delegate_to: localhost
+      become: no
+
+    - name: Display report location
+      ansible.builtin.debug:
+        msg: "Performance report written to: {{ report_file }}"
+
+    - name: Cleanup test files
+      ansible.builtin.file:
+        path: "{{ test_dir }}"
+        state: absent
+      when: cleanup | bool
+
+    - name: Note about test files
+      ansible.builtin.debug:
+        msg: "Test files kept at {{ test_dir }} for inspection (cleanup disabled)"
+      when: not (cleanup | bool)

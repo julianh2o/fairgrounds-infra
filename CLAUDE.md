@@ -3,7 +3,9 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Instructions
+IMPORTANT: You must ask for explicit permission to run any SSH commands and any commands that might cause any changes should simply be displayed for the user to run themself
 IMPORTANT: You must always ask for explicit permission to run any playbook
+IMPORTANT: After tasks or plans that take more than a few seconds, use the notify utility to get the user's attention
 
 ## Repository Overview
 
