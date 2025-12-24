@@ -13,6 +13,6 @@ services:
       - CLOUDFLARE_API_TOKEN={{ cloudflare_api_token }}
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
-      - ./data:/data  # Certificate storage
-      - ./config:/config  # Caddy configuration storage
-      - ./logs:/logs  # Log files
+      - ./data:/data
+      - ./config:/config
+      - ./logs:/logs

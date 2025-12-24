@@ -1,6 +1,6 @@
 {
   # Global options for ACME with Cloudflare DNS-01 challenge
-  email {{ acme_email | default('admin@julianverse.net') }}
+  email {{ acme_email }}
   acme_dns cloudflare {env.CLOUDFLARE_API_TOKEN}
 }
 

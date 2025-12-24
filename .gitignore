@@ -1,2 +1,15 @@
 .env
-secrets/
+
+# Ansible vault password file (NEVER commit this - it's the decryption key)
+.vault_pass
+
+# Decrypted working copies (decrypt from *.vault files when needed)
+secrets/id_ed25519
+
+# Note: What goes in git from secrets/:
+# - *.vault files (encrypted, safe to commit)
+# - *.vault.yml files (encrypted variables, safe to commit)
+# - *.pub files (public keys, safe to commit)
+# What's gitignored:
+# - Decrypted private keys (secrets/id_ed25519)
+# - .vault_pass (decryption key)

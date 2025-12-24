@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Instructions
+IMPORTANT: You must always ask for explicit permission to run any playbook
+
 ## Repository Overview
 
 This is an Ansible-based infrastructure management repository for "fairgrounds" - a personal infrastructure setup managing multiple Linux hosts with monitoring, reverse proxy, and various services.

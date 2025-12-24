@@ -5,11 +5,9 @@
 
   vars:
     services_file: "../config/services.yaml"
-    # acme_email: "admin@julianverse.net"  # Set this or pass as --extra-vars
-    # cloudflare_api_token: "your_token_here"  # REQUIRED: Set via --extra-vars or vault
 
   vars_files:
-    - "../secrets/cloudflare.yml"  # Optional: Store cloudflare_api_token in encrypted vault
+    - "../secrets/vault_vars.yml"
 
   tasks:
     - name: Load proxy configurations from file
