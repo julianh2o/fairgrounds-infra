@@ -1,0 +1,16 @@
+- name: Deploy Grafana
+  hosts: melinoe
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: grafana
+        compose_template: grafana-compose.yml.j2
+        config_files:
+          - src: grafana.ini.j2
+            dest: grafana.ini
+        service_directories:
+          - path: data
+            mode: "0777"
+        docker_compose_state: present

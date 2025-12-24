@@ -1,0 +1,25 @@
+services:
+  rclone:
+    image: 'rclone/rclone:latest'
+    restart: unless-stopped
+    profiles: ["donotstart"]
+    command: sync /data Backblaze:julianh2o-photos/ -v
+    volumes:
+      - ./rclone:/config/rclone
+      - /mnt/Photos/:/data
+  sync-photos:
+    image: olivierdalang/rclone-cron:latest
+    environment:
+      - CRON_SCHEDULE=0 * * * *
+      - COMMAND=rclone sync -v --fast-list --transfers=32 /data Backblaze:julianh2o-photos/
+    volumes:
+      - /mnt/Photos:/data
+      - ./rclone.conf:/root/.config/rclone/rclone.conf
+  sync-store:
+    image: olivierdalang/rclone-cron:latest
+    environment:
+      - CRON_SCHEDULE=0 * * * *
+      - COMMAND=rclone sync -v --fast-list --transfers=32 /data Backblaze:julianh2o-store/
+    volumes:
+      - /mnt/Store:/data
+      - ./rclone.conf:/root/.config/rclone/rclone.conf

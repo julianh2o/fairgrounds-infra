@@ -1,0 +1,48 @@
+---
+# Default variables for docker_service role
+
+# Service name (required - must be set by caller)
+service_name: ""
+
+# Base directory for service
+service_base_dir: "/opt/{{ service_name }}"
+
+# Additional directories to create under service_base_dir
+# Each item can be:
+#   - Simple string: creates directory with default mode 0755
+#   - Dict with 'path' and 'mode': creates directory with specific permissions
+# Examples:
+#   service_directories:
+#     - data
+#     - config
+#     - path: uploads
+#       mode: "0777"
+service_directories: []
+
+# Docker compose template file (required)
+# Should be relative to templates/ directory
+# Example: "grafana-compose.yml.j2"
+compose_template: ""
+
+# Additional configuration files to deploy
+# Each item should have 'src' (template path) and 'dest' (filename in service dir)
+# Example:
+#   config_files:
+#     - src: grafana.ini.j2
+#       dest: grafana.ini
+#     - src: prometheus.config.yml.j2
+#       dest: config.yml
+#       mode: "0600"  # optional, defaults to 0644
+config_files: []
+
+# Docker Compose deployment options
+docker_compose_project_name: "{{ service_name }}"
+docker_compose_state: "restarted"  # present, restarted, stopped
+docker_compose_pull: "always"      # always, missing, never, policy
+docker_compose_build: "never"      # always, never, policy
+
+# File ownership and permissions
+service_owner: "root"
+service_group: "root"
+service_dir_mode: "0755"
+service_file_mode: "0644"

@@ -1,0 +1,23 @@
+services:
+  uneventful:
+    image: julianh2o/uneventful:latest
+    container_name: uneventful-prod
+    ports:
+      - "2050:2999"
+    environment:
+      - TWILIO_ACCOUNT_SID={{ uneventful_twilio_account_sid }}
+      - TWILIO_AUTH_TOKEN={{ uneventful_twilio_auth_token }}
+      - TWILIO_PHONE_NUMBER={{ uneventful_twilio_phone_number }}
+      - JWT_SECRET={{ uneventful_jwt_secret }}
+      - APP_BASE_URL={{ uneventful_app_base_url }}
+      - NODE_ENV=production
+      - DATABASE_URL=file:./data/uneventful.db
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:2999/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

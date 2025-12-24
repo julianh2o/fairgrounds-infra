@@ -1,0 +1,232 @@
+services:
+  vpn:
+    image: ghcr.io/bubuntux/nordlynx
+    container_name: vpn
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PRIVATE_KEY={{ myflix_vpn_private_key }}
+      - QUERY=filters\[country_id\]=228 #US Servers
+      - NET_LOCAL=192.168.0.0/24
+      - DNS=8.8.8.8
+    ports: # HOST:CONTAINER
+      - 9898:8082 #dashboard
+      - 20630:20630 #sabnzbd
+      - 0.0.0.0:3579:3579 #ombi
+      - 8112:8112 #deluge
+      - 3211:3211 #qbittorrent
+      - 40142:40142 #qbittorrent
+      - 40142:40142/udp #qbittorrent
+      - 5076:5076 #hydra2
+      - 9117:9117 #jackett
+      - 8989:8989 #sonarr
+      - 7878:7878 #radarr
+      - 13378:13378 #audiobookshelf
+      - 8787:8787 #readarr
+      - 9696:9696 #prowlarr
+    sysctls:
+      #- net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv6.conf.all.disable_ipv6=1  # Recomended if using ipv4 only
+    restart: "unless-stopped"
+  dashboard:
+    image: halverneus/static-file-server
+    container_name: dashboard
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    volumes:
+      - ./web:/web
+    environment:
+      - PORT=8082
+    restart: always
+      #nzbget:
+      #image: linuxserver/nzbget
+      #container_name: nzbget
+      #network_mode: service:vpn
+      #depends_on:
+      #- vpn
+      #environment:
+      #- PUID=0
+      #- PGID=0
+      #- TZ=America/Los_Angeles
+      #volumes:
+      #- ./nzbget_config:/config
+      #- /mnt/Media/downloads:/downloads
+      #restart: always
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./sabnzbd_config:/config
+      - /mnt/Media/downloads:/downloads
+    restart: unless-stopped
+  ombi:
+    image: lscr.io/linuxserver/ombi:latest
+    container_name: ombi
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./ombi_config:/config
+    restart: always
+  deluge:
+    image: lscr.io/linuxserver/deluge:latest
+    container_name: deluge
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./deluge_config:/config
+      - /mnt/Media/downloads:/downloads
+    restart: always
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+      - WEBUI_PORT=3211
+      - TORRENTING_PORT=40142
+    volumes:
+      - ./qbittorrent_config:/config
+      - /mnt/Media/downloads:/downloads
+    restart: always
+  hydra2:
+    image: lscr.io/linuxserver/nzbhydra2:latest
+    container_name: hydra2
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./hydra_config:/config
+      - /mnt/Media/downloads:/downloads
+    restart: always
+  jackett:
+    image: lscr.io/linuxserver/jackett:latest
+    container_name: jackett
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./jackett_config:/config
+      - /mnt/Media/downloads:/downloads
+    restart: always
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+      - UMASK_SET=022
+    volumes:
+      - ./sonarr_config:/config
+      - /mnt/Media/library/tv:/tv
+      - /mnt/Media/downloads:/downloads
+    restart: always
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+      - UMASK_SET=022
+    volumes:
+      - ./radarr_config:/config
+      - /mnt/Media/library/movies:/movies
+      - /mnt/Media/downloads:/downloads
+    restart: always
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    volumes:
+      - /mnt/Media/library/books:/books:rw
+      - ./audiobookshelf/:/config
+      - /mnt/Media/library/audiobookshelf:/metadata
+    environment:
+      - TZ=America/Los_Angeles
+      - PORT=13378
+    restart: unless-stopped
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./prowlarr:/config
+    restart: unless-stopped
+  readarr:
+    image: ghcr.io/pennydreadful/bookshelf:hardcover
+    container_name: readarr
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./readarr_nonfiction_audio:/config
+      - /mnt/Media/downloads:/downloads
+      - /mnt/Media/library/books:/books
+    restart: unless-stopped
+  seedboxapi:
+    image: myanonamouse/seedboxapi
+    container_name: seedboxapi
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    volumes:
+      - ./seedboxapi:/config
+    environment:
+      - DEBUG=1
+      - mam_id={{ myflix_mam_id }}
+      - interval=1
+
+
+secrets:
+  secret_key:
+    file: ./storyteller_secret.txt

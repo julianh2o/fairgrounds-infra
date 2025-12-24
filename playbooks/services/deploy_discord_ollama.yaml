@@ -1,0 +1,19 @@
+---
+- name: Deploy Discord-Ollama
+  hosts: melinoe
+  become: yes
+
+  vars:
+    discord_ollama_ip: "192.168.0.66"
+    discord_ollama_port: "11434"
+    discord_ollama_model: "gemma3:27b"
+
+  vars_files:
+    - "../secrets/vault_vars.yml"
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: discord-ollama
+        compose_template: discord-ollama-compose.yml.j2
+        docker_compose_state: restarted

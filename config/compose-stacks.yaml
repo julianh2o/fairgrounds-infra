@@ -1,0 +1,80 @@
+---
+# Docker Compose stack definitions for services deployed on the fairgrounds infrastructure
+# Each stack represents a docker-compose.yml file and its associated services
+
+stacks:
+  # ============================================================================
+  # Media Automation Stack
+  # ============================================================================
+  - name: myflix
+    description: Media automation and download management stack with VPN
+    path: /opt/myflix
+    machine: 192.168.0.203
+    endpoints:
+      - 20630:sabnzbd.julianverse.net
+      - 3579:ombi.julianverse.net
+      - 8112:deluge.julianverse.net
+      - 3211:qbittorrent.julianverse.net
+      - 5076:nzbhydra.julianverse.net
+      - 9117:jackett.julianverse.net
+      - 8989:sonarr.julianverse.net
+      - 7878:radarr.julianverse.net
+      - 13378:audiobookshelf.julianverse.net
+      - 13378:books.julianhartline.com
+      - 8787:readarr.julianverse.net
+
+  # ============================================================================
+  # Photo Management
+  # ============================================================================
+  - name: immich
+    description: Photo and video management platform with ML features
+    path: /opt/immich
+    machine: 192.168.0.203
+    endpoints:
+      - 2283:photos.julianhartline.com
+
+  # ============================================================================
+  # Reading and Books
+  # ============================================================================
+  - name: rreading-glasses
+    description: Reading progress tracker using Hardcover API
+    path: /opt/rreading-glasses
+    machine: 192.168.0.203
+    endpoints: []
+
+  # ============================================================================
+  # Custom Applications
+  # ============================================================================
+  - name: uneventful
+    description: Custom event scheduling application
+    path: /opt/uneventful
+    machine: 192.168.0.203
+    endpoints:
+      - 2050:uneventful.bawdyshop.space
+
+  # ============================================================================
+  # Monitoring and Analytics
+  # ============================================================================
+  - name: tautulli
+    description: Plex media server monitoring and statistics
+    path: /opt/tautulli
+    machine: 192.168.0.203
+    endpoints: []
+
+  # ============================================================================
+  # AI and Bots
+  # ============================================================================
+  - name: discord-ollama
+    description: Discord bot with Ollama LLM integration
+    path: /opt/discord-ollama
+    machine: 192.168.0.203
+    endpoints: []
+
+  # ============================================================================
+  # Backup Services
+  # ============================================================================
+  - name: rclone-to-backblaze
+    description: Automated backup sync to Backblaze B2 storage
+    path: /opt/rclone-to-backblaze
+    machine: 192.168.0.203
+    endpoints: []

@@ -1,0 +1,20 @@
+# creates the docker compose
+
+# build individual services
+services:
+  # setup discord bot container
+  discord:
+    build: ./                     # find docker file in designated path
+    container_name: discord
+    restart: always               # rebuild container always
+    image: kevinthedang/discord-ollama:0.8.7
+    environment:
+      CLIENT_TOKEN: {{ discord_ollama_client_token }}
+      OLLAMA_IP: {{ discord_ollama_ip }}
+      OLLAMA_PORT: {{ discord_ollama_port }}
+      MODEL: {{ discord_ollama_model }}
+    volumes:
+      - ./discord:/src/app          # docker will not make this for you, make it yourself
+
+volumes:
+  discord:

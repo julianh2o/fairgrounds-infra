@@ -1,0 +1,54 @@
+---
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - service_name is defined
+      - service_name | length > 0
+      - compose_template is defined
+      - compose_template | length > 0
+    fail_msg: "service_name and compose_template are required variables"
+    quiet: yes
+
+- name: Create base service directory
+  ansible.builtin.file:
+    path: "{{ service_base_dir }}"
+    state: directory
+    owner: "{{ service_owner }}"
+    group: "{{ service_group }}"
+    mode: "{{ service_dir_mode }}"
+
+- name: Create additional service directories
+  ansible.builtin.file:
+    path: "{{ service_base_dir }}/{{ item.path | default(item) }}"
+    state: directory
+    owner: "{{ service_owner }}"
+    group: "{{ service_group }}"
+    mode: "{{ item.mode | default(service_dir_mode) }}"
+  loop: "{{ service_directories }}"
+  when: service_directories | length > 0
+
+- name: Deploy docker-compose.yml
+  ansible.builtin.template:
+    src: "{{ compose_template }}"
+    dest: "{{ service_base_dir }}/docker-compose.yml"
+    owner: "{{ service_owner }}"
+    group: "{{ service_group }}"
+    mode: "{{ service_file_mode }}"
+
+- name: Deploy additional configuration files
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ service_base_dir }}/{{ item.dest }}"
+    owner: "{{ service_owner }}"
+    group: "{{ service_group }}"
+    mode: "{{ item.mode | default(service_file_mode) }}"
+  loop: "{{ config_files }}"
+  when: config_files | length > 0
+
+- name: Manage Docker Compose service
+  community.docker.docker_compose_v2:
+    project_name: "{{ docker_compose_project_name }}"
+    project_src: "{{ service_base_dir }}"
+    state: "{{ docker_compose_state }}"
+    pull: "{{ docker_compose_pull }}"
+    build: "{{ docker_compose_build }}"

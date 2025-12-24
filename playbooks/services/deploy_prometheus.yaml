@@ -1,0 +1,12 @@
+- name: Deploy Prometheus
+  hosts: melinoe
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: prometheus
+        compose_template: prometheus.yml.j2
+        config_files:
+          - src: prometheus.config.yml.j2
+            dest: config.yml

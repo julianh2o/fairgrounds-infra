@@ -57,11 +57,6 @@ services:
     machine: 192.168.0.203
     port: 9117
 
-  # Nginx Proxy Manager
-  - name: npm.julianverse.net
-    machine: 192.168.0.203
-    port: 81
-
   # NZBHydra2 - NZB meta search
   - name: nzbhydra.julianverse.net
     machine: 192.168.0.203
@@ -107,11 +102,6 @@ services:
     machine: 192.168.0.100
     port: 80
 
-  # Uneventful - Custom application
-  - name: uneventful.julianverse.net
-    machine: 192.168.0.203
-    port: 2050
-
   # Audiobookshelf - Audiobook and podcast server
   - name: audiobookshelf.julianverse.net
     machine: 192.168.0.203
@@ -131,11 +121,6 @@ services:
   - name: jackett.julianverse.net
     machine: 192.168.0.203
     port: 9117
-
-  # Nginx Proxy Manager
-  - name: npm.julianverse.net
-    machine: 192.168.0.203
-    port: 81
 
   # NZBHydra2 - NZB meta search
   - name: nzbhydra.julianverse.net
