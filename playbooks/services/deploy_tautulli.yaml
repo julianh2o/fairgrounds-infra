@@ -8,4 +8,4 @@
       vars:
         service_name: tautulli
         compose_template: tautulli-compose.yml.j2
-        docker_compose_state: restarted
+        docker_compose_state: present

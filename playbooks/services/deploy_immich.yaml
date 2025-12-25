@@ -9,7 +9,7 @@
     immich_db_data_location: "/opt/immich/pgdata"
 
   vars_files:
-    - "../secrets/vault_vars.yml"
+    - ../../secrets/vault_vars.yml
 
   roles:
     - role: docker_service
@@ -18,16 +18,4 @@
         compose_template: immich-compose.yml.j2
         service_directories:
           - pgdata
-        docker_compose_state: restarted
-
-  tasks:
-    - name: Ensure .env file
-      ansible.builtin.copy:
-        dest: /opt/immich/.env
-        content: |
-          IMMICH_VERSION=release
-          DB_PASSWORD={{ immich_db_password }}
-          DB_USERNAME={{ immich_db_username }}
-          DB_DATABASE_NAME={{ immich_db_database_name }}
-          DB_DATA_LOCATION={{ immich_db_data_location }}
-        mode: "0644"
+        docker_compose_state: present

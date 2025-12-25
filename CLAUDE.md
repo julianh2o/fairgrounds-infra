@@ -30,13 +30,23 @@ ansible-playbook playbooks/ping.yaml
 # Update packages on hosts
 ansible-playbook playbooks/update.yaml
 
-# Deploy monitoring stack
-ansible-playbook playbooks/deploy_prometheus.yaml
-ansible-playbook playbooks/deploy_grafana.yaml
-ansible-playbook playbooks/install_node_exporter.yml
+# Deploy all services at once
+ansible-playbook playbooks/deploy_all_services.yaml
 
-# Deploy Caddy reverse proxy
-ansible-playbook playbooks/deploy_caddy.yaml
+# Deploy individual services
+ansible-playbook playbooks/services/deploy_caddy.yaml
+ansible-playbook playbooks/services/deploy_prometheus.yaml
+ansible-playbook playbooks/services/deploy_grafana.yaml
+ansible-playbook playbooks/services/deploy_myflix.yaml
+ansible-playbook playbooks/services/deploy_immich.yaml
+ansible-playbook playbooks/services/deploy_rreading_glasses.yaml
+ansible-playbook playbooks/services/deploy_uneventful.yaml
+ansible-playbook playbooks/services/deploy_tautulli.yaml
+ansible-playbook playbooks/services/deploy_discord_ollama.yaml
+ansible-playbook playbooks/services/deploy_rclone_to_backblaze.yaml
+
+# Deploy monitoring stack
+ansible-playbook playbooks/install_node_exporter.yml
 
 # Update Caddy reverse proxy configuration
 ansible-playbook playbooks/check_services.yaml

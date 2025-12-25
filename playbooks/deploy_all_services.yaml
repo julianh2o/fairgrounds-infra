@@ -1,0 +1,36 @@
+---
+# Deploy all services to fairgrounds infrastructure
+# This playbook runs all individual service deployment playbooks in sequence
+
+# Infrastructure services (reverse proxy and monitoring)
+- name: Deploy infrastructure services
+  import_playbook: services/deploy_caddy.yaml
+
+- name: Deploy Prometheus
+  import_playbook: services/deploy_prometheus.yaml
+
+- name: Deploy Grafana
+  import_playbook: services/deploy_grafana.yaml
+
+# Application services
+- name: Deploy Myflix
+  import_playbook: services/deploy_myflix.yaml
+
+- name: Deploy Immich
+  import_playbook: services/deploy_immich.yaml
+
+- name: Deploy rreading-glasses
+  import_playbook: services/deploy_rreading_glasses.yaml
+
+- name: Deploy Uneventful
+  import_playbook: services/deploy_uneventful.yaml
+
+- name: Deploy Tautulli
+  import_playbook: services/deploy_tautulli.yaml
+
+- name: Deploy Discord-Ollama
+  import_playbook: services/deploy_discord_ollama.yaml
+
+# Backup services
+- name: Deploy Rclone to Backblaze
+  import_playbook: services/deploy_rclone_to_backblaze.yaml

@@ -3,7 +3,7 @@
   hosts: melinoe
   become: yes
   vars_files:
-    - "{{ inventory_dir }}/secrets/vault_vars.yml"
+    - ../../secrets/vault_vars.yml
 
   vars:
     smb_server: "192.168.0.100"

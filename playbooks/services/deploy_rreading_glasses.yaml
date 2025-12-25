@@ -4,11 +4,11 @@
   become: yes
 
   vars_files:
-    - "../secrets/vault_vars.yml"
+    - ../../secrets/vault_vars.yml
 
   roles:
     - role: docker_service
       vars:
         service_name: rreading-glasses
         compose_template: rreading-glasses-compose.yml.j2
-        docker_compose_state: restarted
+        docker_compose_state: present

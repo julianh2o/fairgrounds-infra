@@ -7,11 +7,11 @@
     uneventful_app_base_url: "https://uneventful.bawdyshop.space"
 
   vars_files:
-    - "../secrets/vault_vars.yml"
+    - ../../secrets/vault_vars.yml
 
   roles:
     - role: docker_service
       vars:
         service_name: uneventful
         compose_template: uneventful-compose.yml.j2
-        docker_compose_state: restarted
+        docker_compose_state: present

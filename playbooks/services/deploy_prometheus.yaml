@@ -10,3 +10,4 @@
         config_files:
           - src: prometheus.config.yml.j2
             dest: config.yml
+        docker_compose_state: present
