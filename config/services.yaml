@@ -32,6 +32,11 @@ services:
   # julianverse.net
   # ============================================================================
 
+  # Whisper - Speech to Text and Text to Speech
+  - name: whisper.julianverse.net
+    machine: 192.168.0.66
+    port: 10300
+
   # Audiobookshelf - Audiobook and podcast server
   - name: audiobookshelf.julianverse.net
     machine: 192.168.0.203

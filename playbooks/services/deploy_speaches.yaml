@@ -1,0 +1,14 @@
+---
+- name: Deploy Speaches AI
+  hosts: melinoe
+  become: yes
+
+  vars_files:
+    - ../../secrets/vault_vars.yml
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: speaches
+        compose_template: speaches-compose.yml.j2
+        docker_compose_state: present
