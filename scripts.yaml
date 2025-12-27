@@ -1,0 +1,3 @@
+scripts:
+  - name: Deploy all services to fairgrounds infrastructure
+    cmd: ansible-playbook playbooks/monitor/download_docker_state.yaml

@@ -1,0 +1,38 @@
+---
+- name: Download Docker container state
+  hosts: melinoe
+  become: yes
+
+  vars:
+    reports_dir: "{{ playbook_dir }}/../../reports/docker"
+    timestamp: "{{ ansible_date_time.iso8601_basic_short }}"
+    docker_state_file: "{{ reports_dir }}/{{ inventory_hostname }}_{{ timestamp }}.json"
+
+  tasks:
+    - name: Ensure reports directory exists
+      file:
+        path: "{{ reports_dir }}"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      become: no
+
+    - name: Get Docker container state
+      shell: "docker container ls --format '{{ '{{' }}json .{{ '}}' }}'"
+      register: docker_state
+
+    - name: Convert NDJSON to valid JSON array
+      set_fact:
+        docker_state_json: "{{ '[' + docker_state.stdout_lines | map('trim') | join(',') + ']' }}"
+
+    - name: Save Docker state to local file
+      copy:
+        content: "{{ docker_state_json }}"
+        dest: "{{ docker_state_file }}"
+      delegate_to: localhost
+      become: no
+
+    - name: Display success message
+      debug:
+        msg: "Docker state saved to {{ docker_state_file }}"
+      delegate_to: localhost
