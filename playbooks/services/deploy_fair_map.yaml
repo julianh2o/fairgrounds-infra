@@ -1,0 +1,11 @@
+---
+- name: Deploy Fair-map
+  hosts: melinoe
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: fair-map
+        compose_template: fair-map-compose.yml.j2
+        docker_compose_state: present
