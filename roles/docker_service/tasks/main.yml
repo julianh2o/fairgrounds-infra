@@ -45,6 +45,14 @@
   loop: "{{ config_files }}"
   when: config_files | length > 0
 
+- name: Pull latest Docker images
+  ansible.builtin.command:
+    cmd: docker compose pull
+    chdir: "{{ service_base_dir }}"
+  when: docker_compose_pull == "always"
+  register: docker_pull_result
+  changed_when: "'Pulled' in docker_pull_result.stdout or 'Pulling' in docker_pull_result.stdout"
+
 - name: Manage Docker Compose service
   community.docker.docker_compose_v2:
     project_name: "{{ docker_compose_project_name }}"
