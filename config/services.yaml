@@ -32,6 +32,11 @@ services:
   # julianverse.net
   # ============================================================================
 
+  # Fair-map - Map of the fairgrounds
+  - name: map.julianverse.net
+    machine: 192.168.0.203
+    port: 3050
+
   # Whisper - Speech to Text and Text to Speech
   - name: whisper.julianverse.net
     machine: 192.168.0.66
