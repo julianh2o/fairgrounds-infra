@@ -1,8 +1,6 @@
 ---
 # This playbook creates the ansible service account on all hosts
-# Run with: ansible-playbook -i inventory.yaml playbooks/setup_ansible_user.yaml -u julian -K
-# The -u julian flag overrides the default remote_user (ansible) to connect as your personal user
-# The -K flag prompts for sudo password
+# Run with: ansible-playbook --limit homeassistant playbooks/setup/setup_ansible_user.yaml -u julian -Kk
 - name: Setup Ansible Service Account
   hosts: linuxhosts
   become: yes

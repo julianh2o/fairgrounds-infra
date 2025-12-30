@@ -4,6 +4,9 @@ linuxhosts:
     melinoe:
       ansible_host: melinoe
       ansible_connection: ssh
+    homeassistant:
+      ansible_host: 192.168.0.110
+      ansible_connection: ssh
     truenas:
       ansible_host: 100.92.92.16
       ansible_connection: ssh
