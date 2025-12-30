@@ -7,6 +7,7 @@ linuxhosts:
     homeassistant:
       ansible_host: 192.168.0.110
       ansible_connection: ssh
+      ansible_user: julian
     truenas:
       ansible_host: 100.92.92.16
       ansible_connection: ssh
