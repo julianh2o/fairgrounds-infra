@@ -7,10 +7,13 @@ services:
 
     network_mode: host
 
+    volumes:
+      - /mnt/Store/Miscellaneous/myalprframes:/app/frames
+
     environment:
       # Camera Streams (RTSP/RTSPS URLs)
       - CAM_DRIVEWAY_HIGH=rtsps://192.168.0.1:7441/dj6fqZEn2aY6UDRd?enableSrtp
-      - CAM_DRIVEWAY_LOW=rtsps://192.168.0.1:7441/c62bindconbKC6GJ?enableSrtp
+      - KNOWN_PLATES=79699J4
 
       # Ollama Vision Model
       - OLLAMA_URL=http://192.168.0.66:11434/api/chat
