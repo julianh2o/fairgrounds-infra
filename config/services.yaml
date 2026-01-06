@@ -32,6 +32,11 @@ services:
   # julianverse.net
   # ============================================================================
 
+  # Proxmox - Run VMs
+  - name: pve.julianverse.net
+    machine: 192.168.0.105
+    port: 8006
+
   # Fair-map - Map of the fairgrounds
   - name: map.julianverse.net
     machine: 192.168.0.203
