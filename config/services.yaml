@@ -33,9 +33,11 @@ services:
   # ============================================================================
 
   # Proxmox - Run VMs
-  - name: pve.julianverse.net
+  - name: njord.julianverse.net
     machine: 192.168.0.105
+    protocol: https
     port: 8006
+    tls_skip_verify: true 
 
   # Fair-map - Map of the fairgrounds
   - name: map.julianverse.net

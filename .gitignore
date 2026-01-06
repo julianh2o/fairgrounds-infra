@@ -16,3 +16,10 @@ secrets/id_ed25519
 
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json
+
+# Terraform (see terraform/.gitignore for complete list)
+# terraform.tfvars contains secrets from Ansible vault
+terraform/terraform.tfvars
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
