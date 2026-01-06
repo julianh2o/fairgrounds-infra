@@ -1,14 +1,13 @@
 - name: Nudge Seedbox
   hosts: melinoe
   become: yes
-  vars:
-    mam_id: "IstIjova8WUOm4EbJ_MgQxUghL8q54qOBTDjAkKCsoYBdMsaQZWq4y3jgxwYnzlPQSIJtppfZefHzriEWZT0n-ttunWtV7llgGTfNaVbZON-1_V2oCKMHaEzBMeQtQeKMdV-h3bjtQk7wEVe4xFy4rr8i3RGCDBnmCH2iObrX5iVDGasenf-M2lvfThghVUUx6Nchijlh6j5A09zb3UIjeoBSc86A7sP1kO7hNH7la4Cd0t_vHFy5-6Dt8XW64LDOJeO0srPUYUJempYX29eVf-ukzH438kuaon_"
 
-  #delete cookies file
-  #output IP address
-  #create new MAM session with IP address
-  #retrieve mam_id
-  #update docker_compose file, docker compose down/up seedboxapi
+  vars:
+    myflix_mam_id: "DnArzY3oYN8LOEoW95soQBc7rGiQhbr5f0cCZsxBx58wgOaf3cLXZmVSESY6ALsjN-zxV6ePo50rvobBE5XdVinHrivQ_xlrPwMCNvxsUSQH1nXlfq0atRx0EhqK6IqhF2EYL-yh9qrame20dRH71NfY26Kp-qZm-7qDBNoykZ_IHqEl23YhNLUjGDYk0eEPg6gRqOrTMPRvX_2dy3kjgAlGKB15Z4aAwGq78Jox1elP4x2Qu281QGyZSYJ_0JIyQbr8zyiaX1zz0plUv8x8y9iwYr2ggEthN-DJ"
+
+  vars_files:
+    - ../../secrets/vault_vars.yml
+
   tasks:
     - name: Docker Compose down seedboxapi
       community.docker.docker_compose_v2:
@@ -22,26 +21,24 @@
         path: /opt/myflix/seedboxapi/MAM.cookies
         state: absent
 
-    # - name: Get public IP address via VPN container
-    #   community.docker.docker_container_exec:
-    #     container: vpn
-    #     command: curl -s https://api.ipify.org?format=txt
-    #   register: vpn_ip_result
+    - name: Get public IP address via VPN container
+      community.docker.docker_container_exec:
+        container: vpn
+        command: curl -s https://api.ipify.org?format=txt
+      register: vpn_ip_result
 
-    # - name: Set vpn_ip variable
-    #   set_fact:
-    #     vpn_ip: "{{ vpn_ip_result.stdout }}"
+    - name: Set vpn_ip variable
+      set_fact:
+        vpn_ip: "{{ vpn_ip_result.stdout }}"
 
-    # - name: Output public IP address from VPN
-    #   debug:
-    #     msg: "Public IP address via VPN is: {{ vpn_ip }}"
+    - name: Output public IP address from VPN
+      debug:
+        msg: "Public IP address via VPN is: {{ vpn_ip }}"
 
-    - name: Replace mam_id in config file
-      ansible.builtin.lineinfile:
-        path: /opt/myflix/docker-compose.yml
-        regexp: "^mam_id=.*"
-        line: "      mam_id={{ mam_id }}"
-        backup: yes
+    - name: Deploy docker-compose.yml
+      ansible.builtin.template:
+        src: "{{ inventory_dir }}/templates/myflix-compose.yml.j2"
+        dest: "/opt/myflix/docker-compose.yml"
 
     - name: Docker Compose up seedboxapi
       community.docker.docker_compose_v2:
