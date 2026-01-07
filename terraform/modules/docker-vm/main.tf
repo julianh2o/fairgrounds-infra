@@ -62,7 +62,6 @@ resource "proxmox_virtual_environment_vm" "vm" {
     timeout = "1s"  # Short timeout to prevent hanging
   }
 
-  # Cloud-init configuration
   initialization {
     datastore_id      = var.datastore_id
     user_data_file_id = proxmox_virtual_environment_file.cloud_init_user_data.id

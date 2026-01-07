@@ -1,6 +1,6 @@
 ---
 # This playbook creates the ansible service account on all hosts
-# Run with: ansible-playbook --limit metis playbooks/setup/setup_ansible_user.yaml -u root
+# Run with: ansible-playbook --limit metis playbooks/setup/setup_ansible_user.yaml -u user
 - name: Setup Ansible Service Account
   hosts: all
   become: yes
@@ -19,12 +19,6 @@
         create_home: yes
         comment: "Ansible Automation User"
         password: "!"  # Locked password (SSH key auth only)
-
-    - name: Add ansible user to docker group
-      ansible.builtin.user:
-        name: "{{ ansible_user_name }}"
-        groups: docker
-        append: yes
 
     - name: Create .ssh directory for ansible user
       ansible.builtin.file:
@@ -64,12 +58,3 @@
     - name: Ensure ansible account is unlocked (allow passwordless SSH key auth)
       ansible.builtin.command: passwd -d {{ ansible_user_name }}
       changed_when: true
-
-    - name: Verify ansible user can run docker commands
-      ansible.builtin.command: groups {{ ansible_user_name }}
-      register: ansible_user_groups
-      changed_when: false
-
-    - name: Display ansible user groups
-      ansible.builtin.debug:
-        msg: "Ansible user groups: {{ ansible_user_groups.stdout }}"

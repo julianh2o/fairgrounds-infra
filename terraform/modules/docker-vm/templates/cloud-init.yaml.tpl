@@ -1,14 +1,20 @@
 #cloud-config
 users:
-  - name: myuser
+  - name: user
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
       - ${ssh_public_key}
 
-ssh_pwauth: True
+ssh_pwauth: true
 
 chpasswd:
   list: |
-    myuser:lemmings
+    user:lemmings
   expire: false
+
+runcmd:
+  - systemctl restart ssh
+
+power_state:
+  mode: reboot
