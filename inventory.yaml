@@ -7,6 +7,8 @@ vms:
   hosts:
     ceto:
       ansible_host: 192.168.0.220
+    metis:
+      ansible_host: 192.168.0.221
 linuxhosts:
   hosts:
     melinoe:
