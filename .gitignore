@@ -17,6 +17,9 @@ secrets/id_ed25519
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json
 
+# Downloaded Ansible Galaxy roles (installed via requirements.yaml)
+roles/
+
 # Terraform (see terraform/.gitignore for complete list)
 # terraform.tfvars contains secrets from Ansible vault
 terraform/terraform.tfvars

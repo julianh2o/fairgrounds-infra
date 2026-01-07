@@ -1,6 +1,6 @@
 ---
-- name: Configure fstab mounts on melinoe
-  hosts: melinoe
+- name: Configure fstab mounts
+  hosts: vms
   become: yes
   vars_files:
     - ../../secrets/vault_vars.yml
@@ -10,7 +10,7 @@
     credentials_file: "/mnt/smbcredentials"
 
     # Common performance options for all CIFS mounts
-    common_cifs_opts: "vers=3.1.1,cache=loose,actimeo=30,rsize=4194304,wsize=4194304,file_mode=0755,dir_mode=0755"
+    common_cifs_opts: "vers=3.1.1,actimeo=30,rsize=4194304,wsize=4194304,file_mode=0755,dir_mode=0755"
 
     mounts:
       - name: Media
@@ -64,6 +64,10 @@
         passno: "0"
         state: present
       loop: "{{ mounts }}"
+
+    - name: Reload systemd daemon
+      ansible.builtin.systemd:
+        daemon_reload: yes
 
     - name: Mount all filesystems
       ansible.builtin.command:

@@ -1,6 +1,6 @@
 ---
 - name: Deploy MyALPR
-  hosts: melinoe
+  hosts: ceto
   become: yes
 
   vars_files:

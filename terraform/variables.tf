@@ -18,11 +18,17 @@ variable "proxmox_api_token_secret" {
 variable "proxmox_node_name" {
   description = "Proxmox node name to deploy VMs to"
   type        = string
-  default     = "pve"  # Common default, adjust as needed
+  default     = "njord"  # Common default, adjust as needed
 }
 
 variable "proxmox_storage" {
   description = "Proxmox storage pool for VM disks and images"
   type        = string
   default     = "local-lvm"  # Common default, adjust as needed
+}
+
+variable "proxmox_ssh_address" {
+  description = "SSH address for Proxmox node (if different from API address)"
+  type        = string
+  default     = "njord.ts"
 }

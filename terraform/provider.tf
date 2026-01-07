@@ -15,6 +15,12 @@ provider "proxmox" {
   insecure = true  # Set to false if you have valid SSL certs
 
   ssh {
-    agent = true
+    agent = false
+    username = "root"
+    private_key = file("${path.module}/../secrets/id_ed25519")
+    node {
+      name    = var.proxmox_node_name
+      address = var.proxmox_ssh_address
+    }
   }
 }

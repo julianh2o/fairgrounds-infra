@@ -1,17 +1,20 @@
 ---
+all:
+  vars:
+    ansible_connection: ssh
+
+vms:
+  hosts:
+    ceto:
+      ansible_host: 192.168.0.220
 linuxhosts:
   hosts:
     melinoe:
-      ansible_host: melinoe
-      ansible_connection: ssh
-    homeassistant:
-      ansible_host: 192.168.0.110
-      ansible_connection: ssh
-      ansible_user: julian
+      ansible_host: 192.168.0.203
     truenas:
-      ansible_host: 100.92.92.16
-      ansible_connection: ssh
+      ansible_host: 192.168.0.100
 otherhosts:
   hosts:
     kvasir:
-      ansible_host: 100.104.77.50
+      ansible_host: 192.168.0.66
+      

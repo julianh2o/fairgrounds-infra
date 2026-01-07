@@ -20,7 +20,7 @@ services:
 
   # Immich - Photo management
   - name: photos.julianhartline.com
-    machine: 192.168.0.203
+    machine: 192.168.0.220
     port: 2283
 
   # Plex - Media server

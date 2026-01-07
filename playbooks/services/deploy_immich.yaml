@@ -1,6 +1,6 @@
 ---
 - name: Deploy Immich
-  hosts: melinoe
+  hosts: ceto
   become: yes
 
   vars:

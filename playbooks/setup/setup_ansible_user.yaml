@@ -1,8 +1,8 @@
 ---
 # This playbook creates the ansible service account on all hosts
-# Run with: ansible-playbook --limit homeassistant playbooks/setup/setup_ansible_user.yaml -u julian -Kk
+# Run with: ansible-playbook --limit kvasir playbooks/setup/setup_ansible_user.yaml -u julian -Kk
 - name: Setup Ansible Service Account
-  hosts: linuxhosts
+  hosts: all
   become: yes
 
   vars:

@@ -54,7 +54,7 @@ ansible-playbook playbooks/check_services.yaml
 # Deploy GitHub keys puller
 ansible-playbook playbooks/deploy_github_keys_puller.yml
 
-# Install Ansible dependencies
+# Install Ansible dependencies (roles and collections)
 ansible-galaxy install -r requirements.yaml
 ```
 
@@ -130,9 +130,11 @@ Caddy is used as the reverse proxy with automatic HTTPS via Let's Encrypt:
 - `playbooks/` - Ansible playbooks for various deployment and management tasks
 - `templates/` - Jinja2 templates for service configurations and compose files
 - `config/` - Configuration data files (e.g., services.yaml for proxy definitions)
+- `myroles/` - Custom Ansible roles (committed to repository)
+- `roles/` - Downloaded Ansible Galaxy roles (gitignored, install with `ansible-galaxy install -r requirements.yaml`)
 - `inventory.yaml` - Ansible inventory defining hosts and groups
 - `requirements.yaml` - Ansible Galaxy dependencies (collections and roles)
-- `ansible.cfg` - Ansible configuration with SSH settings
+- `ansible.cfg` - Ansible configuration with SSH settings and roles_path
 - `ssh.config` - Custom SSH configuration for host connections
 - `secrets/` - SSH keys for authentication
 - `archive/` - Old/deprecated configurations (Terraform, etc.)
