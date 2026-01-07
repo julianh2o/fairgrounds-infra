@@ -1,4 +1,21 @@
 ---
+- name: Install QEMU Guest Agent
+  hosts: vms
+  become: yes
+
+  tasks:
+    - name: Install qemu-guest-agent package
+      ansible.builtin.apt:
+        name: qemu-guest-agent
+        state: present
+        update_cache: yes
+
+    - name: Ensure qemu-guest-agent is started and enabled
+      ansible.builtin.service:
+        name: qemu-guest-agent
+        state: started
+        enabled: yes
+
 - name: Setup Docker
   ansible.builtin.import_playbook: setup_docker.yaml
 
@@ -45,26 +62,6 @@
         job: "curl https://github.com/julianh2o.keys > ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
         user: julian
         state: present
-
-- name: Cleanup Root Account
-  hosts: vms
-  become: yes
-
-  tasks:
-    - name: Remove julian@echo key from root authorized_keys
-      ansible.builtin.lineinfile:
-        path: /root/.ssh/authorized_keys
-        regexp: '.*julian@echo.*'
-        state: absent
-
-    - name: Disable root SSH login
-      ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config.d/99-custom.conf
-        regexp: '^PermitRootLogin'
-        line: 'PermitRootLogin no'
-        create: yes
-        mode: '0644'
-      notify: Restart SSH
 
   handlers:
     - name: Restart SSH
