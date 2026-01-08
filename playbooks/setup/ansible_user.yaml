@@ -1,6 +1,6 @@
 ---
 # This playbook creates the ansible service account on all hosts
-# Run with: ansible-playbook --limit metis playbooks/setup/setup_ansible_user.yaml -u user
+# Run with: ansible-playbook --limit metis playbooks/setup/ansible_user.yaml -u user
 - name: Setup Ansible Service Account
   hosts: all
   become: yes

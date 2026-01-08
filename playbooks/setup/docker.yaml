@@ -1,6 +1,6 @@
 ---
 # This playbook installs Docker Engine and Docker Compose v2 plugin
-# Run with: ansible-playbook playbooks/setup/setup_docker.yaml -u julian -K
+# Run with: ansible-playbook playbooks/setup/docker.yaml -u julian -K
 - name: Install Docker and Docker Compose
   hosts: vms
   become: yes

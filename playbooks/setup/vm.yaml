@@ -1,0 +1,43 @@
+---
+# Complete VM setup: user account, tools, fstab, and cleanup
+- name: Setup User Account
+  ansible.builtin.import_playbook: myuseraccount.yaml
+
+- name: Install Tools
+  ansible.builtin.import_playbook: tools.yaml
+
+- name: Setup fstab
+  ansible.builtin.import_playbook: fstab.yaml
+
+- name: Remove temporary user account
+  hosts: vms
+  become: yes
+
+  tasks:
+    - name: Terminate all sessions for user account
+      ansible.builtin.command: loginctl terminate-user user
+      register: terminate_result
+      failed_when: false
+      changed_when: terminate_result.rc == 0
+
+    - name: Kill all processes owned by user account
+      ansible.builtin.command: pkill -u user
+      register: pkill_result
+      failed_when: false
+      changed_when: pkill_result.rc == 0
+
+    - name: Wait for processes to terminate
+      ansible.builtin.pause:
+        seconds: 2
+
+    - name: Remove temporary user account
+      ansible.builtin.user:
+        name: user
+        state: absent
+        remove: yes
+
+  handlers:
+    - name: Restart SSH
+      ansible.builtin.service:
+        name: ssh
+        state: restarted

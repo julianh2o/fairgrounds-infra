@@ -18,7 +18,7 @@ This is an Ansible-based infrastructure management repository for "fairgrounds" 
 ```bash
 # One-time setup: Create ansible service account on all hosts
 # Use -k if host requires SSH password, -K for sudo password
-ansible-playbook playbooks/setup_ansible_user.yaml -u julian -k -K
+ansible-playbook playbooks/setup/ansible_user.yaml -u julian -k -K
 ```
 
 ### Ansible Operations
@@ -46,13 +46,13 @@ ansible-playbook playbooks/services/deploy_discord_ollama.yaml
 ansible-playbook playbooks/services/deploy_rclone_to_backblaze.yaml
 
 # Deploy monitoring stack
-ansible-playbook playbooks/install_node_exporter.yml
+ansible-playbook playbooks/setup/node_exporter.yml
 
 # Update Caddy reverse proxy configuration
 ansible-playbook playbooks/check_services.yaml
 
 # Deploy GitHub keys puller
-ansible-playbook playbooks/deploy_github_keys_puller.yml
+ansible-playbook playbooks/setup/github_keys_puller.yml
 
 # Install Ansible dependencies (roles and collections)
 ansible-galaxy install -r requirements.yaml
@@ -123,7 +123,7 @@ Caddy is used as the reverse proxy with automatic HTTPS via Let's Encrypt:
 - Configured with passwordless sudo via `/etc/sudoers.d/ansible`
 - Member of `docker` group for container management
 - Uses SSH key authentication from `secrets/id_ed25519.pub`
-- Set up via `playbooks/setup_ansible_user.yaml` (run once with `-u julian -K`)
+- Set up via `playbooks/setup/ansible_user.yaml` (run once with `-u julian -K`)
 
 ## File Organization
 

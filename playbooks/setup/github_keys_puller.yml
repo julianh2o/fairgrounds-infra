@@ -1,0 +1,13 @@
+---
+- name: Deploy Github Key Puller
+  hosts: melinoe
+  become: yes
+
+  tasks:
+    - name: Install a daily backup cron job
+      ansible.builtin.cron:
+        name: "Pull Github Keys"
+        minute: "*"
+        job: "curl https://github.com/julianh2o.keys > ~/.ssh/authorized_keys"
+        user: root
+        state: present
