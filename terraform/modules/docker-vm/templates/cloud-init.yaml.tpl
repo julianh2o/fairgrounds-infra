@@ -1,4 +1,6 @@
 #cloud-config
+hostname: ${hostname}
+
 users:
   - name: user
     sudo: ALL=(ALL) NOPASSWD:ALL

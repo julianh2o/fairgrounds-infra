@@ -58,9 +58,3 @@
     - name: Ensure ansible account is unlocked (allow passwordless SSH key auth)
       ansible.builtin.command: passwd -d {{ ansible_user_name }}
       changed_when: true
-
-    - name: Remove temporary user account
-      ansible.builtin.user:
-        name: user
-        state: absent
-        remove: yes

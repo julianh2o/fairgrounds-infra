@@ -1,4 +1,46 @@
 ---
+- name: Setup User Account
+  hosts: vms
+  become: yes
+
+  vars_files:
+    - ../../secrets/vault_vars.yml
+
+  tasks:
+    - name: Create julian user
+      ansible.builtin.user:
+        name: julian
+        shell: /bin/bash
+        groups: sudo
+        append: yes
+        create_home: yes
+        state: present
+        password: "{{ user_password | password_hash('sha512') }}"
+
+    - name: Configure passwordless sudo for julian
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/julian
+        line: 'julian ALL=(ALL) NOPASSWD:ALL'
+        create: yes
+        mode: '0440'
+        validate: 'visudo -cf %s'
+
+    - name: Ensure .ssh directory exists for julian
+      ansible.builtin.file:
+        path: /home/julian/.ssh
+        state: directory
+        owner: julian
+        group: julian
+        mode: '0700'
+
+    - name: Install a cron job to pull GitHub keys for julian
+      ansible.builtin.cron:
+        name: "Pull Github Keys"
+        minute: "*"
+        job: "curl https://github.com/julianh2o.keys > ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+        user: julian
+        state: present
+
 - name: Install QEMU Guest Agent
   hosts: vms
   become: yes
@@ -25,49 +67,38 @@
   roles:
     - role: geerlingguy.node_exporter
 
-- name: Setup User Account
+- name: Setup fstab
+  ansible.builtin.import_playbook: setup_fstab.yaml
+
+- name: Remove temporary user account
   hosts: vms
   become: yes
 
   tasks:
-    - name: Create julian user
+    - name: Terminate all sessions for user account
+      ansible.builtin.command: loginctl terminate-user user
+      register: terminate_result
+      failed_when: false
+      changed_when: terminate_result.rc == 0
+
+    - name: Kill all processes owned by user account
+      ansible.builtin.command: pkill -u user
+      register: pkill_result
+      failed_when: false
+      changed_when: pkill_result.rc == 0
+
+    - name: Wait for processes to terminate
+      ansible.builtin.pause:
+        seconds: 2
+
+    - name: Remove temporary user account
       ansible.builtin.user:
-        name: julian
-        shell: /bin/bash
-        groups: sudo
-        append: yes
-        create_home: yes
-        state: present
-
-    - name: Configure passwordless sudo for julian
-      ansible.builtin.lineinfile:
-        path: /etc/sudoers.d/julian
-        line: 'julian ALL=(ALL) NOPASSWD:ALL'
-        create: yes
-        mode: '0440'
-        validate: 'visudo -cf %s'
-
-    - name: Ensure .ssh directory exists for julian
-      ansible.builtin.file:
-        path: /home/julian/.ssh
-        state: directory
-        owner: julian
-        group: julian
-        mode: '0700'
-
-    - name: Install a cron job to pull GitHub keys for julian
-      ansible.builtin.cron:
-        name: "Pull Github Keys"
-        minute: "*"
-        job: "curl https://github.com/julianh2o.keys > ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
-        user: julian
-        state: present
+        name: user
+        state: absent
+        remove: yes
 
   handlers:
     - name: Restart SSH
       ansible.builtin.service:
         name: ssh
         state: restarted
-
-- name: Setup fstab
-  ansible.builtin.import_playbook: setup_fstab.yaml

@@ -6,9 +6,11 @@ all:
 vms:
   hosts:
     ceto:
-      ansible_host: 192.168.0.220
+      ansible_host: 192.168.0.10
     metis:
-      ansible_host: 192.168.0.221
+      ansible_host: 192.168.0.11
+    europa:
+      ansible_host: 192.168.0.12
 linuxhosts:
   hosts:
     melinoe:

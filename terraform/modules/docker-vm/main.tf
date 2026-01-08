@@ -17,6 +17,7 @@ resource "proxmox_virtual_environment_file" "cloud_init_user_data" {
   source_raw {
     data = templatefile("${path.module}/templates/cloud-init.yaml.tpl", {
       ssh_public_key = trimspace(file("${path.root}/../secrets/id_ed25519.pub"))
+      hostname       = var.hostname
     })
 
     file_name = "cloud-init-${var.hostname}.yaml"
@@ -72,5 +73,11 @@ resource "proxmox_virtual_environment_vm" "vm" {
         gateway = var.ip_gateway
       }
     }
+  }
+
+  lifecycle {
+    ignore_changes = [
+      initialization[0].user_data_file_id,
+    ]
   }
 }

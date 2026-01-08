@@ -12,7 +12,7 @@ module "metis" {
   disk_size_gb = 50
 
   network_bridge = "vmbr0"
-  ip_address     = "192.168.0.221/24"
+  ip_address     = "192.168.0.11/24"
 }
 
 output "metis_vm_id" {

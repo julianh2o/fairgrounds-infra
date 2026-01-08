@@ -12,7 +12,7 @@ module "ceto" {
   disk_size_gb = 50
 
   network_bridge = "vmbr0"
-  ip_address     = "192.168.0.220/24"
+  ip_address     = "192.168.0.10/24"
 }
 
 output "ceto_vm_id" {

@@ -1,0 +1,29 @@
+---
+# Reboot VM and wait for it to come back online
+# Run with: ansible-playbook playbooks/maintenance/reboot_vm.yaml -e target_host=europa
+# Or target multiple hosts: ansible-playbook playbooks/maintenance/reboot_vm.yaml -e target_host=vms
+- name: Reboot VM
+  hosts: "{{ target_host }}"
+  become: yes
+
+  tasks:
+    - name: Reboot and wait for system to come back online
+      ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible"
+        connect_timeout: 5
+        reboot_timeout: 300
+        pre_reboot_delay: 0
+        post_reboot_delay: 30
+        test_command: uptime
+
+    - name: Verify system is back online
+      ansible.builtin.ping:
+
+    - name: Display uptime after reboot
+      ansible.builtin.command: uptime
+      register: uptime_output
+      changed_when: false
+
+    - name: Show uptime
+      ansible.builtin.debug:
+        msg: "{{ uptime_output.stdout }}"
