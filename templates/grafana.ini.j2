@@ -3,12 +3,16 @@ instance_name = ${HOSTNAME}
 
 [security]
 admin_user = admin
+admin_password = {{ user_password }}
 
 [auth.google]
 client_secret = 0ldS3cretKey
 
 [plugin.grafana-image-renderer]
 rendering_ignore_https_errors = true
+
+[paths]
+provisioning = /etc/grafana/provisioning
 
 [feature_toggles]
 enable = newNavigation

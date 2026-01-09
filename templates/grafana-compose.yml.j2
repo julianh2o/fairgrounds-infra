@@ -6,5 +6,7 @@ services:
     restart: always
     volumes:
       - ./grafana.ini:/etc/grafana/grafana.ini
-      - './data:/var/lib/grafana'
+      - ./data:/var/lib/grafana
+      - ./provisioning:/etc/grafana/provisioning
+      - ./dashboards:/etc/grafana/dashboards
 

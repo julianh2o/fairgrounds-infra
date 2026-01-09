@@ -16,4 +16,22 @@ scrape_configs:
     scrape_interval: 5s
 
     static_configs:
-      - targets: ['localhost:9090','192.168.0.203:9100','192.168.0.66:9182']
+      - targets: ['localhost:9090']
+
+  # Node exporters for all hosts
+  - job_name: 'node_exporter'
+
+    static_configs:
+{% for host in groups['all'] %}
+{% if hostvars[host].get('exporter_port') %}
+      - targets: ['{{ hostvars[host].ansible_host }}:{{ hostvars[host].exporter_port }}']
+        labels:
+          instance: '{{ host }}'
+          host: '{{ host }}'
+{% for group in groups %}
+{% if host in groups[group] and group != 'all' %}
+          {{ group }}: 'true'
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

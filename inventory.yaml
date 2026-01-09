@@ -7,18 +7,24 @@ vms:
   hosts:
     ceto:
       ansible_host: 192.168.0.10
+      exporter_port: 9100
     metis:
       ansible_host: 192.168.0.11
+      exporter_port: 9100
     europa:
       ansible_host: 192.168.0.12
+      exporter_port: 9100
 linuxhosts:
   hosts:
     melinoe:
       ansible_host: 192.168.0.203
+      exporter_port: 9100
     truenas:
       ansible_host: 192.168.0.100
+      exporter_port: 9100
 otherhosts:
   hosts:
     kvasir:
       ansible_host: 192.168.0.66
+      exporter_port: 9182
       

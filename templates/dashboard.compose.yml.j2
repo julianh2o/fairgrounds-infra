@@ -1,0 +1,15 @@
+services:
+  dashboard:
+    image: httpd:2.4-alpine
+    container_name: fairgrounds-dashboard
+    restart: unless-stopped
+    ports:
+      - "9999:80"
+    volumes:
+      - ./index.html:/usr/local/apache2/htdocs/index.html:ro
+    networks:
+      - dashboard
+
+networks:
+  dashboard:
+    name: dashboard

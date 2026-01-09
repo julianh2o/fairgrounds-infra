@@ -5,10 +5,15 @@ Infrastructure for the fairgrounds
 * immich
 ## Metis
 * myflix
+* prometheus
+* grafana
 ## Europa
 * fair-map
 * uneventful
 * discord-ollama
 
 # TODO
-* look into creating a yml powered dashboard that tracks faigrounds services
+* enhance yaml dashboard with icons and a better separation between webapps and other things
+* finish moving services to metis and europa
+* move rreading glasses into myflix
+* move tautulli into myflix

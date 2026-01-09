@@ -1,5 +1,5 @@
 - name: Deploy Prometheus
-  hosts: melinoe
+  hosts: metis
   become: yes
 
   roles:

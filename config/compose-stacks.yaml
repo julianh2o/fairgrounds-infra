@@ -62,7 +62,7 @@ stacks:
     endpoints: []
 
   # ============================================================================
-  # AI and Bots
+  # AI Service
   # ============================================================================
   - name: discord-ollama
     description: Discord bot with Ollama LLM integration

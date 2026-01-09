@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fairgrounds Infrastructure Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
+            font-size: 1.5rem;
+        }
+
+        .service-list {
+            list-style: none;
+        }
+
+        .service-item {
+            margin-bottom: 0.75rem;
+        }
+
+        .service-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #2d3748;
+            transition: all 0.2s;
+            border-left: 4px solid #667eea;
+        }
+
+        .service-link:hover {
+            background: #edf2f7;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+
+        .service-name {
+            font-weight: 600;
+            flex-grow: 1;
+        }
+
+        .service-meta {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-left: 1rem;
+        }
+
+        .host-item {
+            padding: 0.75rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid #48bb78;
+        }
+
+        .host-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+        }
+
+        .host-details {
+            font-size: 0.875rem;
+            color: #718096;
+        }
+
+        .stack-item {
+            padding: 1rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #ed8936;
+        }
+
+        .stack-name {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+        }
+
+        .stack-description {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-bottom: 0.5rem;
+        }
+
+        .stack-endpoints {
+            list-style: none;
+            margin-top: 0.5rem;
+        }
+
+        .stack-endpoint {
+            display: inline-block;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .endpoint-link {
+            padding: 0.25rem 0.75rem;
+            background: white;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #667eea;
+            font-size: 0.875rem;
+            border: 1px solid #667eea;
+            transition: all 0.2s;
+        }
+
+        .endpoint-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #667eea;
+            color: white;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Fairgrounds Infrastructure Dashboard</h1>
+
+        <div class="grid">
+            <!-- Services Section -->
+            <div class="card">
+                <h2>Services</h2>
+                <ul class="service-list">
+{% for service in services %}
+                    <li class="service-item">
+                        <a href="{{ service.protocol | default('http') }}://{{ service.name }}" class="service-link" target="_blank">
+                            <span class="service-name">{{ service.name }}</span>
+                            <span class="service-meta">{{ service.machine }}:{{ service.port }}</span>
+                        </a>
+                    </li>
+{% endfor %}
+                </ul>
+            </div>
+
+            <!-- Docker Compose Stacks Section -->
+            <div class="card">
+                <h2>Docker Compose Stacks</h2>
+{% for stack in stacks %}
+                <div class="stack-item">
+                    <div class="stack-name">{{ stack.name }}</div>
+                    <div class="stack-description">{{ stack.description }}</div>
+                    <div class="host-details">
+                        <span class="badge">{{ stack.machine }}</span>
+                        <span class="badge">{{ stack.path }}</span>
+                    </div>
+{% if stack.endpoints %}
+                    <ul class="stack-endpoints">
+{% for endpoint in stack.endpoints %}
+{% set port, domain = endpoint.split(':') %}
+                        <li class="stack-endpoint">
+                            <a href="http://{{ domain }}" class="endpoint-link" target="_blank">{{ domain }}</a>
+                        </li>
+{% endfor %}
+                    </ul>
+{% endif %}
+                </div>
+{% endfor %}
+            </div>
+
+            <!-- Infrastructure Hosts Section -->
+            <div class="card">
+                <h2>Infrastructure Hosts</h2>
+                <ul class="service-list">
+{% for host in groups['all'] %}
+                    <li class="host-item">
+                        <div class="host-name">{{ host }}</div>
+                        <div class="host-details">
+                            IP: {{ hostvars[host].ansible_host }}
+{% if hostvars[host].get('exporter_port') %}
+                            | Exporter: {{ hostvars[host].exporter_port }}
+{% endif %}
+                        </div>
+{% for group in groups %}
+{% if host in groups[group] and group != 'all' %}
+                        <span class="badge">{{ group }}</span>
+{% endif %}
+{% endfor %}
+                    </li>
+{% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,6 +1,36 @@
 - name: Deploy Grafana
-  hosts: melinoe
+  hosts: metis
   become: yes
+
+  vars_files:
+    - ../../secrets/vault_vars.yml
+
+  vars:
+    recreate: false
+
+  pre_tasks:
+    - name: Delete Grafana data directory (if recreate is enabled)
+      ansible.builtin.file:
+        path: /opt/grafana/data
+        state: absent
+      when: recreate | bool
+
+  tasks:
+    - name: Copy Grafana provisioning directory
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../../grafana/provisioning/"
+        dest: "/opt/grafana/provisioning/"
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Copy Grafana dashboards directory
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../../grafana/dashboards/"
+        dest: "/opt/grafana/dashboards/"
+        owner: root
+        group: root
+        mode: "0755"
 
   roles:
     - role: docker_service

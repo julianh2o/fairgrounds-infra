@@ -1,0 +1,30 @@
+---
+- name: Deploy Infrastructure Dashboard
+  hosts: metis
+  become: yes
+
+  pre_tasks:
+    - name: Load services configuration
+      include_vars:
+        file: "{{ playbook_dir }}/../../config/services.yaml"
+        name: services_data
+
+    - name: Load compose stacks configuration
+      include_vars:
+        file: "{{ playbook_dir }}/../../config/compose-stacks.yaml"
+        name: stacks_data
+
+    - name: Set combined variables for template
+      set_fact:
+        services: "{{ services_data.services }}"
+        stacks: "{{ stacks_data.stacks }}"
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: dashboard
+        compose_template: dashboard.compose.yml.j2
+        config_files:
+          - src: dashboard.html.j2
+            dest: index.html
+        docker_compose_state: present
