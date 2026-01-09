@@ -64,19 +64,46 @@
         .service-link {
             display: flex;
             align-items: center;
-            padding: 0.75rem;
-            background: #f7fafc;
-            border-radius: 8px;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
             text-decoration: none;
-            color: #2d3748;
-            transition: all 0.2s;
-            border-left: 4px solid #667eea;
+            color: white;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
         }
 
         .service-link:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .api-link {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background: #f7fafc;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #4a5568;
+            transition: all 0.2s;
+            border-left: 3px solid #718096;
+            font-size: 0.875rem;
+        }
+
+        .api-link:hover {
             background: #edf2f7;
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+            transform: translateX(3px);
+        }
+
+        .infra-item {
+            padding: 0.5rem 0.75rem;
+            background: #fafafa;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            border-left: 2px solid #cbd5e0;
+            font-size: 0.875rem;
+            color: #718096;
         }
 
         .service-name {
@@ -84,10 +111,22 @@
             flex-grow: 1;
         }
 
+        .service-link .service-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+
         .service-meta {
             font-size: 0.875rem;
-            color: #718096;
             margin-left: 1rem;
+        }
+
+        .service-link .service-meta {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .api-link .service-meta {
+            color: #a0aec0;
         }
 
         .host-item {
@@ -172,17 +211,51 @@
         <h1>Fairgrounds Infrastructure Dashboard</h1>
 
         <div class="grid">
-            <!-- Services Section -->
+            <!-- Web Applications Section -->
             <div class="card">
-                <h2>Services</h2>
+                <h2>Web Applications</h2>
                 <ul class="service-list">
 {% for service in services %}
+{% if service.type == 'webapp' %}
                     <li class="service-item">
-                        <a href="{{ service.protocol | default('http') }}://{{ service.name }}" class="service-link" target="_blank">
+                        <a href="{{ service.protocol | default('https') }}://{{ service.name }}" class="service-link" target="_blank">
                             <span class="service-name">{{ service.name }}</span>
-                            <span class="service-meta">{{ service.machine }}:{{ service.port }}</span>
+                            <span class="service-meta">:{{ service.port }}</span>
                         </a>
                     </li>
+{% endif %}
+{% endfor %}
+                </ul>
+            </div>
+
+            <!-- API Services Section -->
+            <div class="card">
+                <h2>API Services</h2>
+                <ul class="service-list">
+{% for service in services %}
+{% if service.type == 'api' %}
+                    <li class="service-item">
+                        <a href="{{ service.protocol | default('https') }}://{{ service.name }}" class="api-link" target="_blank">
+                            <span class="service-name">{{ service.name }}</span>
+                            <span class="service-meta">:{{ service.port }}</span>
+                        </a>
+                    </li>
+{% endif %}
+{% endfor %}
+                </ul>
+            </div>
+
+            <!-- Infrastructure Services Section -->
+            <div class="card">
+                <h2>Infrastructure Services</h2>
+                <ul class="service-list">
+{% for stack in stacks %}
+{% if not stack.endpoints %}
+                    <li class="infra-item">
+                        <div class="service-name">{{ stack.name }}</div>
+                        <div style="font-size: 0.75rem; margin-top: 0.25rem;">{{ stack.description }}</div>
+                    </li>
+{% endif %}
 {% endfor %}
                 </ul>
             </div>

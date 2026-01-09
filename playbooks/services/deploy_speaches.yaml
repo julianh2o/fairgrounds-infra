@@ -1,6 +1,6 @@
 ---
 - name: Deploy Speaches AI
-  hosts: melinoe
+  hosts: kvasir
   become: yes
 
   vars_files:

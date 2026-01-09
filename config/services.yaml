@@ -48,7 +48,7 @@ services:
     machine: 192.168.0.105
     protocol: https
     port: 8006
-    tls_skip_verify: true 
+    tls_skip_verify: true
 
   # Fair-map - Map of the fairgrounds
   - name: map.julianverse.net
@@ -61,18 +61,6 @@ services:
     type: api
     machine: 192.168.0.66
     port: 10300
-
-  # Audiobookshelf - Audiobook and podcast server
-  - name: audiobookshelf.julianverse.net
-    type: webapp
-    machine: 192.168.0.203
-    port: 13378
-
-  # Deluge - BitTorrent client
-  - name: deluge.julianverse.net
-    type: webapp
-    machine: 192.168.0.203
-    port: 8112
 
   # Grafana - Metrics visualization
   - name: grafana.julianverse.net
@@ -92,6 +80,28 @@ services:
     machine: 192.168.0.110
     port: 8123
 
+  # Ollama - Large language model API
+  - name: ollama.julianverse.net
+    type: api
+    machine: 192.168.0.66
+    port: 11434
+
+  # ----------------------------------------------------------------------------
+  # Myflix Stack (deployed via deploy_myflix.yaml)
+  # ----------------------------------------------------------------------------
+
+  # Audiobookshelf - Audiobook and podcast server
+  - name: audiobookshelf.julianverse.net
+    type: webapp
+    machine: 192.168.0.203
+    port: 13378
+
+  # Deluge - BitTorrent client
+  - name: deluge.julianverse.net
+    type: webapp
+    machine: 192.168.0.203
+    port: 8112
+
   # Jackett - Torrent indexer proxy
   - name: jackett.julianverse.net
     type: webapp
@@ -103,12 +113,6 @@ services:
     type: webapp
     machine: 192.168.0.203
     port: 5076
-
-  # Ollama - Large language model API
-  - name: ollama.julianverse.net
-    type: api
-    machine: 192.168.0.66
-    port: 11434
 
   # Ombi - Media request platform
   - name: ombi.julianverse.net
@@ -134,6 +138,12 @@ services:
     machine: 192.168.0.203
     port: 8787
 
+  # rreading-glasses - Hardcover reading tracker
+  - name: rreading-glasses.julianverse.net
+    type: webapp
+    machine: 192.168.0.203
+    port: 8788
+
   # SABnzbd - Usenet downloader
   - name: sabnzbd.julianverse.net
     type: webapp
@@ -145,6 +155,12 @@ services:
     type: webapp
     machine: 192.168.0.203
     port: 8989
+
+  # Tautulli - Plex monitoring and statistics
+  - name: tautulli.julianverse.net
+    type: webapp
+    machine: 192.168.0.203
+    port: 8181
 
   # TrueNAS - Network attached storage management interface
   - name: truenas.julianverse.net

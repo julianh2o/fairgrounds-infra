@@ -22,6 +22,8 @@ stacks:
       - 13378:audiobookshelf.julianverse.net
       - 13378:books.julianhartline.com
       - 8787:readarr.julianverse.net
+      - 8788:rreading-glasses.julianverse.net
+      - 8181:tautulli.julianverse.net
 
   # ============================================================================
   # Photo Management
@@ -34,16 +36,7 @@ stacks:
       - 2283:photos.julianhartline.com
 
   # ============================================================================
-  # Reading and Books
-  # ============================================================================
-  - name: rreading-glasses
-    description: Reading progress tracker using Hardcover API
-    path: /opt/rreading-glasses
-    machine: 192.168.0.203
-    endpoints: []
-
-  # ============================================================================
-  # Custom Applications
+  # Uneventful
   # ============================================================================
   - name: uneventful
     description: Custom event scheduling application
@@ -51,15 +44,6 @@ stacks:
     machine: 192.168.0.203
     endpoints:
       - 2050:uneventful.bawdyshop.space
-
-  # ============================================================================
-  # Monitoring and Analytics
-  # ============================================================================
-  - name: tautulli
-    description: Plex media server monitoring and statistics
-    path: /opt/tautulli
-    machine: 192.168.0.203
-    endpoints: []
 
   # ============================================================================
   # AI Service
@@ -77,4 +61,66 @@ stacks:
     description: Automated backup sync to Backblaze B2 storage
     path: /opt/rclone-to-backblaze
     machine: 192.168.0.203
+    endpoints: []
+
+  # ============================================================================
+  # Reverse Proxy
+  # ============================================================================
+  - name: caddy
+    description: Reverse proxy with automatic HTTPS (Let's Encrypt)
+    path: /opt/caddy
+    machine: 192.168.0.203
+    endpoints: []
+
+  # ============================================================================
+  # Monitoring and Observability
+  # ============================================================================
+  - name: grafana
+    description: Metrics visualization and dashboards
+    path: /opt/grafana
+    machine: 192.168.0.11
+    endpoints:
+      - 3000:grafana.julianverse.net
+
+  - name: prometheus
+    description: Metrics collection and monitoring
+    path: /opt/prometheus
+    machine: 192.168.0.11
+    endpoints:
+      - 9090:prometheus.julianverse.net
+
+  - name: dashboard
+    description: Fairgrounds infrastructure overview dashboard
+    path: /opt/dashboard
+    machine: 192.168.0.11
+    endpoints:
+      - 9999:dashboard.julianverse.net
+
+  # ============================================================================
+  # Mapping and Visualization
+  # ============================================================================
+  - name: fair-map
+    description: Interactive map of the fairgrounds
+    path: /opt/fair-map
+    machine: 192.168.0.203
+    endpoints:
+      - 3050:map.julianverse.net
+
+  # ============================================================================
+  # AI and Speech Services
+  # ============================================================================
+  - name: speaches
+    description: Speech to text and text to speech AI service
+    path: /opt/speaches
+    machine: 192.168.0.66
+    endpoints:
+      - 10300:whisper.julianverse.net
+
+  # ============================================================================
+  # Computer Vision
+  # ============================================================================
+  - name: myalpr
+    description: License plate recognition service
+    path: /opt/myalpr
+    machine: 192.168.0.10
     endpoints: []
