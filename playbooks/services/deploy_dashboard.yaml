@@ -24,7 +24,19 @@
       vars:
         service_name: dashboard
         compose_template: dashboard.compose.yml.j2
+        service_directories:
+          - www
+          - www/favicons
         config_files:
           - src: dashboard.html.j2
-            dest: index.html
+            dest: www/index.html
         docker_compose_state: present
+
+  tasks:
+    - name: Copy favicon files
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../../static/favicons/"
+        dest: /opt/dashboard/www/favicons/
+        owner: root
+        group: root
+        mode: '0644'

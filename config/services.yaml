@@ -140,7 +140,7 @@ services:
 
   # rreading-glasses - Hardcover reading tracker
   - name: rreading-glasses.julianverse.net
-    type: webapp
+    type: api
     machine: 192.168.0.203
     port: 8788
 

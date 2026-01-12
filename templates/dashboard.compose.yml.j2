@@ -6,7 +6,7 @@ services:
     ports:
       - "9999:80"
     volumes:
-      - ./index.html:/usr/local/apache2/htdocs/index.html:ro
+      - ./www:/usr/local/apache2/htdocs:ro
     networks:
       - dashboard
 
