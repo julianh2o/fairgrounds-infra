@@ -167,3 +167,9 @@ services:
     type: webapp
     machine: 192.168.0.100
     port: 80
+
+  # Pi-hole - DNS server with ad blocking
+  - name: pihole.julianverse.net
+    type: webapp
+    machine: 192.168.0.12
+    port: 8080

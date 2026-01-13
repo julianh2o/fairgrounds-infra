@@ -18,13 +18,30 @@ linuxhosts:
   hosts:
     melinoe:
       ansible_host: 192.168.0.203
+      tailscale_address: 100.89.174.125
       exporter_port: 9100
     truenas:
       ansible_host: 192.168.0.100
+      tailscale_address: 100.92.92.16
+      exporter_port: 9100
+    njord:
+      ansible_host: 192.168.0.105
+      tailscale_address: 100.95.23.97
+      exporter_port: 9100
+truenasvms:
+  hosts:
+    melinoe:
+      ansible_host: 192.168.0.203
+      tailscale_address: 100.89.174.125
+      exporter_port: 9100
+    homeassistant:
+      ansible_host: 192.168.0.110
+      tailscale_address: 100.116.72.113
       exporter_port: 9100
 otherhosts:
   hosts:
     kvasir:
       ansible_host: 192.168.0.66
+      tailscale_address: 100.104.77.50
       exporter_port: 9182
       

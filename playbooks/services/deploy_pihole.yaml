@@ -1,0 +1,38 @@
+---
+- name: Deploy Pi-hole
+  hosts: europa
+  become: true
+  vars_files:
+    - ../../secrets/vault_vars.yml
+  vars:
+    pihole_password: "{{ user_password }}"
+
+  pre_tasks:
+    - name: Disable systemd-resolved stub listener
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: '^#?DNSStubListener='
+        line: 'DNSStubListener=no'
+      notify: Restart systemd-resolved
+
+    - name: Flush handlers to free port 53
+      ansible.builtin.meta: flush_handlers
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: pihole
+        compose_template: pihole.compose.yml.j2
+        service_directories:
+          - etc-pihole
+          - etc-dnsmasq.d
+        config_files:
+          - src: pihole-custom-dns.conf.j2
+            dest: etc-dnsmasq.d/05-fairgrounds.conf
+        docker_compose_state: present
+
+  handlers:
+    - name: Restart systemd-resolved
+      ansible.builtin.systemd:
+        name: systemd-resolved
+        state: restarted

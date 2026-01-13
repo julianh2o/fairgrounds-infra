@@ -1,0 +1,104 @@
+---
+# This playbook installs Tailscale VPN client on hosts
+# Run with: ansible-playbook playbooks/setup/tailscale.yaml
+- name: Install and configure Tailscale
+  hosts: vms
+  become: yes
+  vars_files:
+    - ../../secrets/vault_vars.yml
+
+  tasks:
+    - name: Generate Tailscale auth key via API
+      ansible.builtin.uri:
+        url: https://api.tailscale.com/api/v2/tailnet/-/keys
+        method: POST
+        headers:
+          Authorization: "Bearer {{ tailscale_api_key }}"
+          Content-Type: application/json
+        body_format: json
+        body:
+          capabilities:
+            devices:
+              create:
+                reusable: true
+                ephemeral: false
+                preauthorized: true
+          expirySeconds: 7776000
+        status_code: 200
+      register: tailscale_auth_key_response
+      delegate_to: localhost
+      become: no
+      run_once: true
+
+    - name: Set auth key fact
+      ansible.builtin.set_fact:
+        tailscale_auth_key: "{{ tailscale_auth_key_response.json.key }}"
+      run_once: true
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install prerequisites
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+        state: present
+
+    - name: Create directory for Tailscale GPG key
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Add Tailscale GPG key
+      ansible.builtin.get_url:
+        url: https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg
+        dest: /etc/apt/keyrings/tailscale.gpg
+        mode: '0644'
+
+    - name: Add Tailscale repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/tailscale.gpg] https://pkgs.tailscale.com/stable/ubuntu jammy main"
+        state: present
+        filename: tailscale
+
+    - name: Install Tailscale
+      ansible.builtin.apt:
+        name: tailscale
+        state: present
+        update_cache: yes
+
+    - name: Enable and start Tailscale service
+      ansible.builtin.systemd:
+        name: tailscaled
+        enabled: yes
+        state: started
+
+    - name: Check if already authenticated to Tailscale
+      ansible.builtin.command: tailscale status
+      register: tailscale_status
+      changed_when: false
+      failed_when: false
+
+    - name: Authenticate to Tailscale
+      ansible.builtin.command: "tailscale up --authkey={{ tailscale_auth_key }} --accept-routes --hostname={{ inventory_hostname }}"
+      when: tailscale_status.rc != 0
+      register: tailscale_up
+      changed_when: "'Success' in tailscale_up.stdout or tailscale_up.rc == 0"
+
+    - name: Display Tailscale status
+      ansible.builtin.command: tailscale status --json
+      register: tailscale_status_json
+      changed_when: false
+
+    - name: Parse Tailscale IP from status
+      ansible.builtin.set_fact:
+        tailscale_ip: "{{ (tailscale_status_json.stdout | from_json).Self.TailscaleIPs[0] }}"
+
+    - name: Show Tailscale IP address
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} connected to Tailscale with IP: {{ tailscale_ip }}"

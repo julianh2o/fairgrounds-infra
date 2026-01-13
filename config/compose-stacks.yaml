@@ -31,7 +31,7 @@ stacks:
   - name: immich
     description: Photo and video management platform with ML features
     path: /opt/immich
-    machine: 192.168.0.203
+    machine: 192.168.0.10
     endpoints:
       - 2283:photos.julianhartline.com
 
@@ -124,3 +124,13 @@ stacks:
     path: /opt/myalpr
     machine: 192.168.0.10
     endpoints: []
+
+  # ============================================================================
+  # Network Services
+  # ============================================================================
+  - name: pihole
+    description: DNS server with ad blocking
+    path: /opt/pihole
+    machine: 192.168.0.12
+    endpoints:
+      - 8080:pihole.julianverse.net
