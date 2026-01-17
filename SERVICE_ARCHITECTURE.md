@@ -13,21 +13,20 @@ General purpose VM.
 - **grafana** - Metrics dashboards
 - **prometheus** - Metrics collection
 - **dashboard** - Infrastructure overview
+- **myflix** - Media automation
+- **rclone-to-backblaze** - Backup sync
 
 ### 192.168.0.12 (Europa on Njord)
 Lightweight and high-availability services.
 - **pihole** - DNS server with ad blocking
+- **caddy** - Reverse proxy
 
 ### 192.168.0.100 (Truenas)
 - TrueNAS web UI (bare metal NAS)
 
 ### 192.168.0.203 (Melinoe on Truenas)
-- **myflix** - Media automation
 - **uneventful** - Bawdy Shop Events
 - **fair-map** - Fairgrounds map
-- **caddy** - Reverse proxy
-- **discord-ollama** - Discord LLM bot
-- **rclone-to-backblaze** - Backup sync
 
 ### 192.168.0.110 (on Truenas)
 - Home Assistant

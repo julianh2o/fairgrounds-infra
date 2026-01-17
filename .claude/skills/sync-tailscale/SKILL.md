@@ -44,7 +44,7 @@ groupname:
 
 ## API Key
 
-The API key is stored encrypted in `secrets/vault_vars.yml` as `tailscale_api_key`. Decrypt with:
+The API key is stored encrypted in `secrets.yml` as `tailscale_api_key`. Decrypt with:
 ```bash
-ansible-vault view secrets/vault_vars.yml | grep -A 5 tailscale_api_key
+ansible-vault view secrets.yml | grep -A 5 tailscale_api_key
 ```

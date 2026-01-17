@@ -1,0 +1,57 @@
+---
+# Migrate a service directory from one host to another
+#
+# Usage:
+#   ansible-playbook playbooks/maintenance/migrate_service.yaml \
+#     -e source_host=melinoe \
+#     -e dest_host=europa \
+#     -e service_path=/opt/caddy
+#
+# Optional:
+#   -e dest_path=/opt/caddy   # Destination path (defaults to service_path)
+#   -e remove_source=true     # Remove source directory after migration (default: false)
+
+- name: Set migration timestamp
+  hosts: localhost
+  gather_facts: yes
+  tasks:
+    - name: Validate required parameters
+      ansible.builtin.assert:
+        that:
+          - source_host is defined
+          - dest_host is defined
+          - service_path is defined
+        fail_msg: "Required variables: source_host, dest_host, service_path"
+
+    - name: Set shared timestamp for backup/restore
+      ansible.builtin.set_fact:
+        migration_timestamp: "{{ ansible_date_time.epoch }}"
+
+- name: Backup service on source host
+  import_playbook: backup_service.yaml
+  vars:
+    target_host: "{{ source_host }}"
+    service_path: "{{ service_path }}"
+    backup_timestamp: "{{ hostvars['localhost']['migration_timestamp'] }}"
+
+- name: Restore service on destination host
+  import_playbook: restore_service.yaml
+  vars:
+    target_host: "{{ dest_host }}"
+    archive_path: "/mnt/Store/Backups/docker/{{ source_host }}-{{ service_path | basename }}-{{ hostvars['localhost']['migration_timestamp'] }}.tar.gz"
+    dest_path: "{{ dest_path | default(service_path) }}"
+
+- name: Cleanup source (optional)
+  hosts: "{{ source_host }}"
+  become: yes
+  tasks:
+    - name: Remove source directory
+      ansible.builtin.file:
+        path: "{{ service_path }}"
+        state: absent
+      when: remove_source | default(false) | bool
+
+    - name: Display removal status
+      ansible.builtin.debug:
+        msg: "Source directory {{ service_path }} removed"
+      when: remove_source | default(false) | bool

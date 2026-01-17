@@ -140,7 +140,7 @@ This creates:
   hosts: melinoe
   become: yes
   vars_files:
-    - ../secrets/vault_vars.yml
+    - ../secrets.yml
 
   roles:
     - role: docker_service

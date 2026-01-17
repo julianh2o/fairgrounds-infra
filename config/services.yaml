@@ -7,7 +7,7 @@ services:
   # Uneventful - Custom application
   - name: uneventful.bawdyshop.space
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 2050
 
   # ============================================================================
@@ -17,7 +17,7 @@ services:
   # Audiobookshelf - Audiobook and podcast server
   - name: books.julianhartline.com
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 13378
 
   # Immich - Photo management
@@ -29,7 +29,7 @@ services:
   # Ombi - Request media
   - name: plex.julianhartline.com
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 3579
 
   # ============================================================================
@@ -53,7 +53,7 @@ services:
   # Fair-map - Map of the fairgrounds
   - name: map.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 3050
 
   # Whisper - Speech to Text and Text to Speech
@@ -93,73 +93,73 @@ services:
   # Audiobookshelf - Audiobook and podcast server
   - name: audiobookshelf.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 13378
 
   # Deluge - BitTorrent client
   - name: deluge.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 8112
 
   # Jackett - Torrent indexer proxy
   - name: jackett.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 9117
 
   # NZBHydra2 - NZB meta search
   - name: nzbhydra.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 5076
 
   # Ombi - Media request platform
   - name: ombi.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 3579
 
   # qBittorrent - BitTorrent client
   - name: qbittorrent.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 3211
 
   # Radarr - Movie collection manager
   - name: radarr.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 7878
 
   # Readarr - Book collection manager
   - name: readarr.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 8787
 
   # rreading-glasses - Hardcover reading tracker
   - name: rreading-glasses.julianverse.net
     type: api
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 8788
 
   # SABnzbd - Usenet downloader
   - name: sabnzbd.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 20630
 
   # Sonarr - TV series collection manager
   - name: sonarr.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 8989
 
   # Tautulli - Plex monitoring and statistics
   - name: tautulli.julianverse.net
     type: webapp
-    machine: 192.168.0.203
+    machine: 192.168.0.11
     port: 8181
 
   # TrueNAS - Network attached storage management interface

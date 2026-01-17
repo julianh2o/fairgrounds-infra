@@ -1,13 +1,10 @@
 services:
   caddy:
-    # Using custom build with Cloudflare DNS module for DNS-01 ACME challenges
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/caddybuilds/caddy-cloudflare:latest
     ports:
       - 80:80
       - 443:443
-      - 443:443/udp  # HTTP/3 support
+      - 443:443/udp
     restart: always
     environment:
       - CLOUDFLARE_API_TOKEN={{ cloudflare_api_token }}

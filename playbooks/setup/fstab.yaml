@@ -3,7 +3,7 @@
   hosts: vms
   become: yes
   vars_files:
-    - ../../secrets/vault_vars.yml
+    - ../../secrets.yml
 
   vars:
     smb_server: "192.168.0.100"

@@ -1,0 +1,62 @@
+---
+# Backup a service directory to the backup folder
+#
+# Usage:
+#   ansible-playbook playbooks/maintenance/backup_service.yaml \
+#     -e target_host=melinoe \
+#     -e service_path=/opt/caddy
+#
+# Output: /mnt/Store/Backups/docker/<hostname>-<service>-<unix_timestamp>.tar.gz
+
+- name: Backup service directory
+  hosts: "{{ target_host }}"
+  become: yes
+
+  vars:
+    backup_base_dir: /mnt/Store/Backups/docker
+    unix_timestamp: "{{ backup_timestamp | default(ansible_date_time.epoch) }}"
+    service_name: "{{ service_path | basename }}"
+    backup_file: "{{ backup_base_dir }}/{{ inventory_hostname }}-{{ service_name }}-{{ unix_timestamp }}.tar.gz"
+
+  tasks:
+    - name: Validate required parameters
+      ansible.builtin.assert:
+        that:
+          - target_host is defined
+          - service_path is defined
+        fail_msg: "Required parameters: target_host, service_path"
+
+    - name: Check service directory exists
+      ansible.builtin.stat:
+        path: "{{ service_path }}"
+      register: service_dir
+
+    - name: Fail if service directory does not exist
+      ansible.builtin.fail:
+        msg: "Service directory {{ service_path }} does not exist on {{ inventory_hostname }}"
+      when: not service_dir.stat.exists
+
+    - name: Ensure backup directory exists
+      ansible.builtin.file:
+        path: "{{ backup_base_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Create archive backup
+      ansible.builtin.archive:
+        path: "{{ service_path }}"
+        dest: "{{ backup_file }}"
+        format: gz
+
+    - name: Set backup file permissions
+      ansible.builtin.file:
+        path: "{{ backup_file }}"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Display backup location
+      ansible.builtin.debug:
+        msg: "Backup created: {{ backup_file }}"

@@ -6,7 +6,7 @@
     myflix_mam_id: "LH9t4aP11PFdgAvJZte2VCB9hILu2o8ZkC0Ks97a1XV22t-GaDzMUIhAxJQXbbKYxAyYzK8ZY_6Pbn2qZKT9z_SLUci8ZxUq2ELlEX38gWwNiWozu2kiBSZvFl2rrTkWrrl6svqq1mlcnoOkYXa0CE4KX04W85IjEnOjyIAUy96y_HArZOrHKkhlt7bZvfUS2CDRbt8l73jiXvPXF7B1hwWvU3IQ0n_u89LzcoPIxpX-aG9DfrMTIocHogMBoNHYtWJe1nut6thgTZIu-x8a8dR6DzGZy9yKvVEo"
 
   vars_files:
-    - ../../secrets/vault_vars.yml
+    - ../../secrets.yml
 
   tasks:
     - name: Docker Compose down seedboxapi

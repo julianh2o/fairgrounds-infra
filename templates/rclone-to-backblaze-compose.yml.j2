@@ -11,7 +11,7 @@ services:
     image: olivierdalang/rclone-cron:latest
     environment:
       - CRON_SCHEDULE=0 * * * *
-      - COMMAND=rclone sync -v --fast-list --transfers=32 /data Backblaze:julianh2o-photos/
+      - COMMAND=rclone sync -v --fast-list /data Backblaze:julianh2o-photos/
     volumes:
       - /mnt/Photos:/data
       - ./rclone.conf:/root/.config/rclone/rclone.conf
@@ -19,7 +19,7 @@ services:
     image: olivierdalang/rclone-cron:latest
     environment:
       - CRON_SCHEDULE=0 * * * *
-      - COMMAND=rclone sync -v --fast-list --transfers=32 /data Backblaze:julianh2o-store/
+      - COMMAND=rclone sync -v --fast-list /data Backblaze:julianh2o-store/
     volumes:
       - /mnt/Store:/data
       - ./rclone.conf:/root/.config/rclone/rclone.conf

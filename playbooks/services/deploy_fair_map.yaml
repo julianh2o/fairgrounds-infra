@@ -1,6 +1,6 @@
 ---
 - name: Deploy Fair-map
-  hosts: melinoe
+  hosts: metis
   become: yes
 
   roles:

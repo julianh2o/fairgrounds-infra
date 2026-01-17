@@ -1,13 +1,10 @@
 ---
 - name: Deploy Myflix
-  hosts: melinoe
+  hosts: metis
   become: yes
 
-  vars:
-    myflix_mam_id: "X_be-H8TU1mq_L5DGnnLCeXVSEGIOaCH2xX6bKS-_uM_RU46BEhw4Qxec8ukpadBy_E3fuEIvczo6ePz0t2aI2M2VaXYDr_FUIf_O7QECb5decQhWrxyNwjd7FVU_ZgbTk-TxzIKpfXK5UjEWK26ofy0wjFqKEHmerl9Da1zIfN-z-rYEzFyueUOekvLpS3jD7y7AyYYksTOvv9T2C7A2lUXV-G7CU4XnwdNVT0bglewLKQGI1UHBwylxfJGl69SjId8lPPT7Gr47rQLCJ8zqbhMk1tccF9l94rY"
-
   vars_files:
-    - ../../secrets/vault_vars.yml
+    - ../../secrets.yml
 
   roles:
     - role: docker_service

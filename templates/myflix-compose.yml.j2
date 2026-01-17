@@ -25,8 +25,9 @@ services:
       - 13378:13378 #audiobookshelf
       - 8787:8787 #readarr
       - 9696:9696 #prowlarr
+      - 5010:5010 #mousehole
+      - 8181:8181 #tautulli
     sysctls:
-      #- net.ipv4.conf.all.src_valid_mark=1
       - net.ipv6.conf.all.disable_ipv6=1  # Recomended if using ipv4 only
     restart: "unless-stopped"
   dashboard:
@@ -40,20 +41,6 @@ services:
     environment:
       - PORT=8082
     restart: always
-      #nzbget:
-      #image: linuxserver/nzbget
-      #container_name: nzbget
-      #network_mode: service:vpn
-      #depends_on:
-      #- vpn
-      #environment:
-      #- PUID=0
-      #- PGID=0
-      #- TZ=America/Los_Angeles
-      #volumes:
-      #- ./nzbget_config:/config
-      #- /mnt/Media/downloads:/downloads
-      #restart: always
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
@@ -213,18 +200,15 @@ services:
       - /mnt/Media/downloads:/downloads
       - /mnt/Media/library/books:/books
     restart: unless-stopped
-  seedboxapi:
-    image: myanonamouse/seedboxapi
-    container_name: seedboxapi
+  mousehole:
+    image: tmmrtn/mousehole:latest
+    container_name: mousehole
     network_mode: service:vpn
     depends_on:
       - vpn
     volumes:
-      - ./seedboxapi:/config
-    environment:
-      - DEBUG=1
-      - mam_id={{ myflix_mam_id }}
-      - interval=1
+      - ./mousehole:/srv/mousehole
+    restart: unless-stopped
   rreading-glasses:
     depends_on:
       rreading-glasses-db:
@@ -262,6 +246,9 @@ services:
   tautulli:
     image: ghcr.io/tautulli/tautulli
     container_name: tautulli
+    network_mode: service:vpn
+    depends_on:
+      - vpn
     restart: unless-stopped
     volumes:
       - ./tautulli_config:/config
@@ -269,10 +256,3 @@ services:
       - PUID=0
       - PGID=0
       - TZ=America/Los_Angeles
-    ports:
-      - 8181:8181
-
-
-secrets:
-  secret_key:
-    file: ./storyteller_secret.txt

@@ -1,13 +1,13 @@
 ---
 - name: Deploy Uneventful
-  hosts: melinoe
+  hosts: metis
   become: yes
 
   vars:
     uneventful_app_base_url: "https://uneventful.bawdyshop.space"
 
   vars_files:
-    - ../../secrets/vault_vars.yml
+    - ../../secrets.yml
 
   roles:
     - role: docker_service

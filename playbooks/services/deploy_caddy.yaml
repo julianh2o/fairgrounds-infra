@@ -1,10 +1,10 @@
 ---
 - name: Deploy Caddy
-  hosts: melinoe
+  hosts: europa
   become: yes
 
   vars_files:
-    - ../../secrets/vault_vars.yml
+    - ../../secrets.yml
 
   pre_tasks:
     - name: Load proxy configurations from file
@@ -26,4 +26,4 @@
           - data
           - config
           - logs
-        docker_compose_state: present
+        docker_compose_state: restarted

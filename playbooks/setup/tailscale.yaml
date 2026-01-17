@@ -5,7 +5,7 @@
   hosts: vms
   become: yes
   vars_files:
-    - ../../secrets/vault_vars.yml
+    - ../../secrets.yml
 
   tasks:
     - name: Generate Tailscale auth key via API
@@ -85,7 +85,7 @@
       failed_when: false
 
     - name: Authenticate to Tailscale
-      ansible.builtin.command: "tailscale up --authkey={{ tailscale_auth_key }} --accept-routes --hostname={{ inventory_hostname }}"
+      ansible.builtin.command: "tailscale up --authkey={{ tailscale_auth_key }} --hostname={{ inventory_hostname }}"
       when: tailscale_status.rc != 0
       register: tailscale_up
       changed_when: "'Success' in tailscale_up.stdout or tailscale_up.rc == 0"

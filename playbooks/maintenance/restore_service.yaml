@@ -1,0 +1,47 @@
+---
+# Restore a service directory from a backup archive
+#
+# Usage:
+#   ansible-playbook playbooks/maintenance/restore_service.yaml \
+#     -e target_host=europa \
+#     -e archive_path=/mnt/Store/Backups/docker/melinoe-caddy-1234567890.tar.gz \
+#     -e dest_path=/opt/caddy
+
+- name: Restore service from archive
+  hosts: "{{ target_host }}"
+  become: yes
+
+  tasks:
+    - name: Validate required parameters
+      ansible.builtin.assert:
+        that:
+          - target_host is defined
+          - archive_path is defined
+          - dest_path is defined
+        fail_msg: "Required parameters: target_host, archive_path, dest_path"
+
+    - name: Check archive exists
+      ansible.builtin.stat:
+        path: "{{ archive_path }}"
+      register: archive_stat
+
+    - name: Fail if archive does not exist
+      ansible.builtin.fail:
+        msg: "Archive {{ archive_path }} does not exist"
+      when: not archive_stat.stat.exists
+
+    - name: Ensure parent directory exists
+      ansible.builtin.file:
+        path: "{{ dest_path | dirname }}"
+        state: directory
+        mode: "0755"
+
+    - name: Extract archive to destination
+      ansible.builtin.unarchive:
+        src: "{{ archive_path }}"
+        dest: "{{ dest_path | dirname }}"
+        remote_src: yes
+
+    - name: Display restore location
+      ansible.builtin.debug:
+        msg: "Restored {{ archive_path }} to {{ dest_path }}"

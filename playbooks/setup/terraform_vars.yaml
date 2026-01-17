@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: false
   vars_files:
-    - ../../secrets/vault_vars.yml
+    - ../../secrets.yml
   tasks:
     - name: Create Terraform variables file
       copy:
