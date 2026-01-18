@@ -31,6 +31,12 @@ variable "cpu_cores" {
   default     = 2
 }
 
+variable "cpu_type" {
+  description = "CPU type (use 'host' for best passthrough performance)"
+  type        = string
+  default     = "x86-64-v2-AES"
+}
+
 variable "memory_mb" {
   description = "Memory in MB"
   type        = number
@@ -77,4 +83,35 @@ variable "ip_gateway" {
   description = "IP gateway (required if using static IP)"
   type        = string
   default     = "192.168.0.1"
+}
+
+variable "machine" {
+  description = "Machine type (e.g., q35)"
+  type        = string
+  default     = null
+}
+
+variable "bios" {
+  description = "BIOS type (seabios or ovmf)"
+  type        = string
+  default     = "seabios"
+}
+
+variable "vga_type" {
+  description = "VGA type (none for GPU passthrough)"
+  type        = string
+  default     = null
+}
+
+variable "hostpci_devices" {
+  description = "List of PCI devices to pass through"
+  type = list(object({
+    device  = string
+    id      = optional(string)
+    mapping = optional(string)
+    pcie    = optional(bool, true)
+    rombar  = optional(bool, true)
+    xvga    = optional(bool, false)
+  }))
+  default = []
 }

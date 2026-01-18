@@ -29,6 +29,8 @@ resource "proxmox_virtual_environment_vm" "vm" {
   description = var.description
   node_name   = var.node_name
   vm_id       = var.vm_id
+  machine     = var.machine
+  bios        = var.bios
 
   # Clone from template
   clone {
@@ -40,10 +42,41 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   cpu {
     cores = var.cpu_cores
+    type  = var.cpu_type
   }
 
   memory {
     dedicated = var.memory_mb
+  }
+
+  dynamic "vga" {
+    for_each = var.vga_type != null ? [1] : []
+    content {
+      type = var.vga_type
+    }
+  }
+
+  dynamic "efi_disk" {
+    for_each = var.bios == "ovmf" ? [1] : []
+    content {
+      datastore_id      = var.datastore_id
+      file_format       = "raw"
+      type              = "4m"
+      pre_enrolled_keys = false
+    }
+  }
+
+  dynamic "hostpci" {
+    for_each = var.hostpci_devices
+    content {
+      device  = hostpci.value.device
+      # Use mapping OR id, not both
+      id      = hostpci.value.mapping == null ? hostpci.value.id : null
+      mapping = hostpci.value.mapping
+      pcie    = hostpci.value.pcie
+      rombar  = hostpci.value.rombar
+      xvga    = hostpci.value.xvga
+    }
   }
 
   network_device {
@@ -77,7 +110,8 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   lifecycle {
     ignore_changes = [
-      initialization[0].user_data_file_id,
+      initialization,
+      cdrom,
     ]
   }
 }
