@@ -1,193 +1,193 @@
 ---
 # Gathers GPU passthrough debugging information from Proxmox host
-# Run with: ansible-playbook playbooks/maintenance/gather_gpu_passthrough_info.yaml --limit njord
+# Run with: ansible-playbook playbooks/maintenance/gather_gpu_passthrough_info.yaml
 - name: Gather GPU Passthrough Debugging Information
-  hosts: all
+  hosts: njord
   become: yes
 
   vars:
-    local_output_dir: "{{ playbook_dir }}/../../tmp/gpu-passthrough-debug"
-    remote_temp_dir: /tmp/gpu-passthrough-debug
+      local_output_dir: "{{ playbook_dir }}/../../tmp/gpu-passthrough-debug"
+      remote_temp_dir: /tmp/gpu-passthrough-debug
 
   tasks:
-    - name: Create remote temp directory
-      ansible.builtin.file:
-        path: "{{ remote_temp_dir }}"
-        state: directory
-        mode: "0755"
+      - name: Create remote temp directory
+        ansible.builtin.file:
+            path: "{{ remote_temp_dir }}"
+            state: directory
+            mode: "0755"
 
-    # PCI Device Information
-    - name: Gather lspci full output
-      ansible.builtin.shell: lspci -vvv > {{ remote_temp_dir }}/lspci-full.txt
-      changed_when: false
+      # PCI Device Information
+      - name: Gather lspci full output
+        ansible.builtin.shell: lspci -vvv > {{ remote_temp_dir }}/lspci-full.txt
+        changed_when: false
 
-    - name: Gather lspci with device IDs
-      ansible.builtin.shell: lspci -nn > {{ remote_temp_dir }}/lspci-ids.txt
-      changed_when: false
+      - name: Gather lspci with device IDs
+        ansible.builtin.shell: lspci -nn > {{ remote_temp_dir }}/lspci-ids.txt
+        changed_when: false
 
-    - name: Gather NVIDIA-specific lspci
-      ansible.builtin.shell: lspci -nnk | grep -A5 -i nvidia > {{ remote_temp_dir }}/lspci-nvidia.txt || true
-      changed_when: false
+      - name: Gather NVIDIA-specific lspci
+        ansible.builtin.shell: lspci -nnk | grep -A5 -i nvidia > {{ remote_temp_dir }}/lspci-nvidia.txt || true
+        changed_when: false
 
-    - name: Gather IOMMU groups
-      ansible.builtin.shell: |
-        for d in /sys/kernel/iommu_groups/*/devices/*; do
-          n=${d#*/iommu_groups/*}; n=${n%%/*}
-          printf 'IOMMU Group %s ' "$n"
-          lspci -nns "${d##*/}"
-        done > {{ remote_temp_dir }}/iommu-groups.txt
-      changed_when: false
+      - name: Gather IOMMU groups
+        ansible.builtin.shell: |
+            for d in /sys/kernel/iommu_groups/*/devices/*; do
+              n=${d#*/iommu_groups/*}; n=${n%%/*}
+              printf 'IOMMU Group %s ' "$n"
+              lspci -nns "${d##*/}"
+            done > {{ remote_temp_dir }}/iommu-groups.txt
+        changed_when: false
 
-    # Kernel and Module Information
-    - name: Gather loaded vfio modules
-      ansible.builtin.shell: lsmod | grep -E 'vfio|iommu' > {{ remote_temp_dir }}/lsmod-vfio.txt || true
-      changed_when: false
+      # Kernel and Module Information
+      - name: Gather loaded vfio modules
+        ansible.builtin.shell: lsmod | grep -E 'vfio|iommu' > {{ remote_temp_dir }}/lsmod-vfio.txt || true
+        changed_when: false
 
-    - name: Gather kernel command line
-      ansible.builtin.shell: cat /proc/cmdline > {{ remote_temp_dir }}/cmdline.txt
-      changed_when: false
+      - name: Gather kernel command line
+        ansible.builtin.shell: cat /proc/cmdline > {{ remote_temp_dir }}/cmdline.txt
+        changed_when: false
 
-    - name: Gather dmesg VFIO/IOMMU/GPU messages
-      ansible.builtin.shell: dmesg | grep -iE 'vfio|iommu|nvidia|gpu|pci|dmar' > {{ remote_temp_dir }}/dmesg-gpu.txt || true
-      changed_when: false
+      - name: Gather dmesg VFIO/IOMMU/GPU messages
+        ansible.builtin.shell: dmesg | grep -iE 'vfio|iommu|nvidia|gpu|pci|dmar' > {{ remote_temp_dir }}/dmesg-gpu.txt || true
+        changed_when: false
 
-    # Configuration Files
-    - name: Gather GRUB configuration
-      ansible.builtin.shell: cat /etc/default/grub > {{ remote_temp_dir }}/grub-config.txt 2>/dev/null || echo "File not found"
-      changed_when: false
+      # Configuration Files
+      - name: Gather GRUB configuration
+        ansible.builtin.shell: cat /etc/default/grub > {{ remote_temp_dir }}/grub-config.txt 2>/dev/null || echo "File not found"
+        changed_when: false
 
-    - name: Gather modprobe vfio configuration
-      ansible.builtin.shell: cat /etc/modprobe.d/vfio.conf > {{ remote_temp_dir }}/modprobe-vfio.txt 2>/dev/null || echo "File not found"
-      changed_when: false
+      - name: Gather modprobe vfio configuration
+        ansible.builtin.shell: cat /etc/modprobe.d/vfio.conf > {{ remote_temp_dir }}/modprobe-vfio.txt 2>/dev/null || echo "File not found"
+        changed_when: false
 
-    - name: Gather all modprobe.d configs
-      ansible.builtin.shell: "for f in /etc/modprobe.d/*.conf; do echo '=== '$f' ==='; cat $f; echo; done > {{ remote_temp_dir }}/modprobe-all.txt 2>/dev/null || echo 'No configs found'"
-      changed_when: false
+      - name: Gather all modprobe.d configs
+        ansible.builtin.shell: "for f in /etc/modprobe.d/*.conf; do echo '=== '$f' ==='; cat $f; echo; done > {{ remote_temp_dir }}/modprobe-all.txt 2>/dev/null || echo 'No configs found'"
+        changed_when: false
 
-    - name: Gather modules configuration
-      ansible.builtin.shell: cat /etc/modules > {{ remote_temp_dir }}/etc-modules.txt 2>/dev/null || echo "File not found"
-      changed_when: false
+      - name: Gather modules configuration
+        ansible.builtin.shell: cat /etc/modules > {{ remote_temp_dir }}/etc-modules.txt 2>/dev/null || echo "File not found"
+        changed_when: false
 
-    # Proxmox-specific
-    - name: Gather Proxmox hardware mapping
-      ansible.builtin.shell: cat /etc/pve/mapping/hardware.cfg > {{ remote_temp_dir }}/pve-hardware-mapping.txt 2>/dev/null || echo "File not found"
-      changed_when: false
+      # Proxmox-specific
+      - name: Gather Proxmox hardware mapping
+        ansible.builtin.shell: cat /etc/pve/mapping/hardware.cfg > {{ remote_temp_dir }}/pve-hardware-mapping.txt 2>/dev/null || echo "File not found"
+        changed_when: false
 
-    - name: Gather Proxmox PCI mapping via API
-      ansible.builtin.shell: pvesh get /cluster/mapping/pci --output-format yaml > {{ remote_temp_dir }}/pve-pci-mapping.txt 2>/dev/null || echo "Command failed or not available"
-      changed_when: false
+      - name: Gather Proxmox PCI mapping via API
+        ansible.builtin.shell: pvesh get /cluster/mapping/pci --output-format yaml > {{ remote_temp_dir }}/pve-pci-mapping.txt 2>/dev/null || echo "Command failed or not available"
+        changed_when: false
 
-    - name: Gather VM configurations
-      ansible.builtin.shell: "for f in /etc/pve/qemu-server/*.conf; do echo '=== '$f' ==='; cat $f; echo; done > {{ remote_temp_dir }}/vm-configs.txt 2>/dev/null || echo 'No VM configs found'"
-      changed_when: false
+      - name: Gather VM configurations
+        ansible.builtin.shell: "for f in /etc/pve/qemu-server/*.conf; do echo '=== '$f' ==='; cat $f; echo; done > {{ remote_temp_dir }}/vm-configs.txt 2>/dev/null || echo 'No VM configs found'"
+        changed_when: false
 
-    - name: Gather specific VM 100 config (ceto)
-      ansible.builtin.shell: cat /etc/pve/qemu-server/100.conf > {{ remote_temp_dir }}/vm-100-config.txt 2>/dev/null || echo "File not found"
-      changed_when: false
+      - name: Gather specific VM 100 config (ceto)
+        ansible.builtin.shell: cat /etc/pve/qemu-server/100.conf > {{ remote_temp_dir }}/vm-100-config.txt 2>/dev/null || echo "File not found"
+        changed_when: false
 
-    # VFIO bind status
-    - name: Check VFIO device bindings
-      ansible.builtin.shell: |
-        echo "=== VFIO-PCI bound devices ==="
-        ls -la /sys/bus/pci/drivers/vfio-pci/ 2>/dev/null || echo "No vfio-pci bindings"
-        echo ""
-        echo "=== GPU driver binding ==="
-        for dev in /sys/bus/pci/devices/0000:0b:00.*; do
-          echo "$dev:"
-          cat "$dev/driver/module/drivers" 2>/dev/null || echo "  No driver bound"
-        done
-      register: vfio_bindings
-      changed_when: false
+      # VFIO bind status
+      - name: Check VFIO device bindings
+        ansible.builtin.shell: |
+            echo "=== VFIO-PCI bound devices ==="
+            ls -la /sys/bus/pci/drivers/vfio-pci/ 2>/dev/null || echo "No vfio-pci bindings"
+            echo ""
+            echo "=== GPU driver binding ==="
+            for dev in /sys/bus/pci/devices/0000:0b:00.*; do
+              echo "$dev:"
+              cat "$dev/driver/module/drivers" 2>/dev/null || echo "  No driver bound"
+            done
+        register: vfio_bindings
+        changed_when: false
 
-    - name: Save VFIO bindings
-      ansible.builtin.copy:
-        content: "{{ vfio_bindings.stdout }}"
-        dest: "{{ remote_temp_dir }}/vfio-bindings.txt"
-        mode: "0644"
+      - name: Save VFIO bindings
+        ansible.builtin.copy:
+            content: "{{ vfio_bindings.stdout }}"
+            dest: "{{ remote_temp_dir }}/vfio-bindings.txt"
+            mode: "0644"
 
-    # System logs
-    - name: Gather recent pve-guests journal logs
-      ansible.builtin.shell: journalctl -u 'pve-guests@*' --no-pager -n 200 > {{ remote_temp_dir }}/journal-pve-guests.txt 2>/dev/null || echo "No logs found"
-      changed_when: false
+      # System logs
+      - name: Gather recent pve-guests journal logs
+        ansible.builtin.shell: journalctl -u 'pve-guests@*' --no-pager -n 200 > {{ remote_temp_dir }}/journal-pve-guests.txt 2>/dev/null || echo "No logs found"
+        changed_when: false
 
-    # Create summary
-    - name: Create debug summary
-      ansible.builtin.shell: |
-        cat << 'EOF' > {{ remote_temp_dir }}/SUMMARY.txt
-        GPU Passthrough Debug Information
-        ==================================
-        Collected: $(date)
-        Host: $(hostname)
+      # Create summary
+      - name: Create debug summary
+        ansible.builtin.shell: |
+            cat << 'EOF' > {{ remote_temp_dir }}/SUMMARY.txt
+            GPU Passthrough Debug Information
+            ==================================
+            Collected: $(date)
+            Host: $(hostname)
 
-        Files included:
-        - lspci-full.txt        : Full lspci output with verbose details
-        - lspci-ids.txt         : lspci with vendor/device IDs
-        - lspci-nvidia.txt      : NVIDIA-specific PCI info with kernel drivers
-        - iommu-groups.txt      : IOMMU group assignments
-        - lsmod-vfio.txt        : Loaded VFIO/IOMMU kernel modules
-        - cmdline.txt           : Kernel boot parameters
-        - dmesg-gpu.txt         : Kernel messages related to GPU/VFIO/IOMMU
-        - grub-config.txt       : GRUB configuration
-        - modprobe-vfio.txt     : VFIO modprobe configuration
-        - modprobe-all.txt      : All modprobe.d configurations
-        - etc-modules.txt       : /etc/modules contents
-        - pve-hardware-mapping.txt : Proxmox hardware mapping config
-        - pve-pci-mapping.txt   : Proxmox PCI mapping via API
-        - vm-configs.txt        : All VM configurations
-        - vm-100-config.txt     : Ceto VM (100) configuration
-        - vfio-bindings.txt     : Current VFIO device bindings
-        - journal-pve-guests.txt: Recent pve-guests service logs
+            Files included:
+            - lspci-full.txt        : Full lspci output with verbose details
+            - lspci-ids.txt         : lspci with vendor/device IDs
+            - lspci-nvidia.txt      : NVIDIA-specific PCI info with kernel drivers
+            - iommu-groups.txt      : IOMMU group assignments
+            - lsmod-vfio.txt        : Loaded VFIO/IOMMU kernel modules
+            - cmdline.txt           : Kernel boot parameters
+            - dmesg-gpu.txt         : Kernel messages related to GPU/VFIO/IOMMU
+            - grub-config.txt       : GRUB configuration
+            - modprobe-vfio.txt     : VFIO modprobe configuration
+            - modprobe-all.txt      : All modprobe.d configurations
+            - etc-modules.txt       : /etc/modules contents
+            - pve-hardware-mapping.txt : Proxmox hardware mapping config
+            - pve-pci-mapping.txt   : Proxmox PCI mapping via API
+            - vm-configs.txt        : All VM configurations
+            - vm-100-config.txt     : Ceto VM (100) configuration
+            - vfio-bindings.txt     : Current VFIO device bindings
+            - journal-pve-guests.txt: Recent pve-guests service logs
 
-        Common issues to check:
-        1. Is IOMMU enabled? Check cmdline.txt for intel_iommu=on or amd_iommu=on
-        2. Is vfio-pci loaded? Check lsmod-vfio.txt
-        3. Is GPU bound to vfio-pci? Check lspci-nvidia.txt for "Kernel driver in use: vfio-pci"
-        4. Are all GPU functions in same IOMMU group? Check iommu-groups.txt
-        5. Any errors in dmesg? Check dmesg-gpu.txt for D3cold or reset errors
-        EOF
-      changed_when: false
+            Common issues to check:
+            1. Is IOMMU enabled? Check cmdline.txt for intel_iommu=on or amd_iommu=on
+            2. Is vfio-pci loaded? Check lsmod-vfio.txt
+            3. Is GPU bound to vfio-pci? Check lspci-nvidia.txt for "Kernel driver in use: vfio-pci"
+            4. Are all GPU functions in same IOMMU group? Check iommu-groups.txt
+            5. Any errors in dmesg? Check dmesg-gpu.txt for D3cold or reset errors
+            EOF
+        changed_when: false
 
-    # Fetch all files
-    - name: Create local output directory
-      ansible.builtin.file:
-        path: "{{ local_output_dir }}"
-        state: directory
-        mode: "0755"
-      delegate_to: localhost
-      become: no
+      # Fetch all files
+      - name: Create local output directory
+        ansible.builtin.file:
+            path: "{{ local_output_dir }}"
+            state: directory
+            mode: "0755"
+        delegate_to: localhost
+        become: no
 
-    - name: Fetch debug files
-      ansible.builtin.fetch:
-        src: "{{ remote_temp_dir }}/{{ item }}"
-        dest: "{{ local_output_dir }}/"
-        flat: yes
-      loop:
-        - SUMMARY.txt
-        - lspci-full.txt
-        - lspci-ids.txt
-        - lspci-nvidia.txt
-        - iommu-groups.txt
-        - lsmod-vfio.txt
-        - cmdline.txt
-        - dmesg-gpu.txt
-        - grub-config.txt
-        - modprobe-vfio.txt
-        - modprobe-all.txt
-        - etc-modules.txt
-        - pve-hardware-mapping.txt
-        - pve-pci-mapping.txt
-        - vm-configs.txt
-        - vm-100-config.txt
-        - vfio-bindings.txt
-        - journal-pve-guests.txt
+      - name: Fetch debug files
+        ansible.builtin.fetch:
+            src: "{{ remote_temp_dir }}/{{ item }}"
+            dest: "{{ local_output_dir }}/"
+            flat: yes
+        loop:
+            - SUMMARY.txt
+            - lspci-full.txt
+            - lspci-ids.txt
+            - lspci-nvidia.txt
+            - iommu-groups.txt
+            - lsmod-vfio.txt
+            - cmdline.txt
+            - dmesg-gpu.txt
+            - grub-config.txt
+            - modprobe-vfio.txt
+            - modprobe-all.txt
+            - etc-modules.txt
+            - pve-hardware-mapping.txt
+            - pve-pci-mapping.txt
+            - vm-configs.txt
+            - vm-100-config.txt
+            - vfio-bindings.txt
+            - journal-pve-guests.txt
 
-    - name: Clean up remote temp directory
-      ansible.builtin.file:
-        path: "{{ remote_temp_dir }}"
-        state: absent
+      - name: Clean up remote temp directory
+        ansible.builtin.file:
+            path: "{{ remote_temp_dir }}"
+            state: absent
 
-    - name: Display output location
-      ansible.builtin.debug:
-        msg: "Debug files saved to {{ local_output_dir }}/"
-      delegate_to: localhost
-      become: no
+      - name: Display output location
+        ansible.builtin.debug:
+            msg: "Debug files saved to {{ local_output_dir }}/"
+        delegate_to: localhost
+        become: no
