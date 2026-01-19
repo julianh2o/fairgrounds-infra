@@ -16,7 +16,7 @@
         append: yes
         create_home: yes
         state: present
-        password: "{{ user_password | password_hash('sha512') }}"
+        password: "{{ user_password_hash }}"
 
     - name: Configure passwordless sudo for julian
       ansible.builtin.lineinfile:

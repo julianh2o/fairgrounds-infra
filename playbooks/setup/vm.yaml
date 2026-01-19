@@ -1,10 +1,9 @@
 ---
-# Complete VM setup: user account, tools, fstab, and cleanup
-- name: Setup User Account
-  ansible.builtin.import_playbook: myuseraccount.yaml
-
 - name: Install Tools
   ansible.builtin.import_playbook: tools.yaml
+
+- name: Setup User Account
+  ansible.builtin.import_playbook: myuseraccount.yaml
 
 - name: Setup fstab
   ansible.builtin.import_playbook: fstab.yaml
