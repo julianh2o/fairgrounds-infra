@@ -6,55 +6,62 @@
   become: yes
 
   vars:
-    ansible_user_name: ansible
-    # Path to the SSH public key to authorize for the ansible user (relative to inventory root)
-    ansible_ssh_key: "{{ inventory_dir }}/secrets/id_ed25519.pub"
+      ansible_user_name: ansible
+      # Path to the SSH public key to authorize for the ansible user (relative to inventory root)
+      ansible_ssh_key: "{{ inventory_dir }}/secrets/id_ed25519.pub"
 
   tasks:
-    - name: Create ansible user
-      ansible.builtin.user:
-        name: "{{ ansible_user_name }}"
-        state: present
-        shell: /bin/bash
-        create_home: yes
-        comment: "Ansible Automation User"
-        password: "!"  # Locked password (SSH key auth only)
+      - name: Install sudo package (required on minimal Debian/Proxmox)
+        ansible.builtin.apt:
+            name: sudo
+            state: present
+            update_cache: yes
+        when: ansible_os_family == "Debian"
 
-    - name: Create .ssh directory for ansible user
-      ansible.builtin.file:
-        path: /home/{{ ansible_user_name }}/.ssh
-        state: directory
-        owner: "{{ ansible_user_name }}"
-        group: "{{ ansible_user_name }}"
-        mode: "0700"
+      - name: Create ansible user
+        ansible.builtin.user:
+            name: "{{ ansible_user_name }}"
+            state: present
+            shell: /bin/bash
+            create_home: yes
+            comment: "Ansible Automation User"
+            password: "!" # Locked password (SSH key auth only)
 
-    - name: Copy SSH public key to ansible user's authorized_keys
-      ansible.builtin.copy:
-        src: "{{ ansible_ssh_key }}"
-        dest: /home/{{ ansible_user_name }}/.ssh/authorized_keys
-        owner: "{{ ansible_user_name }}"
-        group: "{{ ansible_user_name }}"
-        mode: "0600"
+      - name: Create .ssh directory for ansible user
+        ansible.builtin.file:
+            path: /home/{{ ansible_user_name }}/.ssh
+            state: directory
+            owner: "{{ ansible_user_name }}"
+            group: "{{ ansible_user_name }}"
+            mode: "0700"
 
-    - name: Ensure /etc/sudoers includes sudoers.d directory
-      ansible.builtin.lineinfile:
-        path: /etc/sudoers
-        line: "#includedir /etc/sudoers.d"
-        state: present
-        validate: /usr/sbin/visudo -cf %s
-        create: no
+      - name: Copy SSH public key to ansible user's authorized_keys
+        ansible.builtin.copy:
+            src: "{{ ansible_ssh_key }}"
+            dest: /home/{{ ansible_user_name }}/.ssh/authorized_keys
+            owner: "{{ ansible_user_name }}"
+            group: "{{ ansible_user_name }}"
+            mode: "0600"
 
-    - name: Configure passwordless sudo for ansible user
-      ansible.builtin.copy:
-        content: |
-          # Ansible automation user - passwordless sudo
-          {{ ansible_user_name }} ALL=(ALL) NOPASSWD: ALL
-        dest: /etc/sudoers.d/{{ ansible_user_name }}
-        owner: root
-        group: root
-        mode: "0440"
-        validate: /usr/sbin/visudo -cf %s
+      - name: Ensure /etc/sudoers includes sudoers.d directory
+        ansible.builtin.lineinfile:
+            path: /etc/sudoers
+            line: "#includedir /etc/sudoers.d"
+            state: present
+            validate: /usr/sbin/visudo -cf %s
+            create: no
 
-    - name: Ensure ansible account is unlocked (allow passwordless SSH key auth)
-      ansible.builtin.command: passwd -d {{ ansible_user_name }}
-      changed_when: true
+      - name: Configure passwordless sudo for ansible user
+        ansible.builtin.copy:
+            content: |
+                # Ansible automation user - passwordless sudo
+                {{ ansible_user_name }} ALL=(ALL) NOPASSWD: ALL
+            dest: /etc/sudoers.d/{{ ansible_user_name }}
+            owner: root
+            group: root
+            mode: "0440"
+            validate: /usr/sbin/visudo -cf %s
+
+      - name: Ensure ansible account is unlocked (allow passwordless SSH key auth)
+        ansible.builtin.command: passwd -d {{ ansible_user_name }}
+        changed_when: true
