@@ -1,5 +1,7 @@
 # Terraform Configuration for Proxmox
 
+Other VM Names: (sea nymphs) Daphne, Thebe, Electra, Galatea, Thetis, Styx, Clymene
+
 This directory contains Terraform configurations for managing Proxmox VMs.
 
 ## Prerequisites

@@ -18,8 +18,8 @@ module "ceto" {
       device  = "hostpci0"
       mapping = "gpu-nvidia"  # Should include 0b:00.0, 0b:00.1, 0b:00.2, 0b:00.3
       pcie    = true
-      rombar  = false
-      xvga    = true
+      rombar  = true
+      xvga    = false
     }
   ]
 
