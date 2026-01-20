@@ -4,6 +4,9 @@ Infrastructure for the fairgrounds
 # TODO
 * create Calcifer VM for home assistant
 * more work on grafana dashboards
+* create a good CPU/memory chart for the VM children under the host parent.. These should be colocated and intuitive to show where the resources are going.
+* We can do this CPU/memory chart for both proxmox and truenas
+* It would be great to have a similar network chart that we can weigh against our Gigabit connection. eg..  a way to see how much of our total bandwidth is being used.
 * install uptime kuma: https://github.com/louislam/uptime-kuma
 * add server and service status to home assistant dashboard
 * Decomission Melinoe

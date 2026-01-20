@@ -30,5 +30,5 @@ variable "proxmox_storage" {
 variable "proxmox_ssh_address" {
   description = "SSH address for Proxmox node (if different from API address)"
   type        = string
-  default     = "njord.ts"
+  default     = "njord.t"
 }
