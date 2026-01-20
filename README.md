@@ -2,10 +2,11 @@
 Infrastructure for the fairgrounds
 
 # TODO
-* setup GPU passthrough on proxmox via terraform
 * migrate fair-map to Metis
-* Decomission Melinoe
+* more work on grafana dashboards
 * install uptime kuma: https://github.com/louislam/uptime-kuma
+* add server and service status to home assistant dashboard
+* Decomission Melinoe
 * Move plex to Ceto
 * Move ollama to ceto
 * Move speaches to Ceto (also.. do we still want it?)
