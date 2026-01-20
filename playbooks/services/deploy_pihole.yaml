@@ -10,15 +10,15 @@
     - name: Configure systemd-resolved upstream DNS servers
       ansible.builtin.lineinfile:
         path: /etc/systemd/resolved.conf
-        regexp: '^#?DNS='
-        line: 'DNS=1.1.1.1 8.8.8.8'
+        regexp: "^#?DNS="
+        line: "DNS=1.1.1.1 8.8.8.8"
       notify: Restart systemd-resolved
 
     - name: Disable systemd-resolved stub listener
       ansible.builtin.lineinfile:
         path: /etc/systemd/resolved.conf
-        regexp: '^#?DNSStubListener='
-        line: 'DNSStubListener=no'
+        regexp: "^#?DNSStubListener="
+        line: "DNSStubListener=no"
       notify: Restart systemd-resolved
 
     - name: Flush handlers to free port 53
@@ -35,7 +35,7 @@
         config_files:
           - src: pihole-custom-dns.conf.j2
             dest: etc-dnsmasq.d/05-fairgrounds.conf
-        docker_compose_state: present
+        docker_compose_state: restarted
 
   handlers:
     - name: Restart systemd-resolved

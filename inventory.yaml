@@ -7,12 +7,23 @@ vms:
   hosts:
     ceto:
       ansible_host: 192.168.0.10
+      tailscale_address: 100.95.221.16
       exporter_port: 9100
     metis:
       ansible_host: 192.168.0.11
+      tailscale_address: 100.93.182.46
       exporter_port: 9100
     europa:
       ansible_host: 192.168.0.12
+      tailscale_address: 100.68.12.3
+      exporter_port: 9100
+    daphne:
+      ansible_host: 192.168.0.13
+      tailscale_address: 100.93.14.127
+      exporter_port: 9100
+    arethusa:
+      ansible_host: 192.168.0.14
+      tailscale_address: 100.69.107.99
       exporter_port: 9100
 linuxhosts:
   hosts:
@@ -44,4 +55,3 @@ otherhosts:
       ansible_host: 192.168.0.66
       tailscale_address: 100.104.77.50
       exporter_port: 9182
-      

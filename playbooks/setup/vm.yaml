@@ -8,6 +8,9 @@
 - name: Setup fstab
   ansible.builtin.import_playbook: fstab.yaml
 
+- name: Install Tailscale
+  ansible.builtin.import_playbook: tailscale.yaml
+
 - name: Remove temporary user account
   hosts: vms
   become: yes

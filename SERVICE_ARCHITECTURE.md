@@ -15,18 +15,24 @@ General purpose VM.
 - **dashboard** - Infrastructure overview
 - **myflix** - Media automation
 - **rclone-to-backblaze** - Backup sync
+- **fair-map** - Fairgrounds map
 
 ### 192.168.0.12 (Europa on Njord)
 Lightweight and high-availability services.
 - **pihole** - DNS server with ad blocking
 - **caddy** - Reverse proxy
 
+### 192.168.0.13 (Daphne on Njord)
+Unassigned
+
+### 192.168.0.14 (Arethusa on Njord)
+Development Sandbox
+
 ### 192.168.0.100 (Truenas)
 - TrueNAS web UI (bare metal NAS)
 
 ### 192.168.0.203 (Melinoe on Truenas)
 - **uneventful** - Bawdy Shop Events
-- **fair-map** - Fairgrounds map
 
 ### 192.168.0.110 (on Truenas)
 - Home Assistant

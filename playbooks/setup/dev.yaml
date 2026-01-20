@@ -1,0 +1,66 @@
+---
+# Install development tools: zsh, oh-my-zsh, ag, z-zsh, claude code
+# Run with: ansible-playbook playbooks/setup/dev.yaml --limit <host> -u <user> -K
+- name: Setup Development Environment
+  hosts: all
+  become: yes
+
+  vars:
+    target_user: "julian"
+    target_home: "/home/{{ target_user }}"
+
+  tasks:
+    - name: Install apt packages
+      ansible.builtin.apt:
+        name:
+          - zsh
+          - silversearcher-ag
+          - git
+          - curl
+        state: present
+        update_cache: yes
+
+    - name: Check if oh-my-zsh is installed
+      ansible.builtin.stat:
+        path: "{{ target_home }}/.oh-my-zsh"
+      register: ohmyzsh_dir
+
+    - name: Install oh-my-zsh
+      ansible.builtin.shell: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+      args:
+        creates: "{{ target_home }}/.oh-my-zsh"
+      become_user: "{{ target_user }}"
+      when: not ohmyzsh_dir.stat.exists
+
+    - name: Install z-zsh plugin
+      ansible.builtin.git:
+        repo: https://github.com/agkozak/zsh-z.git
+        dest: "{{ target_home }}/.oh-my-zsh/custom/plugins/zsh-z"
+        depth: 1
+      become_user: "{{ target_user }}"
+
+    - name: Enable zsh-z plugin in .zshrc
+      ansible.builtin.lineinfile:
+        path: "{{ target_home }}/.zshrc"
+        regexp: '^plugins=\('
+        line: "plugins=(git zsh-z)"
+      become_user: "{{ target_user }}"
+
+    - name: Set zsh as default shell
+      ansible.builtin.user:
+        name: "{{ target_user }}"
+        shell: /bin/zsh
+
+    - name: Check if Claude Code is installed
+      ansible.builtin.command: which claude
+      register: claude_check
+      failed_when: false
+      changed_when: false
+
+    - name: Install Claude Code via npm
+      ansible.builtin.shell: |
+        curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+        apt-get install -y nodejs
+        npm install -g @anthropic-ai/claude-code
+      when: claude_check.rc != 0
