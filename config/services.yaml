@@ -173,3 +173,9 @@ services:
     type: webapp
     machine: 192.168.0.12
     port: 8080
+
+  # Copyparty - File server with resumable uploads
+  - name: copyparty.julianverse.net
+    type: webapp
+    machine: 192.168.0.13
+    port: 3923

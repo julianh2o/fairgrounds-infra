@@ -1,0 +1,16 @@
+- name: Deploy Copyparty
+  hosts: daphne
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: copyparty
+        compose_template: copyparty-compose.yml.j2
+        config_files:
+          - src: copyparty.conf.j2
+            dest: copyparty.conf
+        service_directories:
+          - data
+          - hists
+        docker_compose_state: present
