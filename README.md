@@ -3,7 +3,6 @@ Infrastructure for the fairgrounds
 
 # TODO
 * create Calcifer VM for home assistant
-* migrate fair-map to Metis
 * more work on grafana dashboards
 * install uptime kuma: https://github.com/louislam/uptime-kuma
 * add server and service status to home assistant dashboard

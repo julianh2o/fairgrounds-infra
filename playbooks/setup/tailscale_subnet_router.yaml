@@ -1,0 +1,31 @@
+---
+# This playbook installs Tailscale VPN client on hosts
+# Run with: ansible-playbook playbooks/setup/tailscale.yaml
+- name: Install and configure Tailscale
+  hosts: europa
+  become: yes
+
+  vars_files:
+      - ../../secrets.yml
+
+  vars:
+      tailscale_advertise_routes: "192.168.0.0/24,192.168.1.0/24"
+
+  tasks:
+      - name: Authenticate to Tailscale
+        ansible.builtin.command: "tailscale up -advertise-routes={{ tailscale_advertise_routes }} --hostname={{ inventory_hostname }}"
+        register: tailscale_up
+        changed_when: "'Success' in tailscale_up.stdout or tailscale_up.rc == 0"
+
+      - name: Display Tailscale status
+        ansible.builtin.command: tailscale status --json
+        register: tailscale_status_json
+        changed_when: false
+
+      - name: Parse Tailscale IP from status
+        ansible.builtin.set_fact:
+            tailscale_ip: "{{ (tailscale_status_json.stdout | from_json).Self.TailscaleIPs[0] }}"
+
+      - name: Show Tailscale IP address
+        ansible.builtin.debug:
+            msg: "{{ inventory_hostname }} connected to Tailscale with IP: {{ tailscale_ip }}"

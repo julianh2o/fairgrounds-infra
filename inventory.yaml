@@ -1,57 +1,44 @@
 ---
 all:
-  vars:
-    ansible_connection: ssh
+    vars:
+        ansible_connection: ssh
+        ansible_ssh_common_args: "-o ProxyJump=ansible@192.168.0.12"
 
 vms:
-  hosts:
-    ceto:
-      ansible_host: 192.168.0.10
-      tailscale_address: 100.95.221.16
-      exporter_port: 9100
-    metis:
-      ansible_host: 192.168.0.11
-      tailscale_address: 100.93.182.46
-      exporter_port: 9100
-    europa:
-      ansible_host: 192.168.0.12
-      tailscale_address: 100.68.12.3
-      exporter_port: 9100
-    daphne:
-      ansible_host: 192.168.0.13
-      tailscale_address: 100.93.14.127
-      exporter_port: 9100
-    arethusa:
-      ansible_host: 192.168.0.14
-      tailscale_address: 100.69.107.99
-      exporter_port: 9100
+    hosts:
+        ceto:
+            ansible_host: 192.168.0.10
+            exporter_port: 9100
+        metis:
+            ansible_host: 192.168.0.11
+            exporter_port: 9100
+        europa:
+            ansible_host: 192.168.0.12
+            exporter_port: 9100
+            # Connect directly - europa is the jumphost, so no ProxyJump needed
+            ansible_ssh_common_args: ""
+        daphne:
+            ansible_host: 192.168.0.13
+            exporter_port: 9100
+        arethusa:
+            ansible_host: 192.168.0.14
+            exporter_port: 9100
 linuxhosts:
-  hosts:
-    melinoe:
-      ansible_host: 192.168.0.203
-      tailscale_address: 100.89.174.125
-      exporter_port: 9100
-    truenas:
-      ansible_host: 192.168.0.100
-      tailscale_address: 100.92.92.16
-      exporter_port: 9100
-    njord:
-      ansible_host: 192.168.0.105
-      tailscale_address: 100.95.23.97
-      exporter_port: 9100
+    hosts:
+        truenas:
+            ansible_host: 192.168.0.100
+            exporter_port: 9100
+        njord:
+            ansible_host: 192.168.0.105
+            exporter_port: 9100
 truenasvms:
-  hosts:
-    melinoe:
-      ansible_host: 192.168.0.203
-      tailscale_address: 100.89.174.125
-      exporter_port: 9100
-    homeassistant:
-      ansible_host: 192.168.0.110
-      tailscale_address: 100.116.72.113
-      exporter_port: 9100
+    hosts:
+        homeassistant:
+            ansible_host: 192.168.0.110
+            ansible_user: julian
+            exporter_port: 9100
 otherhosts:
-  hosts:
-    kvasir:
-      ansible_host: 192.168.0.66
-      tailscale_address: 100.104.77.50
-      exporter_port: 9182
+    hosts:
+        kvasir:
+            ansible_host: 192.168.0.66
+            exporter_port: 9182

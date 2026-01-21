@@ -1,0 +1,64 @@
+---
+# This playbook removes/uninstalls Tailscale from a machine
+# Run with: ansible-playbook playbooks/maintenance/remove_tailscale.yaml --limit <hostname>
+- name: Remove Tailscale
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Check if Tailscale is installed
+      ansible.builtin.command: which tailscale
+      register: tailscale_installed
+      changed_when: false
+      failed_when: false
+
+    - name: Log out of Tailscale
+      ansible.builtin.command: tailscale logout
+      when: tailscale_installed.rc == 0
+      register: tailscale_logout
+      changed_when: tailscale_logout.rc == 0
+      failed_when: false
+
+    - name: Stop Tailscale service
+      ansible.builtin.systemd:
+        name: tailscaled
+        state: stopped
+      when: tailscale_installed.rc == 0
+      failed_when: false
+
+    - name: Disable Tailscale service
+      ansible.builtin.systemd:
+        name: tailscaled
+        enabled: no
+      when: tailscale_installed.rc == 0
+      failed_when: false
+
+    - name: Remove Tailscale package
+      ansible.builtin.apt:
+        name: tailscale
+        state: absent
+        purge: yes
+
+    - name: Remove Tailscale repository
+      ansible.builtin.apt_repository:
+        repo: "deb [signed-by=/etc/apt/keyrings/tailscale.gpg] https://pkgs.tailscale.com/stable/ubuntu jammy main"
+        state: absent
+        filename: tailscale
+
+    - name: Remove Tailscale GPG key
+      ansible.builtin.file:
+        path: /etc/apt/keyrings/tailscale.gpg
+        state: absent
+
+    - name: Remove Tailscale state directory
+      ansible.builtin.file:
+        path: /var/lib/tailscale
+        state: absent
+
+    - name: Update apt cache after repository removal
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Display removal complete message
+      ansible.builtin.debug:
+        msg: "Tailscale has been removed from {{ inventory_hostname }}"

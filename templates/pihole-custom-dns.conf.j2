@@ -11,25 +11,3 @@ address=/{{ host }}.fg/{{ hostvars[host]['ansible_host'] }}
 {% for host in groups['otherhosts'] %}
 address=/{{ host }}.fg/{{ hostvars[host]['ansible_host'] }}
 {% endfor %}
-
-# Tailscale DNS (.ts)
-{% for host in groups['vms'] %}
-{% if hostvars[host]['tailscale_address'] is defined %}
-address=/{{ host }}.ts/{{ hostvars[host]['tailscale_address'] }}
-{% endif %}
-{% endfor %}
-{% for host in groups['linuxhosts'] %}
-{% if hostvars[host]['tailscale_address'] is defined %}
-address=/{{ host }}.ts/{{ hostvars[host]['tailscale_address'] }}
-{% endif %}
-{% endfor %}
-{% for host in groups['truenasvms'] %}
-{% if hostvars[host]['tailscale_address'] is defined %}
-address=/{{ host }}.ts/{{ hostvars[host]['tailscale_address'] }}
-{% endif %}
-{% endfor %}
-{% for host in groups['otherhosts'] %}
-{% if hostvars[host]['tailscale_address'] is defined %}
-address=/{{ host }}.ts/{{ hostvars[host]['tailscale_address'] }}
-{% endif %}
-{% endfor %}
