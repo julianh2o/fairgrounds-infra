@@ -43,6 +43,7 @@ ansible-playbook playbooks/services/deploy_uneventful.yaml
 ansible-playbook playbooks/services/deploy_tautulli.yaml
 ansible-playbook playbooks/services/deploy_discord_ollama.yaml
 ansible-playbook playbooks/services/deploy_rclone_to_backblaze.yaml
+ansible-playbook playbooks/services/deploy_copyparty.yaml
 
 # Deploy monitoring stack
 ansible-playbook playbooks/setup/node_exporter.yml
@@ -87,6 +88,7 @@ Services are deployed as Docker Compose applications following this pattern:
 - **Prometheus** (`/opt/prometheus/`) - Metrics collection on port 9090
 - **Grafana** (`/opt/grafana/`) - Metrics visualization
 - **Node Exporter** - System metrics exporter (via geerlingguy.node_exporter role)
+- **Copyparty** (`/opt/copyparty/`) - File server with resumable uploads on daphne (port 3923)
 
 ### Reverse Proxy Configuration
 
