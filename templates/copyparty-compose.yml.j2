@@ -1,0 +1,11 @@
+services:
+  copyparty:
+    image: copyparty/ac:latest
+    container_name: copyparty
+    restart: unless-stopped
+    ports:
+      - 3923:3923
+    volumes:
+      - ./copyparty.conf:/cfg/copyparty.conf
+      - /mnt/Store/sharedfiles:/data
+      - ./hists:/cfg/hists
