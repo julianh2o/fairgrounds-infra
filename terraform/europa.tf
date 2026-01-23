@@ -12,13 +12,13 @@ module "europa" {
   disk_size_gb = 50
 
   network_bridge = "vmbr0"
-  ip_address     = "192.168.0.12/24"
+  ip_address     = "10.10.0.12/24"
 }
 
 output "europa_vm_id" {
-  value       = module.europa.vm_id
+  value = module.europa.vm_id
 }
 
 output "europa_vm_name" {
-  value       = module.europa.vm_name
+  value = module.europa.vm_name
 }

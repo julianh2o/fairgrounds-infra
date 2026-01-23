@@ -2,7 +2,7 @@
 # This playbook installs Tailscale VPN client on hosts
 # Run with: ansible-playbook playbooks/setup/tailscale.yaml
 - name: Install and configure Tailscale
-  hosts: vms
+  hosts: all
   become: yes
   vars_files:
     - ../../secrets.yml
@@ -52,13 +52,13 @@
       ansible.builtin.file:
         path: /etc/apt/keyrings
         state: directory
-        mode: '0755'
+        mode: "0755"
 
     - name: Add Tailscale GPG key
       ansible.builtin.get_url:
         url: https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg
         dest: /etc/apt/keyrings/tailscale.gpg
-        mode: '0644'
+        mode: "0644"
 
     - name: Add Tailscale repository
       ansible.builtin.apt_repository:

@@ -12,7 +12,7 @@ module "arethusa" {
   disk_size_gb = 200
 
   network_bridge = "vmbr0"
-  ip_address     = "192.168.0.14/24"
+  ip_address     = "10.10.0.14/24"
 }
 
 output "arethusa_vm_id" {

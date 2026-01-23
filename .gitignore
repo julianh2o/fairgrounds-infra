@@ -19,6 +19,7 @@ secrets/id_ed25519
 
 # Downloaded Ansible Galaxy roles (installed via requirements.yaml)
 roles/
+myroles/
 
 # Terraform (see terraform/.gitignore for complete list)
 # terraform.tfvars contains secrets from Ansible vault

@@ -1,6 +1,7 @@
 collections:
   - name: grafana.grafana
   - name: ansible.posix
+  - name: ansible.utils
 
 roles:
   - name: geerlingguy.node_exporter

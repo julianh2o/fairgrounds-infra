@@ -13,7 +13,7 @@ module "daphne" {
   disk_size_gb = 50
 
   network_bridge = "vmbr0"
-  ip_address     = "192.168.0.13/24"
+  ip_address     = "10.10.0.13/24"
 }
 
 output "daphne_vm_id" {

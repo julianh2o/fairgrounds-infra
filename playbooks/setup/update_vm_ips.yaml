@@ -1,0 +1,86 @@
+---
+# Updates VM IP addresses based on Terraform configuration files
+# Run with: ansible-playbook playbooks/setup/update_vm_ips.yaml --limit vms
+#
+# IMPORTANT: This playbook connects via Tailscale IPs since changing the
+# primary IP will disconnect the current SSH session.
+#
+# The playbook parses terraform/*.tf files to extract ip_address values
+# and applies them via netplan.
+
+- name: Update VM IP addresses from Terraform config
+  hosts: vms
+  become: yes
+  vars:
+    terraform_dir: "{{ playbook_dir }}/../../terraform"
+    gateway: "10.10.0.1"
+    dns_servers:
+      - "1.1.1.1"
+      - "8.8.8.8"
+
+  tasks:
+    - name: Read Terraform file for this host
+      ansible.builtin.slurp:
+        src: "{{ terraform_dir }}/{{ inventory_hostname }}.tf"
+      delegate_to: localhost
+      become: no
+      register: tf_content
+
+    - name: Extract IP address from Terraform config
+      ansible.builtin.set_fact:
+        new_ip_cidr: "{{ tf_content.content | b64decode | regex_search('ip_address\\s*=\\s*\"([^\"]+)\"', '\\1') | first }}"
+
+    - name: Parse IP and prefix
+      ansible.builtin.set_fact:
+        new_ip: "{{ new_ip_cidr | ansible.utils.ipaddr('address') }}"
+        new_prefix: "{{ new_ip_cidr | ansible.utils.ipaddr('prefix') }}"
+
+    - name: Display planned IP change
+      ansible.builtin.debug:
+        msg: "Will configure {{ inventory_hostname }} with IP {{ new_ip }}/{{ new_prefix }} (gateway: {{ gateway }})"
+
+    - name: Find netplan config file
+      ansible.builtin.find:
+        paths: /etc/netplan
+        patterns: "*.yaml"
+      register: netplan_files
+
+    - name: Get primary network interface
+      ansible.builtin.shell: |
+        ip route | grep default | awk '{print $5}' | head -1
+      register: primary_interface
+      changed_when: false
+
+    - name: Write netplan configuration
+      ansible.builtin.copy:
+        dest: /etc/netplan/50-static-ip.yaml
+        content: |
+          network:
+            version: 2
+            ethernets:
+              {{ primary_interface.stdout }}:
+                addresses:
+                  - {{ new_ip_cidr }}
+                routes:
+                  - to: default
+                    via: {{ gateway }}
+                nameservers:
+                  addresses: {{ dns_servers | to_json }}
+        mode: "0600"
+        owner: root
+        group: root
+      register: netplan_config
+
+    - name: Remove old cloud-init netplan config
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ netplan_files.files }}"
+      when:
+        - netplan_config.changed
+        - item.path != '/etc/netplan/50-static-ip.yaml'
+
+    - name: Remind to reboot
+      ansible.builtin.debug:
+        msg: "Netplan config written. Reboot {{ inventory_hostname }} to apply the new IP ({{ new_ip_cidr }})"
+      when: netplan_config.changed
