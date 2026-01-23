@@ -11,6 +11,5 @@
           - src: copyparty.conf.j2
             dest: copyparty.conf
         service_directories:
-          - data
           - hists
         docker_compose_state: present
