@@ -9,7 +9,7 @@
       - ../../secrets.yml
 
   vars:
-      tailscale_advertise_routes: "192.168.0.0/24,192.168.1.0/24"
+      tailscale_advertise_routes: "10.10.0.0/24,10.10.1.0/24"
 
   tasks:
       - name: Authenticate to Tailscale

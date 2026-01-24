@@ -1,14 +1,14 @@
 # Service Architecture
 
-### 192.168.0.105 (Njord)
+### 10.10.0.5 (Njord)
 - Proxmox (bare metal hypervisor)
 
-### 192.168.0.10 (Ceto on Njord)
+### 10.10.0.10 (Ceto on Njord)
 GPU-enabled workhorse for compute-intensive tasks.
 - **immich** - Photo management (photos.julianhartline.com)
 - **myalpr** - License plate recognition
 
-### 192.168.0.11 (Metis on Njord)
+### 10.10.0.11 (Metis on Njord)
 General purpose VM.
 - **grafana** - Metrics dashboards
 - **prometheus** - Metrics collection
@@ -16,28 +16,27 @@ General purpose VM.
 - **myflix** - Media automation
 - **rclone-to-backblaze** - Backup sync
 - **fair-map** - Fairgrounds map
-
-### 192.168.0.12 (Europa on Njord)
-Lightweight and high-availability services.
-- **pihole** - DNS server with ad blocking
+- **uneventful** - Bawdy Shop Events
+- **discord-ollama** - Discord bot with Ollama LLM
 - **caddy** - Reverse proxy
 
-### 192.168.0.13 (Daphne on Njord)
+### 10.10.0.12 (Europa on Njord)
+Lightweight and high-availability services.
+- **pihole** - DNS server with ad blocking
+
+### 10.10.0.13 (Daphne on Njord)
 Unassigned
 
-### 192.168.0.14 (Arethusa on Njord)
+### 10.10.0.14 (Arethusa on Njord)
 Development Sandbox
 
-### 192.168.0.100 (Truenas)
+### 10.10.0.6 (Truenas)
 - TrueNAS web UI (bare metal NAS)
 
-### 192.168.0.203 (Melinoe on Truenas)
-- **uneventful** - Bawdy Shop Events
-
-### 192.168.0.110 (on Truenas)
+### 10.10.0.30 (Home Assistant on Truenas)
 - Home Assistant
 
-### 192.168.0.66 (Kvasir)
+### 10.10.0.40 (Kvasir)
 - **speaches** - Speech-to-text/TTS (whisper.julianverse.net)
 - **ollama** - LLM API (no stack, standalone)
 - **comfyui** - AI art

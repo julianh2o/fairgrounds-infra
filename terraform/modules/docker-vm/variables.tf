@@ -82,7 +82,7 @@ variable "ip_address" {
 variable "ip_gateway" {
   description = "IP gateway (required if using static IP)"
   type        = string
-  default     = "192.168.0.1"
+  default     = "10.10.0.1"
 }
 
 variable "machine" {

@@ -140,8 +140,8 @@ Edit the VM's `initialization.ip_config` block:
 ```hcl
 ip_config {
   ipv4 {
-    address = "192.168.0.210/23"  # Static IP in your /23 network
-    gateway = "192.168.0.1"
+    address = "10.10.0.210/24"  # Static IP in your network
+    gateway = "10.10.0.1"
   }
 }
 ```

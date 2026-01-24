@@ -12,14 +12,14 @@ services:
 
     environment:
       # Camera Streams (RTSP/RTSPS URLs)
-      - CAM_DRIVEWAY_HIGH=rtsps://192.168.0.1:7441/dj6fqZEn2aY6UDRd?enableSrtp
+      - CAM_DRIVEWAY_HIGH=rtsps://10.10.0.1:7441/dj6fqZEn2aY6UDRd?enableSrtp
       - KNOWN_PLATES=79699J4
 
       # Ollama Vision Model
-      - OLLAMA_URL=http://192.168.0.66:11434/api/chat
+      - OLLAMA_URL=http://10.10.0.40:11434/api/chat
       - OLLAMA_VISION_MODEL=llama3.2-vision
 
-      - MQTT_BROKER=192.168.0.110
+      - MQTT_BROKER=10.10.0.30
       - MQTT_PORT=1883
       - MQTT_USER=julian
       - MQTT_PASSWORD={{ homeassistant_mqtt_password }}

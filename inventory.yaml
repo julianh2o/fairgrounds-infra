@@ -2,43 +2,43 @@
 all:
     vars:
         ansible_connection: ssh
-        ansible_ssh_common_args: "-o ProxyJump=ansible@192.168.0.12"
+        ansible_ssh_common_args: "-o ProxyJump=ansible@10.10.0.12"
 
 vms:
     hosts:
         ceto:
-            ansible_host: 192.168.0.10
+            ansible_host: 10.10.0.10
             exporter_port: 9100
         metis:
-            ansible_host: 192.168.0.11
+            ansible_host: 10.10.0.11
             exporter_port: 9100
         europa:
-            ansible_host: 192.168.0.12
+            ansible_host: 10.10.0.12
             exporter_port: 9100
             # Connect directly - europa is the jumphost, so no ProxyJump needed
             ansible_ssh_common_args: ""
         daphne:
-            ansible_host: 192.168.0.13
+            ansible_host: 10.10.0.13
             exporter_port: 9100
         arethusa:
-            ansible_host: 192.168.0.14
+            ansible_host: 10.10.0.14
             exporter_port: 9100
 linuxhosts:
     hosts:
         truenas:
-            ansible_host: 192.168.0.100
+            ansible_host: 10.10.0.6
             exporter_port: 9100
         njord:
-            ansible_host: 192.168.0.105
+            ansible_host: 10.10.0.5
             exporter_port: 9100
 truenasvms:
     hosts:
         homeassistant:
-            ansible_host: 192.168.0.110
+            ansible_host: 10.10.0.30
             ansible_user: julian
             exporter_port: 9100
 otherhosts:
     hosts:
         kvasir:
-            ansible_host: 192.168.0.66
+            ansible_host: 10.10.0.40
             exporter_port: 9182

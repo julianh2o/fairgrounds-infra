@@ -3,134 +3,134 @@
 # Each stack represents a docker-compose.yml file and its associated services
 
 stacks:
-  # ============================================================================
-  # Media Automation Stack
-  # ============================================================================
-  - name: myflix
-    description: Media automation and download management stack with VPN
-    path: /opt/myflix
-    machine: 192.168.0.203
-    endpoints:
-      - 20630:sabnzbd.julianverse.net
-      - 3579:ombi.julianverse.net
-      - 8112:deluge.julianverse.net
-      - 3211:qbittorrent.julianverse.net
-      - 5076:nzbhydra.julianverse.net
-      - 9117:jackett.julianverse.net
-      - 8989:sonarr.julianverse.net
-      - 7878:radarr.julianverse.net
-      - 13378:audiobookshelf.julianverse.net
-      - 13378:books.julianhartline.com
-      - 8787:readarr.julianverse.net
-      - 8788:rreading-glasses.julianverse.net
-      - 8181:tautulli.julianverse.net
+    # ============================================================================
+    # Media Automation Stack
+    # ============================================================================
+    - name: myflix
+      description: Media automation and download management stack with VPN
+      path: /opt/myflix
+      machine: 10.10.0.11
+      endpoints:
+          - 20630:sabnzbd.julianverse.net
+          - 3579:ombi.julianverse.net
+          - 8112:deluge.julianverse.net
+          - 3211:qbittorrent.julianverse.net
+          - 5076:nzbhydra.julianverse.net
+          - 9117:jackett.julianverse.net
+          - 8989:sonarr.julianverse.net
+          - 7878:radarr.julianverse.net
+          - 13378:audiobookshelf.julianverse.net
+          - 13378:books.julianhartline.com
+          - 8787:readarr.julianverse.net
+          - 8788:rreading-glasses.julianverse.net
+          - 8181:tautulli.julianverse.net
 
-  # ============================================================================
-  # Photo Management
-  # ============================================================================
-  - name: immich
-    description: Photo and video management platform with ML features
-    path: /opt/immich
-    machine: 192.168.0.10
-    endpoints:
-      - 2283:photos.julianhartline.com
+    # ============================================================================
+    # Photo Management
+    # ============================================================================
+    - name: immich
+      description: Photo and video management platform with ML features
+      path: /opt/immich
+      machine: 10.10.0.10
+      endpoints:
+          - 2283:photos.julianhartline.com
 
-  # ============================================================================
-  # Uneventful
-  # ============================================================================
-  - name: uneventful
-    description: Custom event scheduling application
-    path: /opt/uneventful
-    machine: 192.168.0.203
-    endpoints:
-      - 2050:uneventful.bawdyshop.space
+    # ============================================================================
+    # Uneventful
+    # ============================================================================
+    - name: uneventful
+      description: Custom event scheduling application
+      path: /opt/uneventful
+      machine: 10.10.0.11
+      endpoints:
+          - 2050:uneventful.bawdyshop.space
 
-  # ============================================================================
-  # AI Service
-  # ============================================================================
-  - name: discord-ollama
-    description: Discord bot with Ollama LLM integration
-    path: /opt/discord-ollama
-    machine: 192.168.0.203
-    endpoints: []
+    # ============================================================================
+    # AI Service
+    # ============================================================================
+    - name: discord-ollama
+      description: Discord bot with Ollama LLM integration
+      path: /opt/discord-ollama
+      machine: 10.10.0.11
+      endpoints: []
 
-  # ============================================================================
-  # Backup Services
-  # ============================================================================
-  - name: rclone-to-backblaze
-    description: Automated backup sync to Backblaze B2 storage
-    path: /opt/rclone-to-backblaze
-    machine: 192.168.0.203
-    endpoints: []
+    # ============================================================================
+    # Backup Services
+    # ============================================================================
+    - name: rclone-to-backblaze
+      description: Automated backup sync to Backblaze B2 storage
+      path: /opt/rclone-to-backblaze
+      machine: 10.10.0.11
+      endpoints: []
 
-  # ============================================================================
-  # Reverse Proxy
-  # ============================================================================
-  - name: caddy
-    description: Reverse proxy with automatic HTTPS (Let's Encrypt)
-    path: /opt/caddy
-    machine: 192.168.0.203
-    endpoints: []
+    # ============================================================================
+    # Reverse Proxy
+    # ============================================================================
+    - name: caddy
+      description: Reverse proxy with automatic HTTPS (Let's Encrypt)
+      path: /opt/caddy
+      machine: 10.10.0.11
+      endpoints: []
 
-  # ============================================================================
-  # Monitoring and Observability
-  # ============================================================================
-  - name: grafana
-    description: Metrics visualization and dashboards
-    path: /opt/grafana
-    machine: 192.168.0.11
-    endpoints:
-      - 3000:grafana.julianverse.net
+    # ============================================================================
+    # Monitoring and Observability
+    # ============================================================================
+    - name: grafana
+      description: Metrics visualization and dashboards
+      path: /opt/grafana
+      machine: 10.10.0.11
+      endpoints:
+          - 3000:grafana.julianverse.net
 
-  - name: prometheus
-    description: Metrics collection and monitoring
-    path: /opt/prometheus
-    machine: 192.168.0.11
-    endpoints:
-      - 9090:prometheus.julianverse.net
+    - name: prometheus
+      description: Metrics collection and monitoring
+      path: /opt/prometheus
+      machine: 10.10.0.11
+      endpoints:
+          - 9090:prometheus.julianverse.net
 
-  - name: dashboard
-    description: Fairgrounds infrastructure overview dashboard
-    path: /opt/dashboard
-    machine: 192.168.0.11
-    endpoints:
-      - 9999:dashboard.julianverse.net
+    - name: dashboard
+      description: Fairgrounds infrastructure overview dashboard
+      path: /opt/dashboard
+      machine: 10.10.0.11
+      endpoints:
+          - 9999:dashboard.julianverse.net
 
-  # ============================================================================
-  # Mapping and Visualization
-  # ============================================================================
-  - name: fair-map
-    description: Interactive map of the fairgrounds
-    path: /opt/fair-map
-    machine: 192.168.0.203
-    endpoints:
-      - 3050:map.julianverse.net
+    # ============================================================================
+    # Mapping and Visualization
+    # ============================================================================
+    - name: fair-map
+      description: Interactive map of the fairgrounds
+      path: /opt/fair-map
+      machine: 10.10.0.11
+      endpoints:
+          - 3050:map.julianverse.net
 
-  # ============================================================================
-  # AI and Speech Services
-  # ============================================================================
-  - name: speaches
-    description: Speech to text and text to speech AI service
-    path: /opt/speaches
-    machine: 192.168.0.66
-    endpoints:
-      - 10300:whisper.julianverse.net
+    # ============================================================================
+    # AI and Speech Services
+    # ============================================================================
+    - name: speaches
+      description: Speech to text and text to speech AI service
+      path: /opt/speaches
+      machine: 10.10.0.40
+      endpoints:
+          - 10300:whisper.julianverse.net
 
-  # ============================================================================
-  # Computer Vision
-  # ============================================================================
-  - name: myalpr
-    description: License plate recognition service
-    path: /opt/myalpr
-    machine: 192.168.0.10
-    endpoints: []
+    # ============================================================================
+    # Computer Vision
+    # ============================================================================
+    - name: myalpr
+      description: License plate recognition service
+      path: /opt/myalpr
+      machine: 10.10.0.10
+      endpoints: []
 
-  # ============================================================================
-  # Network Services
-  # ============================================================================
-  - name: pihole
-    description: DNS server with ad blocking
-    path: /opt/pihole
-    machine: 192.168.0.12
-    endpoints:
-      - 8080:pihole.julianverse.net
+    # ============================================================================
+    # Network Services
+    # ============================================================================
+    - name: pihole
+      description: DNS server with ad blocking
+      path: /opt/pihole
+      machine: 10.10.0.12
+      endpoints:
+          - 8080:pihole.julianverse.net

@@ -8,7 +8,7 @@ services:
     environment:
       - PRIVATE_KEY={{ myflix_vpn_private_key }}
       - QUERY=filters\[country_id\]=228 #US Servers
-      - NET_LOCAL=192.168.0.0/24
+      - NET_LOCAL=10.10.0.0/24
       - DNS=8.8.8.8
     ports: # HOST:CONTAINER
       - 9898:8082 #dashboard
