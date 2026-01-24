@@ -37,6 +37,12 @@
             dest: etc-dnsmasq.d/05-fairgrounds.conf
         docker_compose_state: restarted
 
+  post_tasks:
+    - name: Disable all adlists
+      ansible.builtin.command:
+        cmd: docker exec pihole pihole-FTL sqlite3 /etc/pihole/gravity.db "UPDATE adlist SET enabled = 0"
+      changed_when: true
+
   handlers:
     - name: Restart systemd-resolved
       ansible.builtin.systemd:

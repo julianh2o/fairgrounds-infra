@@ -6,26 +6,26 @@
   become: yes
 
   vars_files:
-      - ../../secrets.yml
+    - ../../secrets.yml
 
   vars:
-      tailscale_advertise_routes: "10.10.0.0/24,10.10.1.0/24"
+    tailscale_advertise_routes: "10.10.0.0/24,10.10.1.0/24"
 
   tasks:
-      - name: Authenticate to Tailscale
-        ansible.builtin.command: "tailscale up -advertise-routes={{ tailscale_advertise_routes }} --hostname={{ inventory_hostname }}"
-        register: tailscale_up
-        changed_when: "'Success' in tailscale_up.stdout or tailscale_up.rc == 0"
+    - name: Authenticate to Tailscale
+      ansible.builtin.command: "tailscale up -advertise-routes={{ tailscale_advertise_routes }} --hostname={{ inventory_hostname }}"
+      register: tailscale_up
+      changed_when: "'Success' in tailscale_up.stdout or tailscale_up.rc == 0"
 
-      - name: Display Tailscale status
-        ansible.builtin.command: tailscale status --json
-        register: tailscale_status_json
-        changed_when: false
+    - name: Display Tailscale status
+      ansible.builtin.command: tailscale status --json
+      register: tailscale_status_json
+      changed_when: false
 
-      - name: Parse Tailscale IP from status
-        ansible.builtin.set_fact:
-            tailscale_ip: "{{ (tailscale_status_json.stdout | from_json).Self.TailscaleIPs[0] }}"
+    - name: Parse Tailscale IP from status
+      ansible.builtin.set_fact:
+        tailscale_ip: "{{ (tailscale_status_json.stdout | from_json).Self.TailscaleIPs[0] }}"
 
-      - name: Show Tailscale IP address
-        ansible.builtin.debug:
-            msg: "{{ inventory_hostname }} connected to Tailscale with IP: {{ tailscale_ip }}"
+    - name: Show Tailscale IP address
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} connected to Tailscale with IP: {{ tailscale_ip }}"
