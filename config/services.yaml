@@ -1,181 +1,187 @@
 ---
 services:
-    # ============================================================================
-    # bawdyshop.space
-    # ============================================================================
+  # ============================================================================
+  # bawdyshop.space
+  # ============================================================================
 
-    # Uneventful - Custom application
-    - name: uneventful.bawdyshop.space
-      type: webapp
-      machine: 10.10.0.11
-      port: 2050
+  # Uneventful - Custom application
+  - name: uneventful.bawdyshop.space
+    type: webapp
+    machine: 10.10.0.11
+    port: 2050
 
-    # ============================================================================
-    # julianhartline.com
-    # ============================================================================
+  # ============================================================================
+  # julianhartline.com
+  # ============================================================================
 
-    # Audiobookshelf - Audiobook and podcast server
-    - name: books.julianhartline.com
-      type: webapp
-      machine: 10.10.0.11
-      port: 13378
+  # Audiobookshelf - Audiobook and podcast server
+  - name: books.julianhartline.com
+    type: webapp
+    machine: 10.10.0.11
+    port: 13378
 
-    # Immich - Photo management
-    - name: photos.julianhartline.com
-      type: webapp
-      machine: 10.10.0.10
-      port: 2283
+  # Immich - Photo management
+  - name: photos.julianhartline.com
+    type: webapp
+    machine: 10.10.0.10
+    port: 2283
 
-    # Ombi - Request media
-    - name: plex.julianhartline.com
-      type: webapp
-      machine: 10.10.0.11
-      port: 3579
+  # Ombi - Request media
+  - name: plex.julianhartline.com
+    type: webapp
+    machine: 10.10.0.11
+    port: 3579
 
-    # ============================================================================
-    # julianverse.net
-    # ============================================================================
+  # ============================================================================
+  # julianverse.net
+  # ============================================================================
 
-    # Dashboard - Infrastructure overview
-    - name: dashboard.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 9999
+  # Dashboard - Infrastructure overview
+  - name: dashboard.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 9999
 
-    # Proxmox - Run VMs
-    - name: njord.julianverse.net
-      type: webapp
-      machine: 10.10.0.5
-      protocol: https
-      port: 8006
-      tls_skip_verify: true
+  # Proxmox - Run VMs
+  - name: njord.julianverse.net
+    type: webapp
+    machine: 10.10.0.5
+    protocol: https
+    port: 8006
+    tls_skip_verify: true
 
-    # Fair-map - Map of the fairgrounds
-    - name: map.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 3050
+  # Fair-map - Map of the fairgrounds
+  - name: map.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 3050
 
-    # Whisper - Speech to Text and Text to Speech
-    - name: whisper.julianverse.net
-      type: api
-      machine: 10.10.0.40
-      port: 10300
+  # Whisper - Speech to Text and Text to Speech
+  - name: whisper.julianverse.net
+    type: api
+    machine: 10.10.0.40
+    port: 10300
 
-    # Grafana - Metrics visualization
-    - name: grafana.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 3000
+  # Grafana - Metrics visualization
+  - name: grafana.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 3000
 
-    # Prometheus - Metrics collection and monitoring
-    - name: prometheus.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 9090
+  # Prometheus - Metrics collection and monitoring
+  - name: prometheus.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 9090
 
-    # Home Assistant - Home automation platform
-    - name: home.julianverse.net
-      type: webapp
-      machine: 10.10.0.30
-      port: 8123
+  # Home Assistant - Home automation platform
+  - name: home.julianverse.net
+    type: webapp
+    machine: 10.10.0.30
+    port: 8123
 
-    # Ollama - Large language model API
-    - name: ollama.julianverse.net
-      type: api
-      machine: 10.10.0.40
-      port: 11434
+  # Ollama - Large language model API
+  - name: ollama.julianverse.net
+    type: api
+    machine: 10.10.0.40
+    port: 11434
 
-    # ----------------------------------------------------------------------------
-    # Myflix Stack (deployed via deploy_myflix.yaml)
-    # ----------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
+  # Myflix Stack (deployed via deploy_myflix.yaml)
+  # ----------------------------------------------------------------------------
 
-    # Audiobookshelf - Audiobook and podcast server
-    - name: audiobookshelf.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 13378
+  # Audiobookshelf - Audiobook and podcast server
+  - name: audiobookshelf.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 13378
 
-    # Deluge - BitTorrent client
-    - name: deluge.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 8112
+  # Deluge - BitTorrent client
+  - name: deluge.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 8112
 
-    # Jackett - Torrent indexer proxy
-    - name: jackett.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 9117
+  # Jackett - Torrent indexer proxy
+  - name: jackett.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 9117
 
-    # NZBHydra2 - NZB meta search
-    - name: nzbhydra.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 5076
+  # NZBHydra2 - NZB meta search
+  - name: nzbhydra.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 5076
 
-    # Ombi - Media request platform
-    - name: ombi.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 3579
+  # Ombi - Media request platform
+  - name: ombi.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 3579
 
-    # qBittorrent - BitTorrent client
-    - name: qbittorrent.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 3211
+  # qBittorrent - BitTorrent client
+  - name: qbittorrent.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 3211
 
-    # Radarr - Movie collection manager
-    - name: radarr.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 7878
+  # Radarr - Movie collection manager
+  - name: radarr.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 7878
 
-    # Readarr - Book collection manager
-    - name: readarr.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 8787
+  # Readarr - Book collection manager
+  - name: readarr.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 8787
 
-    # rreading-glasses - Hardcover reading tracker
-    - name: rreading-glasses.julianverse.net
-      type: api
-      machine: 10.10.0.11
-      port: 8788
+  # rreading-glasses - Hardcover reading tracker
+  - name: rreading-glasses.julianverse.net
+    type: api
+    machine: 10.10.0.11
+    port: 8788
 
-    # SABnzbd - Usenet downloader
-    - name: sabnzbd.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 20630
+  # SABnzbd - Usenet downloader
+  - name: sabnzbd.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 20630
 
-    # Sonarr - TV series collection manager
-    - name: sonarr.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 8989
+  # Sonarr - TV series collection manager
+  - name: sonarr.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 8989
 
-    # Tautulli - Plex monitoring and statistics
-    - name: tautulli.julianverse.net
-      type: webapp
-      machine: 10.10.0.11
-      port: 8181
+  # Tautulli - Plex monitoring and statistics
+  - name: tautulli.julianverse.net
+    type: webapp
+    machine: 10.10.0.11
+    port: 8181
 
-    # TrueNAS - Network attached storage management interface
-    - name: truenas.julianverse.net
-      type: webapp
-      machine: 10.10.0.6
-      port: 80
+  # TrueNAS - Network attached storage management interface
+  - name: truenas.julianverse.net
+    type: webapp
+    machine: 10.10.0.6
+    port: 80
 
-    # Pi-hole - DNS server with ad blocking
-    - name: pihole.julianverse.net
-      type: webapp
-      machine: 10.10.0.12
-      port: 8080
+  # Pi-hole - DNS server with ad blocking
+  - name: pihole.julianverse.net
+    type: webapp
+    machine: 10.10.0.12
+    port: 8080
 
-    # Copyparty - File server with resumable uploads
-    - name: files.julianhartline.com
-      type: webapp
-      machine: 10.10.0.13
-      port: 3923
+  # Copyparty - File server with resumable uploads
+  - name: files.julianhartline.com
+    type: webapp
+    machine: 10.10.0.13
+    port: 3923
+
+  # Traccar - GPS tracking server
+  - name: traccar.julianverse.net
+    type: webapp
+    machine: 10.10.0.13
+    port: 8082

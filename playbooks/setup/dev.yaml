@@ -2,7 +2,7 @@
 # Install development tools: zsh, oh-my-zsh, ag, z-zsh, claude code
 # Run with: ansible-playbook playbooks/setup/dev.yaml --limit <host> -u <user> -K
 - name: Setup Development Environment
-  hosts: all
+  hosts: arethusa
   become: yes
 
   vars:

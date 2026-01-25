@@ -12,7 +12,7 @@
       ansible.builtin.user:
         name: julian
         shell: /bin/bash
-        groups: sudo
+        groups: sudo,docker
         append: yes
         create_home: yes
         state: present
@@ -32,7 +32,7 @@
         state: directory
         owner: julian
         group: julian
-        mode: '0700'
+        mode: "0700"
 
     - name: Install a cron job to pull GitHub keys for julian
       ansible.builtin.cron:

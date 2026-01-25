@@ -1,0 +1,39 @@
+services:
+  traccar-db:
+    image: timescale/timescaledb-ha:pg16
+    container_name: traccar-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=traccar
+      - POSTGRES_USER=traccar
+      - POSTGRES_PASSWORD=traccar
+    volumes:
+      - ./data:/home/postgres/pgdata/data
+
+  traccar:
+    image: traccar/traccar:latest
+    container_name: traccar
+    restart: unless-stopped
+    depends_on:
+      - traccar-db
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8082/api/health"]
+      interval: 2m
+      start_period: 1h
+    ports:
+      - "8082:8082"
+      - "5000-5150:5000-5150"
+      - "5000-5150:5000-5150/udp"
+    volumes:
+      - ./logs:/opt/traccar/logs:rw
+
+  autoheal:
+    image: willfarrell/autoheal:latest
+    container_name: traccar-autoheal
+    restart: unless-stopped
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=all
+      - AUTOHEAL_INTERVAL=60
+      - AUTOHEAL_START_PERIOD=3600
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

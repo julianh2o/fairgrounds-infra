@@ -77,7 +77,6 @@
         state: absent
       loop: "{{ netplan_files.files }}"
       when:
-        - netplan_config.changed
         - item.path != '/etc/netplan/50-static-ip.yaml'
 
     - name: Remind to reboot

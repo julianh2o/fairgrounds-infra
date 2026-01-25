@@ -1,0 +1,14 @@
+- name: Deploy Traccar
+  hosts: daphne
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: traccar
+        compose_template: traccar-compose.yml.j2
+        config_files: []
+        service_directories:
+          - logs
+          - data
+        docker_compose_state: present
