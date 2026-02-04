@@ -1,3 +1,5 @@
+roles/geerlingguy.node_exporter
+
 .env
 
 # Ansible vault password file (NEVER commit this - it's the decryption key)
