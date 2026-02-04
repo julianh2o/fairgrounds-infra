@@ -1,6 +1,6 @@
-    - name: Install Node Exporter
-      hosts: all
-      become: yes
+- name: Install Node Exporter
+  hosts: vms
+  become: yes
 
-      roles:
-        - role: geerlingguy.node_exporter
+  roles:
+    - role: geerlingguy.node_exporter

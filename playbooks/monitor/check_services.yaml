@@ -1,0 +1,59 @@
+---
+- name: Check DNS and connectivity for all services and hosts
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    services: "{{ lookup('file', playbook_dir + '/../../config/services.yaml') | from_yaml }}"
+
+  tasks:
+    # =========================================================================
+    # DNS + HTTP check for each service in services.yaml
+    # =========================================================================
+    - name: Curl each service endpoint
+      ansible.builtin.uri:
+        url: "https://{{ item.name }}"
+        method: GET
+        validate_certs: yes
+        timeout: 10
+        status_code: [200, 301, 302, 303, 307, 308, 401, 403]
+      loop: "{{ services.services }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: service_results
+      ignore_errors: yes
+
+    - name: Report service check results
+      ansible.builtin.debug:
+        msg: >-
+          {{ item.item.name }}:
+          {{ 'OK (' ~ item.status ~ ')' if item.status is defined and item.status != -1
+             else 'FAILED - ' ~ (item.msg | default('unreachable')) }}
+      loop: "{{ service_results.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+
+    # =========================================================================
+    # Ping each host at <hostname>.fg
+    # =========================================================================
+    - name: Build list of all inventory hostnames
+      ansible.builtin.set_fact:
+        all_hostnames: "{{ groups['all'] | reject('equalto', 'localhost') | list }}"
+
+    - name: Ping each host via .fg domain
+      ansible.builtin.command:
+        cmd: "ping -c 2 -W 3 {{ item }}.fg"
+      loop: "{{ all_hostnames }}"
+      register: ping_results
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Report ping results
+      ansible.builtin.debug:
+        msg: >-
+          {{ item.item }}.fg:
+          {{ 'OK' if item.rc == 0 else 'FAILED - unreachable' }}
+      loop: "{{ ping_results.results }}"
+      loop_control:
+        label: "{{ item.item }}.fg"
