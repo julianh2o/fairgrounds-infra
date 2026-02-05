@@ -25,7 +25,8 @@ Lightweight and high-availability services.
 - **pihole** - DNS server with ad blocking
 
 ### 10.10.0.13 (Daphne on Njord)
-Unassigned
+- **traccar** - GPS tracking server
+- **copyparty** - File server with resumable uploads
 
 ### 10.10.0.14 (Arethusa on Njord)
 Development Sandbox
