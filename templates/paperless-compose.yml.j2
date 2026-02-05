@@ -1,0 +1,40 @@
+services:
+  broker:
+    image: docker.io/library/redis:8
+    container_name: paperless-redis
+    restart: unless-stopped
+    volumes:
+      - /mnt/Store/services/paperless/redis:/data
+
+  db:
+    image: docker.io/library/postgres:18
+    container_name: paperless-db
+    restart: unless-stopped
+    volumes:
+      - /mnt/Store/services/paperless/pg:/var/lib/postgresql
+    environment:
+      POSTGRES_DB: {{ paperless_db_name | default('paperless') }}
+      POSTGRES_USER: {{ paperless_db_user | default('paperless') }}
+      POSTGRES_PASSWORD: {{ paperless_db_password | default('paperless') }}
+
+  webserver:
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    container_name: paperless
+    restart: unless-stopped
+    depends_on:
+      - db
+      - broker
+    ports:
+      - "8000:8000"
+    volumes:
+      - /mnt/Store/services/paperless/data:/usr/src/paperless/data
+      - /mnt/Store/services/paperless/media:/usr/src/paperless/media
+      - /mnt/Store/services/paperless/export:/usr/src/paperless/export
+      - /mnt/Store/services/paperless/consume:/usr/src/paperless/consume
+    environment:
+      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_DBHOST: db
+      PAPERLESS_DBNAME: {{ paperless_db_name | default('paperless') }}
+      PAPERLESS_DBUSER: {{ paperless_db_user | default('paperless') }}
+      PAPERLESS_DBPASS: {{ paperless_db_password | default('paperless') }}
+      PAPERLESS_URL: https://paperless.julianverse.net

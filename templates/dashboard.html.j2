@@ -12,13 +12,13 @@
         }
 
         .service-icon {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             margin-right: 12px;
             border-radius: 6px;
             object-fit: contain;
             background: white;
-            padding: 4px;
+            padding: 1px;
         }
 
         body {
@@ -88,121 +88,119 @@
             box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .api-link {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem 0.75rem;
-            background: #f7fafc;
-            border-radius: 6px;
-            text-decoration: none;
+        .group-heading {
+            font-size: 1.1rem;
+            font-weight: 600;
             color: #4a5568;
-            transition: all 0.2s;
-            border-left: 3px solid #718096;
-            font-size: 0.875rem;
-        }
-
-        .api-link:hover {
-            background: #edf2f7;
-            transform: translateX(3px);
-        }
-
-        .infra-item {
-            padding: 0.5rem 0.75rem;
-            background: #fafafa;
-            border-radius: 6px;
+            margin-top: 1.25rem;
             margin-bottom: 0.5rem;
-            border-left: 2px solid #cbd5e0;
-            font-size: 0.875rem;
-            color: #718096;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid #e2e8f0;
+            text-transform: capitalize;
+        }
+
+        .group-heading:first-of-type {
+            margin-top: 0;
+        }
+
+        .service-info {
+            flex: 1;
+            min-width: 0;
         }
 
         .service-name {
-            font-weight: 600;
-            flex-grow: 1;
-        }
-
-        .service-link .service-name {
-            font-size: 1.125rem;
             font-weight: 700;
+            font-size: 1.05rem;
         }
 
-        .service-meta {
-            font-size: 0.875rem;
-            margin-left: 1rem;
+        .service-description {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.75);
+            margin-top: 0.125rem;
         }
 
-        .service-link .service-meta {
-            color: rgba(255, 255, 255, 0.8);
+        .host-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            margin-top: 1.25rem;
+            border-bottom: 2px solid #48bb78;
+            margin-bottom: 0.5rem;
         }
 
-        .api-link .service-meta {
-            color: #a0aec0;
-        }
-
-        .host-item {
-            padding: 0.75rem;
-            background: #f7fafc;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            border-left: 4px solid #48bb78;
+        .host-header:first-child {
+            margin-top: 0;
         }
 
         .host-name {
-            font-weight: 600;
+            font-weight: 700;
             color: #2d3748;
-            margin-bottom: 0.25rem;
+            font-size: 1.1rem;
         }
 
-        .host-details {
-            font-size: 0.875rem;
+        .host-ip {
+            font-size: 0.85rem;
             color: #718096;
+            font-family: monospace;
         }
 
         .stack-item {
-            padding: 1rem;
+            padding: 0.75rem 1rem;
             background: #f7fafc;
             border-radius: 8px;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             border-left: 4px solid #ed8936;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .stack-info {
+            flex: 1;
+            min-width: 0;
         }
 
         .stack-name {
             font-weight: 600;
             color: #2d3748;
-            margin-bottom: 0.25rem;
+            font-size: 0.95rem;
         }
 
         .stack-description {
-            font-size: 0.875rem;
+            font-size: 0.8rem;
             color: #718096;
-            margin-bottom: 0.5rem;
         }
 
-        .stack-endpoints {
-            list-style: none;
-            margin-top: 0.5rem;
+        .stack-icons {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            flex-wrap: wrap;
         }
 
-        .stack-endpoint {
-            display: inline-block;
-            margin-right: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .endpoint-link {
-            padding: 0.25rem 0.75rem;
+        .stack-icon-link {
+            display: block;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
             background: white;
-            border-radius: 4px;
-            text-decoration: none;
-            color: #667eea;
-            font-size: 0.875rem;
-            border: 1px solid #667eea;
-            transition: all 0.2s;
+            padding: 2px;
+            border: 1px solid #e2e8f0;
         }
 
-        .endpoint-link:hover {
-            background: #667eea;
-            color: white;
+        .stack-icon-link:hover {
+            transform: scale(1.2);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .stack-icon-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .badge {
@@ -229,6 +227,8 @@
     'nzbhydra': 'nzbhydra.png',
     'ollama': 'ollama.png',
     'ombi': 'ombi.png',
+    'paperless': 'paperless.png',
+    'pihole': 'pihole.png',
     'plex': 'plex.png',
     'njord': 'proxmox.png',
     'proxmox': 'proxmox.png',
@@ -239,6 +239,7 @@
     'sabnzbd': 'sabnzbd.png',
     'sonarr': 'sonarr.png',
     'tautulli': 'tautulli.png',
+    'traccar': 'traccar.png',
     'truenas': 'truenas.png'
 } %}
     <div class="container">
@@ -248,97 +249,73 @@
             <!-- Web Applications Section -->
             <div class="card">
                 <h2>Web Applications</h2>
+{% for group, group_services in services | selectattr('type', 'equalto', 'webapp') | groupby('group') %}
+                <h3 class="group-heading">{{ group }}</h3>
                 <ul class="service-list">
-{% for service in services %}
-{% if service.type == 'webapp' %}
-{% set service_key = service.name.split('.')[0] %}
+{% for service in group_services %}
+{% set service_key = service.url.split('.')[0] %}
 {% set icon = favicon_map.get(service_key, 'default.png') %}
                     <li class="service-item">
-                        <a href="{{ service.protocol | default('https') }}://{{ service.name }}" class="service-link" target="_blank">
+                        <a href="{{ service.protocol | default('https') }}://{{ service.url }}" class="service-link" target="_blank">
                             <img src="favicons/{{ icon }}" alt="{{ service_key }}" class="service-icon">
-                            <span class="service-name">{{ service.name }}</span>
-                            <span class="service-meta">:{{ service.port }}</span>
+                            <div class="service-info">
+                                <div class="service-name">{{ service.name }}</div>
+                                <div class="service-description">{{ service.description }}</div>
+                            </div>
                         </a>
                     </li>
-{% endif %}
 {% endfor %}
                 </ul>
+{% endfor %}
             </div>
 
-            <!-- Combined Infrastructure Section -->
+            <!-- Infrastructure Hosts with Compose Stacks -->
             <div class="card">
-                <h2>API Services</h2>
-                <ul class="service-list">
-{% for service in services %}
-{% if service.type == 'api' %}
-{% set service_key = service.name.split('.')[0] %}
-{% set icon = favicon_map.get(service_key, 'default.png') %}
-                    <li class="service-item">
-                        <a href="{{ service.protocol | default('https') }}://{{ service.name }}" class="api-link" target="_blank">
-                            <img src="favicons/{{ icon }}" alt="{{ service_key }}" class="service-icon">
-                            <span class="service-name">{{ service.name }}</span>
-                            <span class="service-meta">:{{ service.port }}</span>
-                        </a>
-                    </li>
-{% endif %}
-{% endfor %}
-                </ul>
-
-                <h2 style="margin-top: 2rem;">Infrastructure Services</h2>
-                <ul class="service-list">
-{% for stack in stacks %}
-{% if not stack.endpoints %}
-                    <li class="infra-item">
-                        <div class="service-name">{{ stack.name }}</div>
-                        <div style="font-size: 0.75rem; margin-top: 0.25rem;">{{ stack.description }}</div>
-                    </li>
-{% endif %}
-{% endfor %}
-                </ul>
-
-                <h2 style="margin-top: 2rem;">Infrastructure Hosts</h2>
-                <ul class="service-list">
+                <h2>Infrastructure Hosts</h2>
 {% for host in groups['all'] %}
-                    <li class="host-item">
-                        <div class="host-name">{{ host }}</div>
-                        <div class="host-details">
-                            IP: {{ hostvars[host].ansible_host }}
-{% if hostvars[host].get('exporter_port') %}
-                            | Exporter: {{ hostvars[host].exporter_port }}
-{% endif %}
-                        </div>
+                <div class="host-header">
+                    <span class="host-name">{{ host }}</span>
+                    <span class="host-ip">{{ hostvars[host].ansible_host }}</span>
 {% for group in groups %}
 {% if host in groups[group] and group != 'all' %}
-                        <span class="badge">{{ group }}</span>
+                    <span class="badge">{{ group }}</span>
 {% endif %}
 {% endfor %}
-                    </li>
-{% endfor %}
-                </ul>
-            </div>
-
-            <!-- Docker Compose Stacks Section -->
-            <div class="card">
-                <h2>Docker Compose Stacks</h2>
+                </div>
+{% set host_ip = hostvars[host].ansible_host %}
+{% set ns = namespace(has_stacks=false) %}
 {% for stack in stacks %}
+{% if stack.machine == host_ip %}
+{% set ns.has_stacks = true %}
                 <div class="stack-item">
-                    <div class="stack-name">{{ stack.name }}</div>
-                    <div class="stack-description">{{ stack.description }}</div>
-                    <div class="host-details">
-                        <span class="badge">{{ stack.machine }}</span>
-                        <span class="badge">{{ stack.path }}</span>
+                    <div class="stack-info">
+                        <div class="stack-name">{{ stack.name }}</div>
+                        <div class="stack-description">{{ stack.description }}</div>
                     </div>
 {% if stack.endpoints %}
-                    <ul class="stack-endpoints">
+                    <div class="stack-icons">
 {% for endpoint in stack.endpoints %}
+{% if ':' in endpoint | string %}
 {% set port, domain = endpoint.split(':') %}
-                        <li class="stack-endpoint">
-                            <a href="http://{{ domain }}" class="endpoint-link" target="_blank">{{ domain }}</a>
-                        </li>
+{% set service_key = domain.split('.')[0] %}
+{% set icon = favicon_map.get(service_key, 'default.png') %}
+                        <a href="https://{{ domain }}" class="stack-icon-link" title="{{ domain }}" target="_blank">
+                            <img src="favicons/{{ icon }}" alt="{{ service_key }}">
+                        </a>
+{% endif %}
 {% endfor %}
-                    </ul>
+                    </div>
 {% endif %}
                 </div>
+{% endif %}
+{% endfor %}
+{% if not ns.has_stacks %}
+                <div class="stack-item" style="border-left-color: #cbd5e0;">
+                    <div class="stack-info">
+                        <div class="stack-description">No compose stacks</div>
+                    </div>
+                </div>
+{% endif %}
 {% endfor %}
             </div>
         </div>

@@ -4,9 +4,11 @@ services:
   # bawdyshop.space
   # ============================================================================
 
-  # Uneventful - Custom application
-  - name: uneventful.bawdyshop.space
+  - name: Uneventful
+    description: Custom event scheduling application
+    url: uneventful.bawdyshop.space
     type: webapp
+    group: custom
     machine: 10.10.0.11
     port: 2050
 
@@ -14,21 +16,27 @@ services:
   # julianhartline.com
   # ============================================================================
 
-  # Audiobookshelf - Audiobook and podcast server
-  - name: books.julianhartline.com
+  - name: Audiobookshelf
+    description: Audiobook and podcast server
+    url: books.julianhartline.com
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 13378
 
-  # Immich - Photo management
-  - name: photos.julianhartline.com
+  - name: Immich
+    description: Photo and video management
+    url: photos.julianhartline.com
     type: webapp
+    group: utilities
     machine: 10.10.0.10
     port: 2283
 
-  # Ombi - Request media
-  - name: plex.julianhartline.com
+  - name: Ombi
+    description: Request media
+    url: plex.julianhartline.com
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 3579
 
@@ -36,53 +44,69 @@ services:
   # julianverse.net
   # ============================================================================
 
-  # Dashboard - Infrastructure overview
-  - name: dashboard.julianverse.net
+  - name: Dashboard
+    description: Infrastructure overview
+    url: dashboard.julianverse.net
     type: webapp
+    group: utilities
     machine: 10.10.0.11
     port: 9999
 
-  # Proxmox - Run VMs
-  - name: njord.julianverse.net
+  - name: Proxmox
+    description: Virtual machine hypervisor
+    url: njord.julianverse.net
     type: webapp
+    group: infrastructure
     machine: 10.10.0.5
     protocol: https
     port: 8006
     tls_skip_verify: true
 
-  # Fair-map - Map of the fairgrounds
-  - name: map.julianverse.net
+  - name: Fair-map
+    description: Interactive map of the fairgrounds
+    url: map.julianverse.net
     type: webapp
+    group: custom
     machine: 10.10.0.11
     port: 3050
 
-  # Whisper - Speech to Text and Text to Speech
-  - name: whisper.julianverse.net
+  - name: Whisper
+    description: Speech to text and text to speech
+    url: whisper.julianverse.net
     type: api
+    group: ai
     machine: 10.10.0.40
     port: 10300
 
-  # Grafana - Metrics visualization
-  - name: grafana.julianverse.net
+  - name: Grafana
+    description: Metrics visualization and dashboards
+    url: grafana.julianverse.net
     type: webapp
+    group: infrastructure
     machine: 10.10.0.11
     port: 3000
 
-  # Prometheus - Metrics collection and monitoring
-  - name: prometheus.julianverse.net
+  - name: Prometheus
+    description: Metrics collection and monitoring
+    url: prometheus.julianverse.net
     type: webapp
+    group: infrastructure
     machine: 10.10.0.11
     port: 9090
 
-  # Home Assistant - Home automation platform
-  - name: home.julianverse.net
+  - name: Home Assistant
+    description: Home automation platform
+    url: home.julianverse.net
     type: webapp
+    group: infrastructure
     machine: 10.10.0.30
     port: 8123
 
-  # Ollama - Large language model API
-  - name: ollama.julianverse.net
+  - name: Ollama
+    description: Large language model API
+    url: ollama.julianverse.net
     type: api
+    group: ai
     machine: 10.10.0.40
     port: 11434
 
@@ -90,98 +114,130 @@ services:
   # Myflix Stack (deployed via deploy_myflix.yaml)
   # ----------------------------------------------------------------------------
 
-  # Audiobookshelf - Audiobook and podcast server
-  - name: audiobookshelf.julianverse.net
+  - name: Deluge
+    description: BitTorrent client
+    url: deluge.julianverse.net
     type: webapp
-    machine: 10.10.0.11
-    port: 13378
-
-  # Deluge - BitTorrent client
-  - name: deluge.julianverse.net
-    type: webapp
+    group: media
     machine: 10.10.0.11
     port: 8112
 
-  # Jackett - Torrent indexer proxy
-  - name: jackett.julianverse.net
+  - name: Jackett
+    description: Torrent indexer proxy
+    url: jackett.julianverse.net
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 9117
 
-  # NZBHydra2 - NZB meta search
-  - name: nzbhydra.julianverse.net
+  - name: NZBHydra2
+    description: NZB meta search
+    url: nzbhydra.julianverse.net
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 5076
 
-  # Ombi - Media request platform
-  - name: ombi.julianverse.net
+  - name: Ombi
+    description: Media request platform
+    url: ombi.julianverse.net
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 3579
 
-  # qBittorrent - BitTorrent client
-  - name: qbittorrent.julianverse.net
+  - name: qBittorrent
+    description: BitTorrent client
+    url: qbittorrent.julianverse.net
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 3211
 
-  # Radarr - Movie collection manager
-  - name: radarr.julianverse.net
+  - name: Radarr
+    description: Movie collection manager
+    url: radarr.julianverse.net
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 7878
 
-  # Readarr - Book collection manager
-  - name: readarr.julianverse.net
+  - name: Readarr
+    description: Book collection manager
+    url: readarr.julianverse.net
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 8787
 
-  # rreading-glasses - Hardcover reading tracker
-  - name: rreading-glasses.julianverse.net
+  - name: rreading-glasses
+    description: Hardcover reading tracker
+    url: rreading-glasses.julianverse.net
     type: api
+    group: media
     machine: 10.10.0.11
     port: 8788
 
-  # SABnzbd - Usenet downloader
-  - name: sabnzbd.julianverse.net
+  - name: SABnzbd
+    description: Usenet downloader
+    url: sabnzbd.julianverse.net
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 20630
 
-  # Sonarr - TV series collection manager
-  - name: sonarr.julianverse.net
+  - name: Sonarr
+    description: TV series collection manager
+    url: sonarr.julianverse.net
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 8989
 
-  # Tautulli - Plex monitoring and statistics
-  - name: tautulli.julianverse.net
+  - name: Tautulli
+    description: Plex monitoring and statistics
+    url: tautulli.julianverse.net
     type: webapp
+    group: media
     machine: 10.10.0.11
     port: 8181
 
-  # TrueNAS - Network attached storage management interface
-  - name: truenas.julianverse.net
+  - name: TrueNAS
+    description: Network attached storage management interface
+    url: truenas.julianverse.net
     type: webapp
+    group: infrastructure
     machine: 10.10.0.6
     port: 80
 
-  # Pi-hole - DNS server with ad blocking
-  - name: pihole.julianverse.net
+  - name: Pi-hole
+    description: DNS server with ad blocking
+    url: pihole.julianverse.net
     type: webapp
+    group: infrastructure
     machine: 10.10.0.12
     port: 8080
 
-  # Copyparty - File server with resumable uploads
-  - name: files.julianhartline.com
+  - name: Copyparty
+    description: File server with resumable uploads
+    url: files.julianhartline.com
     type: webapp
+    group: utilities
     machine: 10.10.0.13
     port: 3923
 
-  # Traccar - GPS tracking server
-  - name: traccar.julianverse.net
+  - name: Traccar
+    description: GPS tracking server
+    url: traccar.julianverse.net
     type: webapp
+    group: utilities
     machine: 10.10.0.13
     port: 8082
+
+  - name: Paperless-ngx
+    description: Document management system
+    url: paperless.julianverse.net
+    type: webapp
+    group: utilities
+    machine: 10.10.0.13
+    port: 8000

@@ -15,7 +15,7 @@
 
 ### Ansible Managed Proxies - Do not modify anything below this line ###
 {% for service in services.services %}
-https://{{ service.name }} {
+https://{{ service.url }} {
   reverse_proxy {{ service.protocol | default('http') }}://{{ service.machine }}:{{ service.port }} {
 {% if service.tls_skip_verify | default(false) %}
     transport http {

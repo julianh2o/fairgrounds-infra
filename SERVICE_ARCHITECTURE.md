@@ -18,7 +18,6 @@ General purpose VM.
 - **fair-map** - Fairgrounds map
 - **uneventful** - Bawdy Shop Events
 - **discord-ollama** - Discord bot with Ollama LLM
-- **caddy** - Reverse proxy
 
 ### 10.10.0.12 (Europa on Njord)
 Lightweight and high-availability services.

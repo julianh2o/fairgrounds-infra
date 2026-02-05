@@ -1,0 +1,9 @@
+---
+# Deploy services that need updating when a new service is added
+# (reverse proxy config + infrastructure dashboard)
+
+- name: Deploy Caddy
+  import_playbook: services/deploy_caddy.yaml
+
+- name: Deploy Dashboard
+  import_playbook: services/deploy_dashboard.yaml

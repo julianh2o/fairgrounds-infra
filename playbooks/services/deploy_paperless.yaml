@@ -1,0 +1,14 @@
+---
+- name: Deploy Paperless-ngx
+  hosts: daphne
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: paperless
+        compose_template: paperless-compose.yml.j2
+        service_directories:
+          - export
+          - consume
+        docker_compose_state: present

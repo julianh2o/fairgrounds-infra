@@ -13,26 +13,26 @@
     # =========================================================================
     - name: Curl each service endpoint
       ansible.builtin.uri:
-        url: "https://{{ item.name }}"
+        url: "https://{{ item.url }}"
         method: GET
         validate_certs: yes
         timeout: 10
         status_code: [200, 301, 302, 303, 307, 308, 401, 403]
       loop: "{{ services.services }}"
       loop_control:
-        label: "{{ item.name }}"
+        label: "{{ item.url }}"
       register: service_results
       ignore_errors: yes
 
     - name: Report service check results
       ansible.builtin.debug:
         msg: >-
-          {{ item.item.name }}:
+          {{ item.item.url }}:
           {{ 'OK (' ~ item.status ~ ')' if item.status is defined and item.status != -1
              else 'FAILED - ' ~ (item.msg | default('unreachable')) }}
       loop: "{{ service_results.results }}"
       loop_control:
-        label: "{{ item.item.name }}"
+        label: "{{ item.item.url }}"
 
     # =========================================================================
     # Ping each host at <hostname>.fg
