@@ -22,7 +22,7 @@ stacks:
           - 13378:audiobookshelf.julianverse.net
           - 13378:books.julianhartline.com
           - 8787:readarr.julianverse.net
-          - 8788:rreading-glasses.julianverse.net
+          - 8788
           - 8181:tautulli.julianverse.net
 
     # ============================================================================
