@@ -12,13 +12,13 @@
         }
 
         .service-icon {
-            width: 32px;
-            height: 32px;
+            width: 44px;
+            height: 44px;
             margin-right: 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             object-fit: contain;
             background: white;
-            padding: 1px;
+            padding: 3px;
         }
 
         body {
@@ -42,8 +42,8 @@
         }
 
         .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 2rem;
             margin-bottom: 2rem;
         }
@@ -65,22 +65,44 @@
 
         .service-list {
             list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
         }
 
         .service-item {
-            margin-bottom: 0.75rem;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .service-item {
+                width: calc(50% - 0.375rem);
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .service-item {
+                width: calc(33.333% - 0.5rem);
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .service-item {
+                width: calc(25% - 0.5625rem);
+            }
         }
 
         .service-link {
             display: flex;
             align-items: center;
-            padding: 1rem;
+            padding: 0.75rem 1rem;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 12px;
             text-decoration: none;
             color: white;
             transition: all 0.3s;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            height: 100%;
         }
 
         .service-link:hover {
@@ -89,18 +111,13 @@
         }
 
         .group-heading {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             font-weight: 600;
-            color: #4a5568;
-            margin-top: 1.25rem;
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.25rem;
-            border-bottom: 1px solid #e2e8f0;
+            color: #667eea;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #667eea;
             text-transform: capitalize;
-        }
-
-        .group-heading:first-of-type {
-            margin-top: 0;
         }
 
         .service-info {
@@ -247,10 +264,12 @@
 
         <div class="grid">
             <!-- Web Applications Section -->
+{% set group_order = ['media', 'utilities', 'infrastructure', 'custom'] %}
+{% for group_name in group_order %}
+{% set group_services = services | selectattr('type', 'equalto', 'webapp') | selectattr('group', 'equalto', group_name) | list %}
+{% if group_services %}
             <div class="card">
-                <h2>Web Applications</h2>
-{% for group, group_services in services | selectattr('type', 'equalto', 'webapp') | groupby('group') %}
-                <h3 class="group-heading">{{ group }}</h3>
+                <h3 class="group-heading">{{ group_name }}</h3>
                 <ul class="service-list">
 {% for service in group_services %}
 {% set service_key = service.url.split('.')[0] %}
@@ -266,8 +285,9 @@
                     </li>
 {% endfor %}
                 </ul>
-{% endfor %}
             </div>
+{% endif %}
+{% endfor %}
 
             <!-- Infrastructure Hosts with Compose Stacks -->
             <div class="card">

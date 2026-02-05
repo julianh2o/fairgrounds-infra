@@ -138,14 +138,6 @@ services:
     machine: 10.10.0.11
     port: 5076
 
-  - name: Ombi
-    description: Media request platform
-    url: ombi.julianverse.net
-    type: webapp
-    group: media
-    machine: 10.10.0.11
-    port: 3579
-
   - name: qBittorrent
     description: BitTorrent client
     url: qbittorrent.julianverse.net
