@@ -1,18 +1,10 @@
 ---
 - name: Deploy Vikunja
-  hosts: europa
+  hosts: daphne
   become: yes
 
   vars_files:
     - ../../secrets.yml
-
-  pre_tasks:
-    - name: Create Vikunja files directory with correct ownership
-      ansible.builtin.file:
-        path: /opt/vikunja/files
-        state: directory
-        owner: "1000"
-        group: "1000"
 
   roles:
     - role: docker_service
@@ -21,4 +13,4 @@
         compose_template: vikunja-compose.yml.j2
         service_directories:
           - db
-        docker_compose_state: present
+        docker_compose_state: restarted

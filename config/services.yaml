@@ -215,7 +215,7 @@ services:
     url: vikunja.julianverse.net
     type: webapp
     group: utilities
-    machine: 10.10.0.12
+    machine: 10.10.0.13
     port: 3456
 
   - name: Copyparty
