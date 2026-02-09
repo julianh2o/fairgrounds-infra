@@ -31,6 +31,9 @@
 - name: Deploy Discord-Ollama
   import_playbook: services/deploy_discord_ollama.yaml
 
+- name: Deploy Vikunja
+  import_playbook: services/deploy_vikunja.yaml
+
 # Backup services
 - name: Deploy Rclone to Backblaze
   import_playbook: services/deploy_rclone_to_backblaze.yaml

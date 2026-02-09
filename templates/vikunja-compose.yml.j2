@@ -1,0 +1,35 @@
+services:
+  vikunja:
+    image: vikunja/vikunja:latest
+    container_name: vikunja
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3456:3456"
+    volumes:
+      - ./files:/app/vikunja/files
+    environment:
+      VIKUNJA_SERVICE_PUBLICURL: https://vikunja.julianverse.net
+      VIKUNJA_SERVICE_JWTSECRET: {{ vikunja_jwt_secret }}
+      VIKUNJA_DATABASE_TYPE: postgres
+      VIKUNJA_DATABASE_HOST: db
+      VIKUNJA_DATABASE_USER: vikunja
+      VIKUNJA_DATABASE_PASSWORD: {{ vikunja_db_password }}
+      VIKUNJA_DATABASE_DATABASE: vikunja
+
+  db:
+    image: postgres:18
+    container_name: vikunja-db
+    restart: unless-stopped
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: vikunja
+      POSTGRES_PASSWORD: {{ vikunja_db_password }}
+      POSTGRES_DB: vikunja
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U vikunja"]
+      interval: 2s
+      start_period: 30s

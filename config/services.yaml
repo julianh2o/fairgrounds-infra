@@ -210,6 +210,14 @@ services:
     machine: 10.10.0.12
     port: 8080
 
+  - name: Vikunja
+    description: Task and project management
+    url: vikunja.julianverse.net
+    type: webapp
+    group: utilities
+    machine: 10.10.0.12
+    port: 3456
+
   - name: Copyparty
     description: File server with resumable uploads
     url: files.julianhartline.com

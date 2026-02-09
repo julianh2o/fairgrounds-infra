@@ -1,6 +1,20 @@
 # fairgrounds-infra
 Infrastructure for the fairgrounds
 
+# Pending Setup Steps
+
+## Vikunja - Add secrets to vault
+Run `ansible-vault edit secrets.yml` and add:
+```yaml
+vikunja_jwt_secret: d0e7cf0e9b929929c4cdad9bc76b43cbf76faf41a9af3eebe9e4f9e487e3c7c4
+vikunja_db_password: 0c9743f96a0790b4d981f59caa177688
+```
+Then deploy:
+```bash
+ansible-playbook playbooks/services/deploy_vikunja.yaml
+ansible-playbook playbooks/deploy_service_updates.yaml
+```
+
 # TODO
 * create Calcifer VM for home assistant
 * more work on grafana dashboards
