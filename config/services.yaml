@@ -154,13 +154,37 @@ services:
     machine: 10.10.0.11
     port: 7878
 
-  - name: Readarr
-    description: Book collection manager
-    url: readarr.julianverse.net
+  - name: Readarr Fiction Audiobooks
+    description: Fiction audiobook collection manager
+    url: readarr-fiction-audiobooks.julianverse.net
+    type: webapp
+    group: media
+    machine: 10.10.0.11
+    port: 8789
+
+  - name: Readarr Fiction Books
+    description: Fiction book collection manager
+    url: readarr-fiction-books.julianverse.net
+    type: webapp
+    group: media
+    machine: 10.10.0.11
+    port: 8790
+
+  - name: Readarr NF Audiobooks
+    description: Non-fiction audiobook collection manager
+    url: readarr-nf-audiobooks.julianverse.net
     type: webapp
     group: media
     machine: 10.10.0.11
     port: 8787
+
+  - name: Readarr NF Books
+    description: Non-fiction book collection manager
+    url: readarr-nf-books.julianverse.net
+    type: webapp
+    group: media
+    machine: 10.10.0.11
+    port: 8791
 
   - name: rreading-glasses
     description: Hardcover reading tracker

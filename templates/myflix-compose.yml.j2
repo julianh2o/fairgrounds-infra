@@ -23,7 +23,10 @@ services:
       - 8989:8989 #sonarr
       - 7878:7878 #radarr
       - 13378:13378 #audiobookshelf
-      - 8787:8787 #readarr
+      - 8787:8787 #readarr-nonfiction-audiobooks
+      - 8789:8789 #readarr-fiction-audiobooks
+      - 8790:8790 #readarr-fiction-books
+      - 8791:8791 #readarr-nonfiction-books
       - 9696:9696 #prowlarr
       - 5010:5010 #mousehole
       - 8181:8181 #tautulli
@@ -185,9 +188,9 @@ services:
     volumes:
       - ./prowlarr:/config
     restart: unless-stopped
-  readarr:
+  readarr-nonfiction-audiobooks:
     image: ghcr.io/pennydreadful/bookshelf:hardcover
-    container_name: readarr
+    container_name: readarr-nonfiction-audiobooks
     network_mode: service:vpn
     depends_on:
       - vpn
@@ -195,10 +198,59 @@ services:
       - PUID=0
       - PGID=0
       - TZ=America/Los_Angeles
+      - PORT=8787
     volumes:
       - ./readarr_nonfiction_audio:/config
       - /mnt/Media/downloads:/downloads
-      - /mnt/Media/library/books:/books
+      - /mnt/Media/library/books/nonfiction_audio:/books
+    restart: unless-stopped
+  readarr-fiction-audiobooks:
+    image: ghcr.io/pennydreadful/bookshelf:hardcover
+    container_name: readarr-fiction-audiobooks
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+      - PORT=8789
+    volumes:
+      - ./readarr_fiction_audio:/config
+      - /mnt/Media/downloads:/downloads
+      - /mnt/Media/library/books/fiction_audio:/books
+    restart: unless-stopped
+  readarr-fiction-books:
+    image: ghcr.io/pennydreadful/bookshelf:hardcover
+    container_name: readarr-fiction-books
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+      - PORT=8790
+    volumes:
+      - ./readarr_fiction_text:/config
+      - /mnt/Media/downloads:/downloads
+      - /mnt/Media/library/books/fiction_text:/books
+    restart: unless-stopped
+  readarr-nonfiction-books:
+    image: ghcr.io/pennydreadful/bookshelf:hardcover
+    container_name: readarr-nonfiction-books
+    network_mode: service:vpn
+    depends_on:
+      - vpn
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+      - PORT=8791
+    volumes:
+      - ./readarr_nonfiction_text:/config
+      - /mnt/Media/downloads:/downloads
+      - /mnt/Media/library/books/nonfiction_text:/books
     restart: unless-stopped
   mousehole:
     image: tmmrtn/mousehole:latest
