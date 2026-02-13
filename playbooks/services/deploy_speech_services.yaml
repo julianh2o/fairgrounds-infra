@@ -1,0 +1,11 @@
+---
+- name: Deploy Speech Services (Whisper + Kokoro)
+  hosts: kvasir
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: speech-services
+        compose_template: speech-services-compose.yml.j2
+        docker_compose_state: present

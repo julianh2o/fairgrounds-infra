@@ -37,7 +37,8 @@ Development Sandbox
 - Home Assistant
 
 ### 10.10.0.40 (Kvasir)
-- **speaches** - Speech-to-text/TTS (whisper.julianverse.net)
+Windows desktop with WSL2, GPU-enabled for AI workloads.
+- **speech-services** - Whisper (STT) + Kokoro (TTS) stack (whisper.julianverse.net, kokoro.julianverse.net)
 - **ollama** - LLM API (no stack, standalone)
 - **comfyui** - AI art
 - **Plex** - Plex Media Center

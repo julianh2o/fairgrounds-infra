@@ -109,12 +109,13 @@ stacks:
     # ============================================================================
     # AI and Speech Services
     # ============================================================================
-    - name: speaches
-      description: Speech to text and text to speech AI service
-      path: /opt/speaches
+    - name: speech-services
+      description: Speech to text (Whisper) and text to speech (Kokoro) AI services
+      path: /opt/speech-services
       machine: 10.10.0.40
       endpoints:
-          - 10300:whisper.julianverse.net
+          - 9000:whisper.julianverse.net
+          - 8880:kokoro.julianverse.net
 
     # ============================================================================
     # Computer Vision
