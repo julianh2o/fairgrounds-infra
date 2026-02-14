@@ -1,0 +1,26 @@
+services:
+  kopia:
+    image: kopia/kopia:latest
+    hostname: kopia
+    container_name: kopia
+    restart: unless-stopped
+    ports:
+      - "51515:51515"
+    command:
+      - server
+      - start
+      - --disable-csrf-token-checks
+      - --insecure
+      - --address=0.0.0.0:51515
+      - --server-username=admin
+      - --server-password={{ kopia_server_password }}
+    environment:
+      KOPIA_PASSWORD: "{{ kopia_repository_password }}"
+      USER: "admin"
+    volumes:
+      - ./config:/app/config
+      - ./cache:/app/cache
+      - ./logs:/app/logs
+      - /opt:/data:ro
+      - /mnt/Store/backups/{{ inventory_hostname }}-services:/repository
+      - ./tmp:/tmp:shared

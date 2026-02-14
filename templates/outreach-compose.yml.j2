@@ -1,0 +1,19 @@
+services:
+  outreach:
+    image: julianh2o/outreach:latest
+    container_name: outreach
+    ports:
+      - "2999:2999"
+    environment:
+      - PORT=2999
+      - NODE_ENV=production
+      - DATABASE_URL=file:./data/db.db
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:2999/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

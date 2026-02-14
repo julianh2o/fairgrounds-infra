@@ -1,0 +1,21 @@
+---
+- name: Deploy Kopia
+  hosts: ceto
+  become: yes
+
+  vars_files:
+    - ../../secrets.yml
+
+  pre_tasks:
+    - name: Ensure backup repository directory exists
+      ansible.builtin.file:
+        path: /mnt/Store/backups/{{ inventory_hostname }}
+        state: directory
+        mode: '0755'
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: kopia
+        compose_template: kopia-compose.yml.j2
+        docker_compose_state: present

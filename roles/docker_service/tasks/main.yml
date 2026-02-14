@@ -60,3 +60,4 @@
     state: "{{ docker_compose_state }}"
     pull: "{{ docker_compose_pull }}"
     build: "{{ docker_compose_build }}"
+    recreate: "{{ docker_compose_recreate }}"

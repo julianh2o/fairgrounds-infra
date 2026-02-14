@@ -1,0 +1,11 @@
+---
+- name: Deploy Outreach
+  hosts: ceto
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: outreach
+        compose_template: outreach-compose.yml.j2
+        docker_compose_state: restarted

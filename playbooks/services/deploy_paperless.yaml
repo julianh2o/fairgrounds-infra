@@ -11,4 +11,4 @@
         service_directories:
           - export
           - consume
-        docker_compose_state: present
+        docker_compose_state: restarted

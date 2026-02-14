@@ -273,3 +273,19 @@ services:
     group: utilities
     machine: 10.10.0.13
     port: 8000
+
+  - name: Kopia
+    description: Backup management
+    url: kopia.julianverse.net
+    type: webapp
+    group: infrastructure
+    machine: 10.10.0.10
+    port: 51515
+
+  - name: Outreach
+    description: Outreach application
+    url: outreach.julianverse.net
+    type: webapp
+    group: custom
+    machine: 10.10.0.10
+    port: 2999

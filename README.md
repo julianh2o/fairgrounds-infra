@@ -1,6 +1,28 @@
 # fairgrounds-infra
 Infrastructure for the fairgrounds
 
+# Managing Secrets
+
+Secrets are stored in `secrets.yml` encrypted with ansible-vault.
+
+```bash
+# Edit secrets
+ansible-vault edit secrets.yml
+
+# View secrets
+ansible-vault view secrets.yml
+
+# Generate a random password
+openssl rand -base64 32
+
+# Add a new secret with a random password
+ansible-vault decrypt secrets.yml && echo "my_secret: $(openssl rand -base64 32)" >> secrets.yml && ansible-vault encrypt secrets.yml
+```
+
+Required secrets:
+- `kopia_server_password` - Kopia web UI password
+- `kopia_repository_password` - Kopia repository encryption password
+
 # TODO
 * create Calcifer VM for home assistant
 * more work on grafana dashboards
