@@ -1,6 +1,27 @@
 # fairgrounds-infra
 Infrastructure for the fairgrounds
 
+# TODO
+* create Calcifer VM for home assistant
+* clean up home assistant scenes to fix those lights and the govee strings
+* figure out clean way of setting the lights in home assistant
+* make outreach display better on mobile devices
+* move more data into outreach
+* finish configuring readarr
+* continue using claude to generate content for outreach
+* more work on grafana dashboards
+* create a good CPU/memory chart for the VM children under the host parent.. These should be colocated and intuitive to show where the resources are going.
+* We can do this CPU/memory chart for both proxmox and truenas
+* It would be great to have a similar network chart that we can weigh against our Gigabit connection. eg..  a way to see how much of our total bandwidth is being used.
+* install uptime kuma: https://github.com/louislam/uptime-kuma
+* add server and service status to home assistant dashboard
+* Move plex to Ceto
+* Move ollama to ceto
+* Move ollama to Ceto
+* Move homeassistant to a new proxmox VM
+* decommmission truenas version of homeassistant
+* create local database server
+
 # Managing Secrets
 
 Secrets are stored in `secrets.yml` encrypted with ansible-vault.
@@ -23,22 +44,6 @@ Required secrets:
 - `kopia_server_password` - Kopia web UI password
 - `kopia_repository_password` - Kopia repository encryption password
 
-# TODO
-* create Calcifer VM for home assistant
-* more work on grafana dashboards
-* create a good CPU/memory chart for the VM children under the host parent.. These should be colocated and intuitive to show where the resources are going.
-* We can do this CPU/memory chart for both proxmox and truenas
-* It would be great to have a similar network chart that we can weigh against our Gigabit connection. eg..  a way to see how much of our total bandwidth is being used.
-* install uptime kuma: https://github.com/louislam/uptime-kuma
-* add server and service status to home assistant dashboard
-* Decomission Melinoe
-* Move plex to Ceto
-* Move ollama to ceto
-* Move speaches to Ceto (also.. do we still want it?)
-* Move ollama to Ceto
-* Move homeassistant to a new proxmox VM
-* decommmission truenas version of homeassistant
-* create local database server
 
 
 # GPU Passthrough Setup Instructions
