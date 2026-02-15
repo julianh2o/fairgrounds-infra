@@ -5,6 +5,7 @@ Infrastructure for the fairgrounds
 * create Calcifer VM for home assistant
 * clean up home assistant scenes to fix those lights and the govee strings
 * figure out clean way of setting the lights in home assistant
+* need a way to add information (contact methods) to users on outreach
 * make outreach display better on mobile devices
 * move more data into outreach
 * finish configuring readarr
