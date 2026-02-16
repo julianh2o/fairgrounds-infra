@@ -1,6 +1,6 @@
 ---
-- name: Update melinoe
-  hosts: melinoe
+- name: Update apt packages
+  hosts: vms
   remote_user: julian
 
   tasks:

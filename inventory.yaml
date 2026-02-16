@@ -8,34 +8,43 @@ vms:
     ceto:
       ansible_host: 10.10.0.10
       exporter_port: 9100
+      description: GPU-enabled workhorse for compute-intensive tasks
     metis:
       ansible_host: 10.10.0.11
       exporter_port: 9100
+      description: General purpose VM
     europa:
       ansible_host: 10.10.0.12
       exporter_port: 9100
+      description: Lightweight and high-availability services
     daphne:
       ansible_host: 10.10.0.13
       exporter_port: 9100
+      description: File and tracking services
     arethusa:
       ansible_host: 10.10.0.14
       exporter_port: 9100
+      description: Development sandbox
 linuxhosts:
   hosts:
     truenas:
       ansible_host: 10.10.0.6
       exporter_port: 9100
+      description: Bare metal NAS
     njord:
       ansible_host: 10.10.0.5
       exporter_port: 9100
+      description: Proxmox bare metal hypervisor
 truenasvms:
   hosts:
     homeassistant:
       ansible_host: 10.10.0.30
       ansible_user: julian
       exporter_port: 9100
+      description: Home Assistant
 otherhosts:
   hosts:
     kvasir:
       ansible_host: 10.10.0.40
       exporter_port: 9182
+      description: Windows desktop with WSL2, GPU-enabled for AI workloads

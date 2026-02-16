@@ -45,19 +45,31 @@
   loop: "{{ config_files }}"
   when: config_files | length > 0
 
+- name: Stop and remove containers
+  community.docker.docker_compose_v2:
+    project_name: "{{ docker_compose_project_name }}"
+    project_src: "{{ service_base_dir }}"
+    state: absent
+  when: docker_compose_state != "stopped"
+
 - name: Pull latest Docker images
   ansible.builtin.command:
     cmd: docker compose pull
     chdir: "{{ service_base_dir }}"
-  when: docker_compose_pull == "always"
   register: docker_pull_result
   changed_when: "'Pulled' in docker_pull_result.stdout or 'Pulling' in docker_pull_result.stdout"
+  when: docker_compose_state != "stopped"
 
-- name: Manage Docker Compose service
+- name: Start containers
   community.docker.docker_compose_v2:
     project_name: "{{ docker_compose_project_name }}"
     project_src: "{{ service_base_dir }}"
-    state: "{{ docker_compose_state }}"
-    pull: "{{ docker_compose_pull }}"
-    build: "{{ docker_compose_build }}"
-    recreate: "{{ docker_compose_recreate }}"
+    state: present
+  when: docker_compose_state != "stopped"
+
+- name: Stop containers (if requested)
+  community.docker.docker_compose_v2:
+    project_name: "{{ docker_compose_project_name }}"
+    project_src: "{{ service_base_dir }}"
+    state: stopped
+  when: docker_compose_state == "stopped"

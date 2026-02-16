@@ -37,10 +37,7 @@ config_files: []
 
 # Docker Compose deployment options
 docker_compose_project_name: "{{ service_name }}"
-docker_compose_state: "restarted"  # present, restarted, stopped (use restarted to pick up newly pulled images)
-docker_compose_pull: "always"      # always, missing, never, policy
-docker_compose_build: "never"      # always, never, policy
-docker_compose_recreate: "always"  # always, never, auto
+docker_compose_state: "present"  # present (down, pull, up) or stopped
 
 # File ownership and permissions
 service_owner: "root"

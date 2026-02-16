@@ -1,6 +1,0 @@
----
-- name: Redeploy Caddy
-  ansible.builtin.import_playbook: ../services/deploy_caddy.yaml
-
-- name: Redeploy Pi-hole
-  ansible.builtin.import_playbook: ../services/deploy_pihole.yaml

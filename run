@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+"""
+Launcher script for running commands defined in scripts.yaml.
+Supports nested organization and argument passing.
+
+Usage:
+    ./run                           # List top-level categories
+    ./run services                  # List services subcommands
+    ./run services deploy caddy     # Run a specific command
+    ./run ping -- --limit melinoe   # Pass arguments after --
+"""
+
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+import yaml
+
+
+def load_scripts():
+    """Load scripts.yaml from the same directory as this script."""
+    script_dir = Path(__file__).parent
+    scripts_path = script_dir / "scripts.yaml"
+
+    if not scripts_path.exists():
+        print(f"Error: {scripts_path} not found")
+        sys.exit(1)
+
+    with open(scripts_path) as f:
+        return yaml.safe_load(f)
+
+
+def is_leaf_node(node):
+    """Check if a node is a runnable command (has 'cmd' key)."""
+    return isinstance(node, dict) and "cmd" in node
+
+
+def print_available(node, path=""):
+    """Print available subcommands at this level."""
+    prefix = f"./run {path}" if path else "./run"
+
+    if not isinstance(node, dict):
+        return
+
+    print(f"Available commands{' under ' + path if path else ''}:\n")
+
+    for key, value in node.items():
+        if key == "name":
+            continue
+
+        if is_leaf_node(value):
+            name = value.get("name", "")
+            print(f"  {prefix} {key}")
+            if name:
+                print(f"      {name}")
+        else:
+            # It's a category
+            subcount = len([k for k in value.keys() if k != "name"])
+            name = value.get("name", "")
+            desc = name if name else f"({subcount} subcommands)"
+            print(f"  {prefix} {key}")
+            print(f"      {desc}")
+
+    print()
+
+
+def navigate(node, args, path_parts=None):
+    """Navigate the tree and either run a command or show available options."""
+    if path_parts is None:
+        path_parts = []
+
+    # No more args - show what's available or run if it's a leaf
+    if not args:
+        if is_leaf_node(node):
+            return node, []
+        print_available(node, " ".join(path_parts))
+        sys.exit(0)
+
+    current_arg = args[0]
+    remaining_args = args[1:]
+
+    # Check for -- which means "pass rest as arguments"
+    if current_arg == "--":
+        if is_leaf_node(node):
+            return node, remaining_args
+        print(f"Error: Cannot pass arguments to a category")
+        print_available(node, " ".join(path_parts))
+        sys.exit(1)
+
+    # Navigate deeper
+    if not isinstance(node, dict):
+        print(f"Error: Invalid path")
+        sys.exit(1)
+
+    if current_arg not in node:
+        print(f"Error: Unknown command '{current_arg}'")
+        print_available(node, " ".join(path_parts))
+        sys.exit(1)
+
+    next_node = node[current_arg]
+    path_parts.append(current_arg)
+
+    # If next node is a leaf and we have remaining args, treat them as command args
+    if is_leaf_node(next_node) and remaining_args:
+        # Check if remaining args start with --
+        if remaining_args[0] == "--":
+            return next_node, remaining_args[1:]
+        # Otherwise pass all remaining as args
+        return next_node, remaining_args
+
+    return navigate(next_node, remaining_args, path_parts)
+
+
+def substitute_args(text, positional_args):
+    """Substitute $1, $2, etc. with positional arguments."""
+    result = text
+    for i, arg in enumerate(positional_args, 1):
+        result = result.replace(f"${i}", arg)
+    return result
+
+
+def count_placeholders(text):
+    """Count how many $N placeholders are in the text."""
+    import re
+    matches = re.findall(r'\$(\d+)', text)
+    return max(int(m) for m in matches) if matches else 0
+
+
+def run_command(node, extra_args):
+    """Execute the command from a leaf node."""
+    cmd = node["cmd"]
+    name = node.get("name", cmd)
+
+    # Check for $N placeholders
+    num_placeholders = count_placeholders(cmd)
+
+    if num_placeholders > 0:
+        if len(extra_args) < num_placeholders:
+            print(f"Error: Command requires {num_placeholders} argument(s)")
+            print(f"Usage: {name}")
+            print(f"Command pattern: {cmd}")
+            sys.exit(1)
+
+        # Split args: first N for substitution, rest are extra
+        positional = extra_args[:num_placeholders]
+        extra_args = extra_args[num_placeholders:]
+
+        cmd = substitute_args(cmd, positional)
+        name = substitute_args(name, positional)
+
+    print(f"Running: {name}")
+    print(f"Command: {cmd}")
+    if extra_args:
+        print(f"Extra args: {' '.join(extra_args)}")
+    print("-" * 40, flush=True)
+
+    # Build full command
+    full_cmd = cmd
+    if extra_args:
+        full_cmd = f"{cmd} {' '.join(extra_args)}"
+
+    # Execute in shell to support pipes, redirects, etc.
+    result = subprocess.run(full_cmd, shell=True, cwd=Path(__file__).parent)
+    sys.exit(result.returncode)
+
+
+def main():
+    scripts = load_scripts()
+
+    # Get the root of the scripts tree
+    root = scripts.get("scripts", scripts)
+
+    # Parse command line args
+    args = sys.argv[1:]
+
+    # Navigate to the target and run
+    target, extra_args = navigate(root, args)
+    run_command(target, extra_args)
+
+
+if __name__ == "__main__":
+    main()

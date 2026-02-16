@@ -1,3 +1,90 @@
 scripts:
-  - name: Deploy all services to fairgrounds infrastructure
-    cmd: ansible-playbook playbooks/monitor/download_docker_state.yaml
+  # Top-level quick commands
+  ping:
+    name: Test connectivity to all hosts
+    cmd: ansible-playbook playbooks/monitor/ping.yaml
+
+  apt_upgrade:
+    name: Update packages on all hosts
+    cmd: ansible-playbook playbooks/maintenance/apt_upgrade.yaml
+    
+  terraform:
+    setup:
+      name: Setup Terraform variables
+      cmd: ansible-playbook playbooks/setup/terraform_vars.yaml
+
+  # Services deployment
+  services:
+    name: Service deployment commands
+    list:
+      name: Show all services grouped by host
+      cmd: python3 scripts/show_services.py
+
+    refresh:
+      name: Refresh pihole, caddy, and dashboard
+      cmd: ansible-playbook playbooks/refresh_services.yaml
+
+    status:
+      name: Check services status
+      cmd: ansible-playbook playbooks/monitor/check_services.yaml
+
+    deploy:
+      name: Deploy $1
+      cmd: ansible-playbook playbooks/services/deploy_$1.yaml
+
+    deploy-all:
+      name: Deploy all services at once
+      cmd: ansible-playbook playbooks/deploy_all_services.yaml
+
+    upgrade:
+      name: Upgrade $1 to latest image version
+      cmd: python3 scripts/upgrade_service.py $1
+
+  # Setup/infrastructure commands
+  setup:
+    name: Infrastructure setup commands
+    import_new_vm:
+      name: Create ansible service account on hosts
+      cmd: ansible-playbook playbooks/setup/ansible_user.yaml -u user --limit $1
+
+    dev:
+      name: Setup development environment
+      cmd: ansible-playbook playbooks/setup/dev.yaml
+
+    vm:
+      name: Setup VM
+      cmd: ansible-playbook playbooks/setup/vm.yaml
+
+  # Monitor/diagnostics
+  monitor:
+    name: Monitoring and diagnostic commands
+    docker-state:
+      name: Download Docker state from hosts
+      cmd: ansible-playbook playbooks/monitor/download_docker_state.yaml
+
+    service-connectability-checker:
+      name: Check dns connectability status
+      cmd: ansible-playbook playbooks/monitor/check_services.yaml
+
+  # Maintenance commands
+  maintenance:
+    name: Maintenance and backup commands
+    backup-service:
+      name: Backup a service
+      cmd: ansible-playbook playbooks/maintenance/backup_service.yaml
+
+    restore-service:
+      name: Restore a service
+      cmd: ansible-playbook playbooks/maintenance/restore_service.yaml
+
+    migrate-service:
+      name: Migrate a service
+      cmd: ansible-playbook playbooks/maintenance/migrate_service.yaml
+
+    reboot-vm:
+      name: Reboot a VM
+      cmd: ansible-playbook playbooks/maintenance/reboot_vm.yaml
+
+    disk-test:
+      name: Run disk performance test
+      cmd: ansible-playbook playbooks/maintenance/disk_performance_test.yaml
