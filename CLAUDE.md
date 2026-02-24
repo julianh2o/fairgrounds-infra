@@ -44,6 +44,7 @@ ansible-playbook playbooks/services/deploy_tautulli.yaml
 ansible-playbook playbooks/services/deploy_discord_ollama.yaml
 ansible-playbook playbooks/services/deploy_rclone_to_backblaze.yaml
 ansible-playbook playbooks/services/deploy_copyparty.yaml
+ansible-playbook playbooks/services/deploy_comfyui.yaml
 
 # Deploy monitoring stack
 ansible-playbook playbooks/setup/node_exporter.yml

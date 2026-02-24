@@ -1,0 +1,16 @@
+---
+- name: Deploy ComfyUI
+  hosts: kvasir
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: comfyui
+        compose_template: comfyui-compose.yml.j2
+        docker_compose_state: present
+        service_directories:
+          - models
+          - output
+          - input
+          - custom_nodes

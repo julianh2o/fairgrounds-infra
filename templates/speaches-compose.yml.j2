@@ -1,0 +1,33 @@
+services:
+  speaches:
+    image: ghcr.io/speaches-ai/speaches:latest-cuda-12.6.3
+    container_name: speaches
+    restart: unless-stopped
+    ports:
+      - "10300:8000"
+    volumes:
+      - hf-hub-cache:/root/.cache/huggingface/hub
+    environment:
+      - WHISPER__INFERENCE_DEVICE=cuda
+      - WHISPER__COMPUTE_TYPE=float16
+      - WHISPER__MODEL=Systran/faster-whisper-large-v3
+      - SPEECH_TO_TEXT__DEFAULT_MODEL=Systran/faster-whisper-large-v3
+      - TEXT_TO_SPEECH__DEFAULT_MODEL=hexgrad/Kokoro-82M
+      - STT_MODEL_TTL=-1
+      - TTS_MODEL_TTL=-1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
+volumes:
+  hf-hub-cache:

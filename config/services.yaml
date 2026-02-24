@@ -118,6 +118,14 @@ services:
     machine: 10.10.0.40
     port: 11434
 
+  - name: ComfyUI
+    description: AI image generation interface
+    url: comfyui.julianverse.net
+    type: webapp
+    group: ai
+    machine: 10.10.0.40
+    port: 8188
+
   # ----------------------------------------------------------------------------
   # Myflix Stack (deployed via deploy_myflix.yaml)
   # ----------------------------------------------------------------------------
