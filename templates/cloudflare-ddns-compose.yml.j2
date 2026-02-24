@@ -1,0 +1,10 @@
+services:
+  cloudflare-ddns:
+    image: ghcr.io/aureum-cloud/cloudflare-ddns:latest
+    container_name: cloudflare-ddns
+    restart: unless-stopped
+    command: ["--repeat"]
+    environment:
+      - CLOUDFLARE_API_TOKEN={{ cloudflare_api_token }}
+    volumes:
+      - ./config.json:/etc/config/config.json:ro

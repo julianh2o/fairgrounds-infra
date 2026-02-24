@@ -174,6 +174,18 @@
             flex-wrap: wrap;
         }
 
+        .service-item-host {
+            padding: 0.75rem 1rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid #48bb78;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
         .stack-info {
             flex: 1;
             min-width: 0;
@@ -228,6 +240,24 @@
             border-radius: 4px;
             font-size: 0.75rem;
             margin-right: 0.5rem;
+        }
+
+        .url-pill {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            background: #48bb78;
+            color: white;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-family: monospace;
+        }
+
+        .url-pill:hover {
+            background: #38a169;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(72, 187, 120, 0.3);
         }
     </style>
 </head>
@@ -304,36 +334,50 @@
 {% endfor %}
                 </div>
 {% set host_ip = hostvars[host].ansible_host %}
-{% set ns = namespace(has_stacks=false) %}
-{% for stack in stacks %}
-{% if stack.machine == host_ip %}
-{% set ns.has_stacks = true %}
+{% set host_services = services | selectattr('machine', 'equalto', host_ip) | list %}
+{% set stacks_on_host = host_services | selectattr('stack', 'defined') | map(attribute='stack') | unique | list %}
+{% set ns = namespace(has_content=false) %}
+{% for stack_name in stacks_on_host %}
+{% set stack_services = host_services | selectattr('stack', 'defined') | selectattr('stack', 'equalto', stack_name) | list %}
+{% if stack_services %}
+{% set ns.has_content = true %}
+{% set first_service = stack_services | first %}
                 <div class="stack-item">
                     <div class="stack-info">
-                        <div class="stack-name">{{ stack.name }}</div>
-                        <div class="stack-description">{{ stack.description }}</div>
+                        <div class="stack-name">{{ stack_name }}</div>
+                        <div class="stack-description">{{ first_service.description if stack_services | length == 1 else 'Docker compose stack with ' + (stack_services | length | string) + ' services' }}</div>
                     </div>
-{% if stack.endpoints %}
                     <div class="stack-icons">
-{% for endpoint in stack.endpoints %}
-{% if ':' in endpoint | string %}
-{% set port, domain = endpoint.split(':') %}
-{% set service_key = domain.split('.')[0] %}
+{% for service in stack_services %}
+{% if service.url %}
+{% set service_key = service.url.split('.')[0] %}
 {% set icon = favicon_map.get(service_key, 'default.png') %}
-                        <a href="https://{{ domain }}" class="stack-icon-link" title="{{ domain }}" target="_blank">
+                        <a href="{{ service.protocol | default('https') }}://{{ service.url }}" class="stack-icon-link" title="{{ service.url }}" target="_blank">
                             <img src="favicons/{{ icon }}" alt="{{ service_key }}">
                         </a>
 {% endif %}
 {% endfor %}
                     </div>
-{% endif %}
                 </div>
 {% endif %}
 {% endfor %}
-{% if not ns.has_stacks %}
+{% set standalone_services = host_services | rejectattr('stack', 'defined') | list %}
+{% for service in standalone_services %}
+{% set ns.has_content = true %}
+                <div class="service-item-host">
+                    <div class="stack-info">
+                        <div class="stack-name">{{ service.name }}</div>
+                        <div class="stack-description">{{ service.description }}</div>
+                    </div>
+{% if service.url %}
+                    <a href="{{ service.protocol | default('https') }}://{{ service.url }}" class="url-pill" target="_blank">{{ service.url }}</a>
+{% endif %}
+                </div>
+{% endfor %}
+{% if not ns.has_content %}
                 <div class="stack-item" style="border-left-color: #cbd5e0;">
                     <div class="stack-info">
-                        <div class="stack-description">No compose stacks</div>
+                        <div class="stack-description">No compose stacks or services</div>
                     </div>
                 </div>
 {% endif %}

@@ -40,6 +40,10 @@ scripts:
       name: Upgrade $1 to latest image version
       cmd: python3 scripts/upgrade_service.py $1
 
+    logs:
+      name: Follow logs for $1 (last 50 lines)
+      cmd: python3 scripts/service_logs.py $1
+
   # Setup/infrastructure commands
   setup:
     name: Infrastructure setup commands

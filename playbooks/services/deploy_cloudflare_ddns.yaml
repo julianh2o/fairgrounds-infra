@@ -1,0 +1,17 @@
+---
+- name: Deploy Cloudflare DDNS
+  hosts: daphne
+  become: yes
+
+  vars_files:
+    - ../../secrets.yml
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: cloudflare-ddns
+        compose_template: cloudflare-ddns-compose.yml.j2
+        config_files:
+          - src: cloudflare-ddns-config.json.j2
+            dest: config.json
+        docker_compose_state: present

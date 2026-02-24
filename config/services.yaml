@@ -11,6 +11,8 @@ services:
     group: custom
     machine: 10.10.0.11
     port: 2050
+    stack: uneventful
+    path: /opt/uneventful
 
   # ============================================================================
   # julianhartline.com
@@ -23,6 +25,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 13378
+    stack: myflix
+    path: /opt/myflix
 
   - name: Immich
     description: Photo and video management
@@ -31,6 +35,8 @@ services:
     group: utilities
     machine: 10.10.0.10
     port: 2283
+    stack: immich
+    path: /opt/immich
 
   - name: Ombi
     description: Request media
@@ -39,6 +45,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 3579
+    stack: myflix
+    path: /opt/myflix
 
   # ============================================================================
   # julianverse.net
@@ -51,6 +59,8 @@ services:
     group: utilities
     machine: 10.10.0.11
     port: 9999
+    stack: dashboard
+    path: /opt/dashboard
 
   - name: Proxmox
     description: Virtual machine hypervisor
@@ -69,6 +79,8 @@ services:
     group: custom
     machine: 10.10.0.11
     port: 3050
+    stack: fair-map
+    path: /opt/fair-map
 
   - name: Whisper Server
     description: Speech to text API
@@ -77,6 +89,8 @@ services:
     group: ai
     machine: 10.10.0.40
     port: 9000
+    stack: speech-services
+    path: /opt/speech-services
 
   - name: Kokoro TTS
     description: Text to speech API
@@ -85,6 +99,8 @@ services:
     group: ai
     machine: 10.10.0.40
     port: 8880
+    stack: speech-services
+    path: /opt/speech-services
 
   - name: Grafana
     description: Metrics visualization and dashboards
@@ -93,6 +109,8 @@ services:
     group: infrastructure
     machine: 10.10.0.11
     port: 3000
+    stack: grafana
+    path: /opt/grafana
 
   - name: Prometheus
     description: Metrics collection and monitoring
@@ -101,6 +119,8 @@ services:
     group: infrastructure
     machine: 10.10.0.11
     port: 9090
+    stack: prometheus
+    path: /opt/prometheus
 
   - name: Home Assistant
     description: Home automation platform
@@ -137,6 +157,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 8112
+    stack: myflix
+    path: /opt/myflix
 
   - name: Jackett
     description: Torrent indexer proxy
@@ -145,6 +167,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 9117
+    stack: myflix
+    path: /opt/myflix
 
   - name: NZBHydra2
     description: NZB meta search
@@ -153,6 +177,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 5076
+    stack: myflix
+    path: /opt/myflix
 
   - name: qBittorrent
     description: BitTorrent client
@@ -161,6 +187,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 3211
+    stack: myflix
+    path: /opt/myflix
 
   - name: Radarr
     description: Movie collection manager
@@ -169,6 +197,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 7878
+    stack: myflix
+    path: /opt/myflix
 
   - name: Readarr Fiction Audiobooks
     description: Fiction audiobook collection manager
@@ -177,6 +207,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 8789
+    stack: myflix
+    path: /opt/myflix
 
   - name: Readarr Fiction Books
     description: Fiction book collection manager
@@ -185,6 +217,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 8790
+    stack: myflix
+    path: /opt/myflix
 
   - name: Readarr NF Audiobooks
     description: Non-fiction audiobook collection manager
@@ -193,6 +227,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 8787
+    stack: myflix
+    path: /opt/myflix
 
   - name: Readarr NF Books
     description: Non-fiction book collection manager
@@ -201,6 +237,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 8791
+    stack: myflix
+    path: /opt/myflix
 
   - name: rreading-glasses
     description: Hardcover reading tracker
@@ -209,6 +247,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 8788
+    stack: myflix
+    path: /opt/myflix
 
   - name: SABnzbd
     description: Usenet downloader
@@ -217,6 +257,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 20630
+    stack: myflix
+    path: /opt/myflix
 
   - name: Sonarr
     description: TV series collection manager
@@ -225,6 +267,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 8989
+    stack: myflix
+    path: /opt/myflix
 
   - name: Tautulli
     description: Plex monitoring and statistics
@@ -233,6 +277,8 @@ services:
     group: media
     machine: 10.10.0.11
     port: 8181
+    stack: myflix
+    path: /opt/myflix
 
   - name: TrueNAS
     description: Network attached storage management interface
@@ -249,6 +295,8 @@ services:
     group: infrastructure
     machine: 10.10.0.12
     port: 8080
+    stack: pihole
+    path: /opt/pihole
 
   - name: Vikunja
     description: Task and project management
