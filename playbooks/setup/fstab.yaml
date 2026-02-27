@@ -28,6 +28,11 @@
         src: "//{{ smb_server }}/Photos"
         path: /mnt/Photos
         opts: "credentials={{ credentials_file }},uid=root,gid=root,{{ common_cifs_opts }}"
+        
+      - name: Podbase
+        src: "//{{ smb_server }}/Podbase"
+        path: /mnt/Podbase
+        opts: "credentials={{ credentials_file }},uid=root,gid=root,{{ common_cifs_opts }}"
 
       - name: EricBackup
         src: "//{{ smb_server }}/EricBackup"
