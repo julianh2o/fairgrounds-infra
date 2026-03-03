@@ -1,0 +1,48 @@
+---
+# Update MyAnonaMouse session ID in all Readarr instances
+# Run with: ansible-playbook playbooks/maintenance/update_readarr_mam_id.yaml
+
+- name: Update MyAnonaMouse session ID in Readarr instances
+  hosts: localhost
+  gather_facts: false
+  
+  vars_files:
+    - ../../secrets.yml
+    
+  vars:
+    mousehole_url: "https://mousehole.julianverse.net/state"
+    readarr_instances:
+      - name: "nf-audiobooks"
+        url: "https://readarr-nf-audiobooks.julianverse.net"
+        api_key: "{{ readarr_nonfiction_audiobooks_api }}"
+      - name: "nf-books"
+        url: "https://readarr-nf-books.julianverse.net"
+        api_key: "{{ readarr_nonfiction_books_api }}"
+      - name: "fiction-audiobooks"
+        url: "https://readarr-fiction-audiobooks.julianverse.net"
+        api_key: "{{ readarr_fiction_audiobooks_api }}"
+      - name: "fiction-books"
+        url: "https://readarr-fiction-books.julianverse.net"
+        api_key: "{{ readarr_fiction_books_api }}"
+
+  tasks:
+    - name: Fetch current MAM session ID from Mousehole
+      ansible.builtin.uri:
+        url: "{{ mousehole_url }}"
+        method: GET
+        return_content: true
+      register: mousehole_state
+
+    - name: Extract MAM session ID
+      ansible.builtin.set_fact:
+        mam_session_id: "{{ mousehole_state.json.currentCookie }}"
+
+    - name: Display MAM session ID
+      ansible.builtin.debug:
+        msg: "Current MAM session ID: {{ mam_session_id }}"
+
+    - name: Update MAM ID in each Readarr instance
+      ansible.builtin.include_tasks: update_readarr_instance.yaml
+      loop: "{{ readarr_instances }}"
+      loop_control:
+        loop_var: instance

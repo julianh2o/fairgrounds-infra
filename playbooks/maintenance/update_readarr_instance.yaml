@@ -1,0 +1,79 @@
+---
+# Task file to update a single Readarr instance
+# Included by update_readarr_mam_id.yaml
+
+- name: "{{ instance.name }} - Fetch current indexers"
+  ansible.builtin.uri:
+    url: "{{ instance.url }}/api/v1/indexer"
+    method: GET
+    headers:
+      X-Api-Key: "{{ instance.api_key }}"
+    return_content: true
+  register: indexers_response
+
+- name: "{{ instance.name }} - Find MyAnonaMouse indexer"
+  ansible.builtin.set_fact:
+    mam_indexer: "{{ indexers_response.json | selectattr('name', 'equalto', 'MyAnonaMouse') | first | default(none) }}"
+
+- name: "{{ instance.name }} - Check if MyAnonaMouse indexer exists"
+  ansible.builtin.fail:
+    msg: "MyAnonaMouse indexer not found in {{ instance.name }}"
+  when: mam_indexer is none
+
+- name: "{{ instance.name }} - Display current MAM ID field"
+  ansible.builtin.debug:
+    msg: "Current MAM ID: {{ (mam_indexer.fields | selectattr('name', 'equalto', 'mamId') | first).value }}"
+
+- name: "{{ instance.name }} - Write indexer config to temp file"
+  ansible.builtin.copy:
+    content: "{{ mam_indexer | to_json }}"
+    dest: "/tmp/readarr_indexer.json"
+    mode: '0644'
+
+- name: "{{ instance.name }} - Create temp script to update MAM ID"
+  ansible.builtin.copy:
+    content: |
+      #!/usr/bin/env python3
+      import json
+      import sys
+
+      with open('/tmp/readarr_indexer.json', 'r') as f:
+          indexer = json.load(f)
+
+      new_mam_id = sys.argv[1]
+
+      # Update the mamId field
+      for field in indexer['fields']:
+          if field['name'] == 'mamId':
+              field['value'] = new_mam_id
+              break
+
+      print(json.dumps(indexer))
+    dest: "/tmp/update_mam_id.py"
+    mode: '0755'
+
+- name: "{{ instance.name }} - Update MAM ID in indexer config"
+  ansible.builtin.command:
+    cmd: python3 /tmp/update_mam_id.py '{{ mam_session_id }}'
+  register: updated_indexer_output
+  changed_when: false
+
+- name: "{{ instance.name }} - Parse updated indexer"
+  ansible.builtin.set_fact:
+    updated_indexer: "{{ updated_indexer_output.stdout | from_json }}"
+
+- name: "{{ instance.name }} - Send updated indexer to Readarr"
+  ansible.builtin.uri:
+    url: "{{ instance.url }}/api/v1/indexer/{{ mam_indexer.id }}"
+    method: PUT
+    headers:
+      X-Api-Key: "{{ instance.api_key }}"
+      Content-Type: "application/json"
+    body: "{{ updated_indexer }}"
+    body_format: json
+    status_code: [200, 202]
+  register: update_response
+
+- name: "{{ instance.name }} - Confirm update"
+  ansible.builtin.debug:
+    msg: "✓ Updated MAM session ID in {{ instance.name }}"
