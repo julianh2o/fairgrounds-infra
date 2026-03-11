@@ -146,6 +146,14 @@ services:
     machine: 10.10.0.40
     port: 8188
 
+  - name: Iris
+    description: Iris service
+    url: iris.julianverse.net
+    type: webapp
+    group: utilities
+    machine: 10.10.0.14
+    port: 18789
+
   # ----------------------------------------------------------------------------
   # Myflix Stack (deployed via deploy_myflix.yaml)
   # ----------------------------------------------------------------------------

@@ -9,3 +9,7 @@ services:
       - ./copyparty.conf:/cfg/copyparty.conf
       - /mnt/Store/sharedfiles:/data
       - ./hists:/cfg/hists
+    command:
+      - --xff-hdr=x-forwarded-for
+      - --xff-src=10.10.0.0/16
+      - --rproxy=1

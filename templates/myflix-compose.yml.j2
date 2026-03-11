@@ -270,8 +270,6 @@ services:
     container_name: rreading-glasses
     hostname: rreading-glasses
     entrypoint: ["/main", "serve"]
-    command:
-      - --verbose
     restart: unless-stopped
     mem_limit: 128m
     environment:

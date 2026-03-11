@@ -4,12 +4,13 @@ hist: /cfg/hists/
 
 [accounts]
 # Define users here
-# admin: secretpassword
+julian: {{ user_password }}
+openclaw: {{ openclaw_copyparty_password }}
 
 [/]
 # Root volume - expose /data directory
 /data
 
 # Set permissions (r=read, w=write, d=delete, a=admin)
-# accs:
-#   rwda: admin
+accs:
+  rwda: julian,openclaw
