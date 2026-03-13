@@ -1,9 +1,11 @@
 [global]
 # Store database and thumbnails in config directory
 hist: /cfg/hists/
+shr: /share
+xff-src: lan
+rproxy: -1
 
 [accounts]
-# Define users here
 julian: {{ user_password }}
 openclaw: {{ openclaw_copyparty_password }}
 
@@ -11,6 +13,12 @@ openclaw: {{ openclaw_copyparty_password }}
 # Root volume - expose /data directory
 /data
 
-# Set permissions (r=read, w=write, d=delete, a=admin)
 accs:
   rwda: julian,openclaw
+
+[/public]
+# Public folder accessible without login
+/data/public
+accs:
+  r: 
+  rw: @acct

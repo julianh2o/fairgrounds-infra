@@ -15,4 +15,5 @@
             dest: copyparty.conf
         service_directories:
           - hists
+          - share
         docker_compose_state: present
