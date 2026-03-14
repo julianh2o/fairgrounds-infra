@@ -47,38 +47,57 @@ Required secrets:
 
 
 
-# GPU Passthrough Setup Instructions
-See: https://www.reddit.com/r/homelab/comments/b5xpua/the_ultimate_beginners_guide_to_gpu_passthrough/
+# Run Script
 
-# Update (/etc/default/grub)
-`GRUB_CMDLINE_LINUX_DEFAULT="quiet"`
+The `./run` script is a launcher for commands defined in `scripts.yaml`. It supports nested command organization and argument passing.
 
-`GRUB_CMDLINE_LINUX_DEFAULT="quiet intel_iommu=on"`
-to
-`GRUB_CMDLINE_LINUX_DEFAULT="quiet amd_iommu=on"`
+## Usage
 
-`update-grub`
+```bash
+# List top-level categories and commands
+./run
 
-# Create (/etc/modules-load.d/05-vfio.conf)
+# List subcommands within a category
+./run services
+
+# Run a specific command
+./run ping
+./run services deploy caddy
+./run services deploy-all
+
+# Pass additional arguments after --
+./run ping -- --limit melinoe
+
+# Commands with required arguments (use $1, $2 in scripts.yaml)
+./run services deploy caddy        # $1 = caddy
+./run services logs grafana        # $1 = grafana
+./run setup import_new_vm myhost   # $1 = myhost
 ```
-vfio
-vfio_iommu_type1
-vfio_pci
-vfio_virqfd
+
+## Available Command Categories
+
+| Category | Description |
+|----------|-------------|
+| `ping` | Test connectivity to all hosts |
+| `apt_upgrade` | Update packages on all hosts |
+| `services` | Service deployment and management commands |
+| `setup` | Infrastructure setup commands |
+| `monitor` | Monitoring and diagnostic commands |
+| `maintenance` | Maintenance and backup commands |
+
+## Adding Commands
+
+Commands are defined in `scripts.yaml`. Each command has a `name` (description) and `cmd` (shell command to run). Commands can be nested into categories. Use `$1`, `$2`, etc. as placeholders for positional arguments.
+
+```yaml
+scripts:
+  mycommand:
+    name: Description of my command
+    cmd: ansible-playbook playbooks/my_playbook.yaml
+
+  mycategory:
+    name: Category description
+    subcommand:
+      name: Run something with $1
+      cmd: ansible-playbook playbooks/do_thing.yaml --limit $1
 ```
-
-# IOMMU Interrupt Mapping
-`echo "options vfio_iommu_type1 allow_unsafe_interrupts=1" > /etc/modprobe.d/iommu_unsafe_interrupts.conf`
-`echo "options kvm ignore_msrs=1" > /etc/modprobe.d/kvm.conf`
-
-# Blacklist Drivers
-`echo "blacklist radeon" >> /etc/modprobe.d/blacklist.conf`
-`echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf`
-`echo "blacklist nvidia" >> /etc/modprobe.d/blacklist.conf`
-
-root@njord:/etc/modules-load.d# lspci -n -s 0b:00.0
-0b:00.0 0300: 10de:1e84 (rev a1)
-root@njord:/etc/modules-load.d# lspci -n -s 0b:00.1
-0b:00.1 0403: 10de:10f8 (rev a1)
-
-echo "options vfio-pci ids=10de:1e84,10de:10f8 disable_vga=1"> /etc/modprobe.d/vfio.conf
