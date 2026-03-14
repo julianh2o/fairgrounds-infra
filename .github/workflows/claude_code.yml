@@ -22,9 +22,9 @@ jobs:
       ) && github.actor == 'julianh2o'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pull-requests: read
-      issues: read
+      contents: write
+      pull-requests: write
+      issues: write
       id-token: write
       actions: write
     steps:
@@ -42,3 +42,4 @@ jobs:
           claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
           secrets_admin_pat: ${{ secrets.SECRETS_ADMIN_PAT }}
           timeout_minutes: "60"
+          auto_pr: true
