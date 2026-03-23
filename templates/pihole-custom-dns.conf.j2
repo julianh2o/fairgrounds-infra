@@ -11,3 +11,13 @@ address=/{{ host }}.fg/{{ hostvars[host]['ansible_host'] }}
 {% for host in groups['otherhosts'] %}
 address=/{{ host }}.fg/{{ hostvars[host]['ansible_host'] }}
 {% endfor %}
+
+# IoT devices - static resolution for mDNS (.local) hostnames
+# dnsmasq cannot do mDNS multicast lookups, so .local names are resolved statically here
+{% if groups['iotdevices'] is defined %}
+{% for host in groups['iotdevices'] %}
+{% if hostvars[host]['mdns_name'] is defined %}
+address=/{{ hostvars[host]['mdns_name'] }}/{{ hostvars[host]['ansible_host'] }}
+{% endif %}
+{% endfor %}
+{% endif %}
