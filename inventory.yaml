@@ -50,7 +50,7 @@ otherhosts:
       description: Windows desktop with WSL2, GPU-enabled for AI workloads
 other:
   hosts:
-    octoprint:
+    octopi:
       ansible_host: 10.10.1.32
-      mdns_name: octoprint.local
+      mdns_name: octopi.local
       description: OctoPrint 3D printer management server
