@@ -11,3 +11,8 @@ address=/{{ host }}.fg/{{ hostvars[host]['ansible_host'] }}
 {% for host in groups['otherhosts'] %}
 address=/{{ host }}.fg/{{ hostvars[host]['ansible_host'] }}
 {% endfor %}
+
+# mDNS / .local devices
+{% for host in groups['other'] %}
+address=/{{ hostvars[host]['mdns_name'] }}/{{ hostvars[host]['ansible_host'] }}
+{% endfor %}
