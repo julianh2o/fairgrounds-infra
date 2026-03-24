@@ -308,6 +308,16 @@ services:
     stack: myflix
     path: /opt/myflix
 
+  - name: Mousehole
+    description: Personal bookmark manager
+    url: mousehole.julianverse.net
+    type: webapp
+    group: utilities
+    machine: 10.10.0.11
+    port: 5010
+    stack: myflix
+    path: /opt/myflix
+
   - name: TrueNAS
     description: Network attached storage management interface
     url: truenas.julianverse.net
