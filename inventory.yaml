@@ -48,3 +48,9 @@ otherhosts:
       ansible_host: 10.10.0.40
       exporter_port: 9182
       description: Windows desktop with WSL2, GPU-enabled for AI workloads
+other:
+  hosts:
+    octoprint:
+      ansible_host: 10.10.1.32
+      mdns_name: octoprint.local
+      description: OctoPrint 3D printer management server
