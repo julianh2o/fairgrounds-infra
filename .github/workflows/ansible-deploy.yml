@@ -160,10 +160,6 @@ jobs:
     name: Deploy ${{ matrix.service }}
     runs-on: ubuntu-latest
     needs: detect-changes
-    if: |
-      needs.detect-changes.outputs.deploy_all == 'true' ||
-      needs.detect-changes.outputs[matrix.service] == 'true' ||
-      (needs.detect-changes.outputs.shared_config == 'true' && contains(fromJSON('["caddy","dashboard"]'), matrix.service))
 
     strategy:
       fail-fast: false  # Continue other deployments if one fails
@@ -235,7 +231,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check if service needs deployment
+        id: should_deploy
+        run: |
+          SERVICE="${{ matrix.service }}"
+          DEPLOY_ALL="${{ needs.detect-changes.outputs.deploy_all }}"
+          SHARED_CONFIG="${{ needs.detect-changes.outputs.shared_config }}"
+
+          # Get the service-specific change flag
+          SERVICE_CHANGED="${{ needs.detect-changes.outputs[matrix.service] }}"
+
+          # Check if this service should deploy
+          if [ "$DEPLOY_ALL" = "true" ]; then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+            echo "reason=infrastructure change" >> $GITHUB_OUTPUT
+          elif [ "$SERVICE_CHANGED" = "true" ]; then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+            echo "reason=service-specific change" >> $GITHUB_OUTPUT
+          elif [ "$SHARED_CONFIG" = "true" ] && ( [ "$SERVICE" = "caddy" ] || [ "$SERVICE" = "dashboard" ] ); then
+            echo "should_deploy=true" >> $GITHUB_OUTPUT
+            echo "reason=shared config change" >> $GITHUB_OUTPUT
+          else
+            echo "should_deploy=false" >> $GITHUB_OUTPUT
+            echo "reason=no changes detected" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Skip deployment
+        if: steps.should_deploy.outputs.should_deploy != 'true'
+        run: |
+          echo "Skipping ${{ matrix.service }} - ${{ steps.should_deploy.outputs.reason }}"
+
       - name: Connect to Tailscale
+        if: steps.should_deploy.outputs.should_deploy == 'true'
         uses: tailscale/github-action@v2
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
@@ -243,37 +270,44 @@ jobs:
           tags: tag:ci
 
       - name: Install Ansible
+        if: steps.should_deploy.outputs.should_deploy == 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y python3-pip
           pip3 install ansible
 
       - name: Install Ansible Galaxy requirements
+        if: steps.should_deploy.outputs.should_deploy == 'true'
         run: |
           ansible-galaxy collection install -r requirements.yaml
           ansible-galaxy role install -r requirements.yaml -p ~/.ansible/roles
 
       - name: Setup SSH for Ansible
+        if: steps.should_deploy.outputs.should_deploy == 'true'
         run: |
           mkdir -p secrets
           echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > secrets/id_ed25519
           chmod 600 secrets/id_ed25519
 
       - name: Setup Ansible Vault password
+        if: steps.should_deploy.outputs.should_deploy == 'true'
         run: |
           echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .vault_pass
           chmod 600 .vault_pass
 
       - name: Test connectivity
+        if: steps.should_deploy.outputs.should_deploy == 'true'
         run: ansible all -m ping
 
       - name: Deploy ${{ matrix.service }}
+        if: steps.should_deploy.outputs.should_deploy == 'true'
         run: ansible-playbook ${{ matrix.playbook }}
 
       - name: Verify deployment
+        if: steps.should_deploy.outputs.should_deploy == 'true'
         run: |
-          echo "Deployment of ${{ matrix.service }} completed"
-          # Add service-specific health checks here if needed
+          echo "Deployment of ${{ matrix.service }} completed successfully"
+          echo "Reason: ${{ steps.should_deploy.outputs.reason }}"
 
   summary:
     name: Deployment Summary
