@@ -295,10 +295,6 @@ jobs:
           echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .vault_pass
           chmod 600 .vault_pass
 
-      - name: Test connectivity
-        if: steps.should_deploy.outputs.should_deploy == 'true'
-        run: ansible all -m ping
-
       - name: Deploy ${{ matrix.service }}
         if: steps.should_deploy.outputs.should_deploy == 'true'
         run: ansible-playbook ${{ matrix.playbook }}
