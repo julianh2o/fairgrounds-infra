@@ -1,0 +1,288 @@
+name: Ansible Deploy Services
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      # Trigger on infrastructure changes
+      - 'playbooks/**'
+      - 'templates/**'
+      - 'config/**'
+      - 'roles/**'
+      - 'inventory.yaml'
+      - 'ansible.cfg'
+      - 'ssh.config'
+      - 'requirements.yaml'
+      - '.github/workflows/ansible-deploy.yml'
+
+jobs:
+  detect-changes:
+    name: Detect Changed Services
+    runs-on: ubuntu-latest
+    outputs:
+      # Service flags
+      caddy: ${{ steps.changes.outputs.caddy_any_changed }}
+      prometheus: ${{ steps.changes.outputs.prometheus_any_changed }}
+      grafana: ${{ steps.changes.outputs.grafana_any_changed }}
+      dashboard: ${{ steps.changes.outputs.dashboard_any_changed }}
+      myflix: ${{ steps.changes.outputs.myflix_any_changed }}
+      immich: ${{ steps.changes.outputs.immich_any_changed }}
+      uneventful: ${{ steps.changes.outputs.uneventful_any_changed }}
+      vikunja: ${{ steps.changes.outputs.vikunja_any_changed }}
+      copyparty: ${{ steps.changes.outputs.copyparty_any_changed }}
+      pihole: ${{ steps.changes.outputs.pihole_any_changed }}
+      traccar: ${{ steps.changes.outputs.traccar_any_changed }}
+      paperless: ${{ steps.changes.outputs.paperless_any_changed }}
+      kopia: ${{ steps.changes.outputs.kopia_any_changed }}
+      comfyui: ${{ steps.changes.outputs.comfyui_any_changed }}
+      outreach: ${{ steps.changes.outputs.outreach_any_changed }}
+      fair_map: ${{ steps.changes.outputs.fair_map_any_changed }}
+      speech_services: ${{ steps.changes.outputs.speech_services_any_changed }}
+      rclone_to_backblaze: ${{ steps.changes.outputs.rclone_to_backblaze_any_changed }}
+      cloudflare_ddns: ${{ steps.changes.outputs.cloudflare_ddns_any_changed }}
+      myalpr: ${{ steps.changes.outputs.myalpr_any_changed }}
+
+      # Infrastructure flags
+      infrastructure: ${{ steps.changes.outputs.infrastructure_any_changed }}
+      shared_config: ${{ steps.changes.outputs.shared_config_any_changed }}
+
+      # Combined: deploy everything if infrastructure changed
+      deploy_all: ${{ steps.changes.outputs.infrastructure_any_changed == 'true' }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for accurate change detection
+
+      - name: Detect changed files
+        id: changes
+        uses: tj-actions/changed-files@v45
+        with:
+          files_yaml: |
+            caddy:
+              - templates/caddy.j2
+              - templates/caddy-compose.yml.j2
+              - templates/Dockerfile.caddy.j2
+              - playbooks/services/deploy_caddy.yaml
+            prometheus:
+              - templates/prometheus.yml.j2
+              - templates/prometheus.config.yml.j2
+              - playbooks/services/deploy_prometheus.yaml
+            grafana:
+              - templates/grafana-compose.yml.j2
+              - templates/grafana.ini.j2
+              - playbooks/services/deploy_grafana.yaml
+            dashboard:
+              - templates/dashboard.compose.yml.j2
+              - templates/dashboard.html.j2
+              - playbooks/services/deploy_dashboard.yaml
+            myflix:
+              - templates/myflix-compose.yml.j2
+              - playbooks/services/deploy_myflix.yaml
+            immich:
+              - templates/immich-compose.yml.j2
+              - playbooks/services/deploy_immich.yaml
+            uneventful:
+              - templates/uneventful-compose.yml.j2
+              - playbooks/services/deploy_uneventful.yaml
+            vikunja:
+              - templates/vikunja-compose.yml.j2
+              - playbooks/services/deploy_vikunja.yaml
+            copyparty:
+              - templates/copyparty-compose.yml.j2
+              - templates/copyparty.conf.j2
+              - playbooks/services/deploy_copyparty.yaml
+            pihole:
+              - templates/pihole.compose.yml.j2
+              - templates/pihole-custom-dns.conf.j2
+              - playbooks/services/deploy_pihole.yaml
+            traccar:
+              - templates/traccar-compose.yml.j2
+              - playbooks/services/deploy_traccar.yaml
+            paperless:
+              - templates/paperless-compose.yml.j2
+              - playbooks/services/deploy_paperless.yaml
+            kopia:
+              - templates/kopia-compose.yml.j2
+              - playbooks/services/deploy_kopia.yaml
+            comfyui:
+              - templates/comfyui-compose.yml.j2
+              - playbooks/services/deploy_comfyui.yaml
+            outreach:
+              - templates/outreach-compose.yml.j2
+              - playbooks/services/deploy_outreach.yaml
+            fair_map:
+              - templates/fair-map-compose.yml.j2
+              - playbooks/services/deploy_fair_map.yaml
+            speech_services:
+              - templates/speech-services-compose.yml.j2
+              - playbooks/services/deploy_speech_services.yaml
+            rclone_to_backblaze:
+              - templates/rclone-to-backblaze-compose.yml.j2
+              - templates/rclone.conf.j2
+              - templates/smbcredentials.j2
+              - playbooks/services/deploy_rclone_to_backblaze.yaml
+            cloudflare_ddns:
+              - templates/cloudflare-ddns-compose.yml.j2
+              - templates/cloudflare-ddns-config.json.j2
+              - playbooks/services/deploy_cloudflare_ddns.yaml
+            myalpr:
+              - templates/myalpr-compose.yml.j2
+              - playbooks/services/deploy_myalpr.yaml
+            infrastructure:
+              - roles/docker_service/**
+              - inventory.yaml
+              - ansible.cfg
+              - ssh.config
+              - requirements.yaml
+            shared_config:
+              - config/services.yaml
+
+      - name: Log detected changes
+        run: |
+          echo "Changed services:"
+          echo "  Caddy: ${{ steps.changes.outputs.caddy_any_changed }}"
+          echo "  Prometheus: ${{ steps.changes.outputs.prometheus_any_changed }}"
+          echo "  Grafana: ${{ steps.changes.outputs.grafana_any_changed }}"
+          echo "  Dashboard: ${{ steps.changes.outputs.dashboard_any_changed }}"
+          echo "  Myflix: ${{ steps.changes.outputs.myflix_any_changed }}"
+          echo "  Immich: ${{ steps.changes.outputs.immich_any_changed }}"
+          echo "  Uneventful: ${{ steps.changes.outputs.uneventful_any_changed }}"
+          echo "  Vikunja: ${{ steps.changes.outputs.vikunja_any_changed }}"
+          echo "  Copyparty: ${{ steps.changes.outputs.copyparty_any_changed }}"
+          echo "  Pihole: ${{ steps.changes.outputs.pihole_any_changed }}"
+          echo "Infrastructure: ${{ steps.changes.outputs.infrastructure_any_changed }}"
+          echo "Shared config: ${{ steps.changes.outputs.shared_config_any_changed }}"
+
+  deploy:
+    name: Deploy ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    if: |
+      needs.detect-changes.outputs.deploy_all == 'true' ||
+      needs.detect-changes.outputs[matrix.service] == 'true' ||
+      (needs.detect-changes.outputs.shared_config == 'true' && contains(fromJSON('["caddy","dashboard"]'), matrix.service))
+
+    strategy:
+      fail-fast: false  # Continue other deployments if one fails
+      matrix:
+        service:
+          - dashboard
+          - prometheus
+          - grafana
+          - vikunja
+          - copyparty
+          - pihole
+          - caddy
+          - myflix
+          - immich
+          - uneventful
+          - traccar
+          - paperless
+          - kopia
+          - comfyui
+          - outreach
+          - fair_map
+          - speech_services
+          - rclone_to_backblaze
+          - cloudflare_ddns
+          - myalpr
+        include:
+          - service: dashboard
+            playbook: playbooks/services/deploy_dashboard.yaml
+          - service: prometheus
+            playbook: playbooks/services/deploy_prometheus.yaml
+          - service: grafana
+            playbook: playbooks/services/deploy_grafana.yaml
+          - service: vikunja
+            playbook: playbooks/services/deploy_vikunja.yaml
+          - service: copyparty
+            playbook: playbooks/services/deploy_copyparty.yaml
+          - service: pihole
+            playbook: playbooks/services/deploy_pihole.yaml
+          - service: caddy
+            playbook: playbooks/services/deploy_caddy.yaml
+          - service: myflix
+            playbook: playbooks/services/deploy_myflix.yaml
+          - service: immich
+            playbook: playbooks/services/deploy_immich.yaml
+          - service: uneventful
+            playbook: playbooks/services/deploy_uneventful.yaml
+          - service: traccar
+            playbook: playbooks/services/deploy_traccar.yaml
+          - service: paperless
+            playbook: playbooks/services/deploy_paperless.yaml
+          - service: kopia
+            playbook: playbooks/services/deploy_kopia.yaml
+          - service: comfyui
+            playbook: playbooks/services/deploy_comfyui.yaml
+          - service: outreach
+            playbook: playbooks/services/deploy_outreach.yaml
+          - service: fair_map
+            playbook: playbooks/services/deploy_fair_map.yaml
+          - service: speech_services
+            playbook: playbooks/services/deploy_speech_services.yaml
+          - service: rclone_to_backblaze
+            playbook: playbooks/services/deploy_rclone_to_backblaze.yaml
+          - service: cloudflare_ddns
+            playbook: playbooks/services/deploy_cloudflare_ddns.yaml
+          - service: myalpr
+            playbook: playbooks/services/deploy_myalpr.yaml
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Install Ansible
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install ansible
+
+      - name: Install Ansible Galaxy requirements
+        run: |
+          ansible-galaxy collection install -r requirements.yaml
+          ansible-galaxy role install -r requirements.yaml -p ~/.ansible/roles
+
+      - name: Setup SSH for Ansible
+        run: |
+          mkdir -p secrets
+          echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > secrets/id_ed25519
+          chmod 600 secrets/id_ed25519
+
+      - name: Setup Ansible Vault password
+        run: |
+          echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > .vault_pass
+          chmod 600 .vault_pass
+
+      - name: Test connectivity
+        run: ansible all -m ping
+
+      - name: Deploy ${{ matrix.service }}
+        run: ansible-playbook ${{ matrix.playbook }}
+
+      - name: Verify deployment
+        run: |
+          echo "Deployment of ${{ matrix.service }} completed"
+          # Add service-specific health checks here if needed
+
+  summary:
+    name: Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [detect-changes, deploy]
+    if: always()
+
+    steps:
+      - name: Check deployment results
+        run: |
+          echo "Deployment workflow completed"
+          echo "Check individual service jobs for details"
