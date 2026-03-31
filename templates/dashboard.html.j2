@@ -352,7 +352,7 @@
 {% if service.url %}
 {% set service_key = service.url.split('.')[0] %}
 {% set icon = favicon_map.get(service_key, 'default.png') %}
-                        <a href="{{ service.protocol | default('https') }}://{{ service.url }}" class="stack-icon-link" title="{{ service.url }}" target="_blank">
+                        <a href="{{ service.protocol | default('https') }}://{{ service.url }}" class="stack-icon-link" title="{{ service.url }} ({{ service.machine }}:{{ service.port }})" target="_blank">
                             <img src="favicons/{{ icon }}" alt="{{ service_key }}">
                         </a>
 {% endif %}
