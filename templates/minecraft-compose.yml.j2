@@ -1,0 +1,24 @@
+services:
+  minecraft:
+    image: itzg/minecraft-server:latest
+    ports:
+      - 25565:25565
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    environment:
+      EULA: "TRUE"
+      TYPE: AUTO_CURSEFORGE
+      CF_API_KEY: "{{ minecraft_cf_api_key }}"
+      CF_SLUG: all-the-mods-9
+      CF_FILENAME_MATCHER: "1.1.1"
+      MEMORY: 8G
+      USE_AIKAR_FLAGS: "true"
+      ENABLE_ROLLING_LOGS: "true"
+      TZ: "America/Los_Angeles"
+      OPS: julianh2o
+      WHITELIST: julianh2o
+      ENFORCE_WHITELIST: "TRUE"
+    volumes:
+      - ./data:/data
+      - ./downloads:/downloads

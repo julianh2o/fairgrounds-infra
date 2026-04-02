@@ -70,6 +70,19 @@ scripts:
       name: Check dns connectability status
       cmd: ansible-playbook playbooks/monitor/check_services.yaml
 
+  # Secret management
+  secret:
+    name: Secret management commands
+    new:
+      name: Add new secret '$1' (generates random value if not provided)
+      cmd: python3 scripts/manage_secret.py new $1
+    list:
+      name: List all secret keys
+      cmd: python3 scripts/manage_secret.py list
+    get:
+      name: Get secret value for '$1'
+      cmd: python3 scripts/manage_secret.py get $1
+
   # Maintenance commands
   maintenance:
     name: Maintenance and backup commands

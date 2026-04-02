@@ -8,7 +8,7 @@ module "europa" {
 
   # Resources
   cpu_cores    = 1
-  memory_mb    = 8192
+  memory_mb    = 4096
   disk_size_gb = 50
 
   network_bridge = "vmbr0"

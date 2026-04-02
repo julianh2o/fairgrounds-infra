@@ -2,8 +2,8 @@
 # Deploy all services to fairgrounds infrastructure
 # This playbook runs all individual service deployment playbooks in sequence
 
-# Infrastructure services (reverse proxy and monitoring)
-- name: Deploy infrastructure services
+# Infrastructure services (reverse proxy, monitoring, DNS)
+- name: Deploy Caddy
   import_playbook: services/deploy_caddy.yaml
 
 - name: Deploy Prometheus
@@ -12,6 +12,15 @@
 - name: Deploy Grafana
   import_playbook: services/deploy_grafana.yaml
 
+- name: Deploy Pi-hole
+  import_playbook: services/deploy_pihole.yaml
+
+- name: Deploy Cloudflare DDNS
+  import_playbook: services/deploy_cloudflare_ddns.yaml
+
+- name: Deploy Dashboard
+  import_playbook: services/deploy_dashboard.yaml
+
 # Application services
 - name: Deploy Myflix
   import_playbook: services/deploy_myflix.yaml
@@ -19,21 +28,42 @@
 - name: Deploy Immich
   import_playbook: services/deploy_immich.yaml
 
-- name: Deploy rreading-glasses
-  import_playbook: services/deploy_rreading_glasses.yaml
-
 - name: Deploy Uneventful
   import_playbook: services/deploy_uneventful.yaml
-
-- name: Deploy Tautulli
-  import_playbook: services/deploy_tautulli.yaml
-
-- name: Deploy Discord-Ollama
-  import_playbook: services/deploy_discord_ollama.yaml
 
 - name: Deploy Vikunja
   import_playbook: services/deploy_vikunja.yaml
 
+- name: Deploy Paperless
+  import_playbook: services/deploy_paperless.yaml
+
+- name: Deploy Copyparty
+  import_playbook: services/deploy_copyparty.yaml
+
+- name: Deploy ComfyUI
+  import_playbook: services/deploy_comfyui.yaml
+
+- name: Deploy Speech Services
+  import_playbook: services/deploy_speech_services.yaml
+
+- name: Deploy Outreach
+  import_playbook: services/deploy_outreach.yaml
+
+- name: Deploy Fair Map
+  import_playbook: services/deploy_fair_map.yaml
+
+- name: Deploy MyALPR
+  import_playbook: services/deploy_myalpr.yaml
+
+- name: Deploy Traccar
+  import_playbook: services/deploy_traccar.yaml
+
+- name: Deploy Minecraft
+  import_playbook: services/deploy_minecraft.yaml
+
 # Backup services
 - name: Deploy Rclone to Backblaze
   import_playbook: services/deploy_rclone_to_backblaze.yaml
+
+- name: Deploy Kopia
+  import_playbook: services/deploy_kopia.yaml

@@ -26,7 +26,7 @@ module "ceto" {
   # Resources
   cpu_cores    = 2
   cpu_type     = "host"  # Required for GPU passthrough
-  memory_mb    = 8192
+  memory_mb    = 16384
   disk_size_gb = 50
 
   network_bridge = "vmbr0"

@@ -18,6 +18,16 @@ services:
   # julianhartline.com
   # ============================================================================
 
+  - name: ATM9 Minecraft
+    description: All The Mods 9 modded Minecraft server
+    url: atm9.julianhartline.com
+    type: gameserver
+    group: games
+    machine: 10.10.0.10
+    port: 25565
+    stack: minecraft
+    path: /opt/minecraft
+
   - name: Audiobookshelf
     description: Audiobook and podcast server
     url: books.julianhartline.com
@@ -305,16 +315,6 @@ services:
     group: media
     machine: 10.10.0.11
     port: 8181
-    stack: myflix
-    path: /opt/myflix
-
-  - name: Mousehole
-    description: Personal bookmark manager
-    url: mousehole.julianverse.net
-    type: webapp
-    group: utilities
-    machine: 10.10.0.11
-    port: 5010
     stack: myflix
     path: /opt/myflix
 
