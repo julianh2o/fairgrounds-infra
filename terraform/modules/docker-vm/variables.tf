@@ -43,6 +43,12 @@ variable "memory_mb" {
   default     = 2048
 }
 
+variable "ballooning" {
+  description = "Enable memory ballooning (set to false for workloads that need guaranteed memory)"
+  type        = bool
+  default     = false
+}
+
 variable "disk_size_gb" {
   description = "Disk size in GB"
   type        = number

@@ -47,6 +47,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   memory {
     dedicated = var.memory_mb
+    floating  = var.ballooning ? var.memory_mb : 0
   }
 
   dynamic "vga" {
@@ -110,7 +111,6 @@ resource "proxmox_virtual_environment_vm" "vm" {
 
   lifecycle {
     ignore_changes = [
-      initialization,
       cdrom,
     ]
   }

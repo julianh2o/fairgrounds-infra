@@ -36,6 +36,26 @@ scripts:
       name: Deploy all services at once
       cmd: ansible-playbook playbooks/deploy_all_services.yaml
 
+    deploy-arethusa:
+      name: Deploy all services to arethusa
+      cmd: ansible-playbook playbooks/deploy_all_services.yaml --limit arethusa
+
+    deploy-ceto:
+      name: Deploy all services to ceto
+      cmd: ansible-playbook playbooks/deploy_all_services.yaml --limit ceto
+
+    deploy-daphne:
+      name: Deploy all services to daphne
+      cmd: ansible-playbook playbooks/deploy_all_services.yaml --limit daphne
+
+    deploy-europa:
+      name: Deploy all services to europa
+      cmd: ansible-playbook playbooks/deploy_all_services.yaml --limit europa
+
+    deploy-metis:
+      name: Deploy all services to metis
+      cmd: ansible-playbook playbooks/deploy_all_services.yaml --limit metis
+
     upgrade:
       name: Upgrade $1 to latest image version
       cmd: python3 scripts/upgrade_service.py $1
