@@ -13,6 +13,8 @@ address=/{{ host }}.fg/{{ hostvars[host]['ansible_host'] }}
 {% endfor %}
 
 # mDNS / .local devices
-{% for host in groups['other'] %}
+{% for host in groups['otherhosts'] %}
+{% if hostvars[host]['mdns_name'] is defined %}
 address=/{{ hostvars[host]['mdns_name'] }}/{{ hostvars[host]['ansible_host'] }}
+{% endif %}
 {% endfor %}

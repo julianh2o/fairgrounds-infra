@@ -368,6 +368,16 @@ services:
     machine: 10.10.0.13
     port: 8000
 
+  - name: Uptime Kuma
+    description: Service uptime monitoring
+    url: uptime.julianverse.net
+    type: webapp
+    group: infrastructure
+    machine: 10.10.0.13
+    port: 3001
+    stack: uptime-kuma
+    path: /opt/uptime-kuma
+
   - name: Kopia
     description: Backup management
     url: kopia.julianverse.net

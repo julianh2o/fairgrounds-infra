@@ -1,7 +1,6 @@
 ---
 - name: Update apt packages
   hosts: vms
-  remote_user: julian
 
   tasks:
     - name: Update and upgrade apt packages
