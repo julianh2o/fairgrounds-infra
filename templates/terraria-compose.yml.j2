@@ -1,0 +1,25 @@
+services:
+  terraria:
+    image: ryshe/terraria:latest
+    container_name: terraria-server
+    ports:
+      - "7777:7777"
+      - "7878:7878"
+    volumes:
+      - ./data:/world
+    command: >
+      -world /world/docker_world.wld
+      -autocreate 2
+      -worldname "Docker World"
+      -maxplayers 16
+      -difficulty 0
+      -pass {{ terraria_server_password }}
+      -secure 1
+      -noupnp
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 1G
