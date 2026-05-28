@@ -7,7 +7,7 @@ module "metis" {
   vm_id       = 101
 
   # Resources
-  cpu_cores    = 1
+  cpu_cores    = 4
   memory_mb    = 4096
   disk_size_gb = 50
 
