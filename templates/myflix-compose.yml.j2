@@ -86,7 +86,7 @@ services:
       - /mnt/Media/downloads:/downloads
     restart: always
   qbittorrent:
-    image: lscr.io/linuxserver/qbittorrent:latest
+    image: lscr.io/linuxserver/qbittorrent:5.1.4-r3-ls453
     container_name: qbittorrent
     network_mode: service:vpn
     depends_on:

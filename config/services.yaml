@@ -368,6 +368,14 @@ services:
     machine: 10.10.0.13
     port: 8000
 
+  - name: Paperless AI
+    description: AI assistant for Paperless-ngx
+    url: paperless-ai.julianverse.net
+    type: webapp
+    group: utilities
+    machine: 10.10.0.13
+    port: 3000
+
   - name: Uptime Kuma
     description: Service uptime monitoring
     url: uptime.julianverse.net
