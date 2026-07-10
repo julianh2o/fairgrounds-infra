@@ -92,26 +92,6 @@ services:
     stack: fair-map
     path: /opt/fair-map
 
-  - name: Whisper Server
-    description: Speech to text API
-    url: whisper.julianverse.net
-    type: api
-    group: ai
-    machine: 10.10.0.40
-    port: 9000
-    stack: speech-services
-    path: /opt/speech-services
-
-  - name: Kokoro TTS
-    description: Text to speech API
-    url: kokoro.julianverse.net
-    type: api
-    group: ai
-    machine: 10.10.0.40
-    port: 8880
-    stack: speech-services
-    path: /opt/speech-services
-
   - name: Grafana
     description: Metrics visualization and dashboards
     url: grafana.julianverse.net
@@ -154,7 +134,7 @@ services:
     type: webapp
     group: ai
     machine: 10.10.0.40
-    port: 8000
+    port: 8188
 
   - name: Iris
     description: Iris service
@@ -326,16 +306,6 @@ services:
     machine: 10.10.0.6
     port: 80
 
-  - name: Gatus
-    description: Service health monitoring dashboard
-    url: gatus.julianverse.net
-    type: webapp
-    group: infrastructure
-    machine: 10.10.0.12
-    port: 8088
-    stack: gatus
-    path: /opt/gatus
-
   - name: Pi-hole
     description: DNS server with ad blocking
     url: pihole.julianverse.net
@@ -385,16 +355,6 @@ services:
     group: utilities
     machine: 10.10.0.13
     port: 3000
-
-  - name: Uptime Kuma
-    description: Service uptime monitoring
-    url: uptime.julianverse.net
-    type: webapp
-    group: infrastructure
-    machine: 10.10.0.13
-    port: 3001
-    stack: uptime-kuma
-    path: /opt/uptime-kuma
 
   - name: Kopia
     description: Backup management
