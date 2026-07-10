@@ -4,6 +4,7 @@
 Reads changed files (JSON array) from $CHANGED_FILES, matches them against
 playbook_triggers.yml, and writes `matrix` and `has_deploys` to $GITHUB_OUTPUT.
 """
+import ast
 import fnmatch
 import json
 import os
@@ -14,7 +15,17 @@ with open("playbook_triggers.yml") as f:
     config = yaml.safe_load(f)
 
 raw_changed_files = os.environ["CHANGED_FILES"].strip()
-changed_files = json.loads(raw_changed_files) if raw_changed_files else []
+if not raw_changed_files:
+    changed_files = []
+else:
+    try:
+        # Expected format: a JSON array, e.g. ["file1","file2"]
+        changed_files = json.loads(raw_changed_files)
+    except json.JSONDecodeError:
+        # GitHub Actions sometimes stringifies array outputs interpolated via
+        # ${{ }} as a Python/Ruby-style repr, e.g. ['file1','file2'], instead
+        # of valid JSON. ast.literal_eval handles that single-quoted form.
+        changed_files = ast.literal_eval(raw_changed_files)
 
 
 def matched_pattern(patterns, files):
