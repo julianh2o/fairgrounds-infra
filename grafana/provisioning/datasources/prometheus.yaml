@@ -4,6 +4,6 @@ datasources:
     - name: Prometheus
       type: prometheus
       uid: prometheus
-      url: http://10.10.0.11:9090
+      url: http://10.10.0.12:9090
       isDefault: true
       editable: true

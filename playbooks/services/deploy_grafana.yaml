@@ -1,5 +1,5 @@
 - name: Deploy Grafana
-  hosts: metis
+  hosts: europa
   become: yes
 
   vars_files:

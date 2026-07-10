@@ -97,7 +97,7 @@ services:
     url: grafana.julianverse.net
     type: webapp
     group: infrastructure
-    machine: 10.10.0.11
+    machine: 10.10.0.12
     port: 3000
     stack: grafana
     path: /opt/grafana
@@ -107,7 +107,7 @@ services:
     url: prometheus.julianverse.net
     type: webapp
     group: infrastructure
-    machine: 10.10.0.11
+    machine: 10.10.0.12
     port: 9090
     stack: prometheus
     path: /opt/prometheus

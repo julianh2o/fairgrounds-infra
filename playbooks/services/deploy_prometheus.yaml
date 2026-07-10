@@ -1,5 +1,5 @@
 - name: Deploy Prometheus
-  hosts: metis
+  hosts: europa
   become: yes
 
   roles:

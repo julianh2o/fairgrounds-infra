@@ -262,6 +262,7 @@ services:
         MOUSEHOLE_INSECURE_ALLOW_NO_AUTH: true
         MOUSEHOLE_ALLOWED_HOSTS: mousehole.julianverse.net
         MOUSEHOLE_ALLOWED_ORIGINS: https://mousehole.julianverse.net
+        MOUSEHOLE_AUTH_TOKEN: {{ mousehole_auth_token }}
     volumes:
       - ./mousehole:/srv/mousehole
     restart: unless-stopped

@@ -1,16 +1,20 @@
 alerting:
-  telegram:
-    token: "{{ gatus_telegram_bot_token }}"
-    id: "{{ gatus_telegram_chat_id }}"
+  custom:
+    url: "https://api.telegram.org/bot{{ gatus_telegram_bot_token }}/sendMessage"
+    method: POST
+    body: |
+      {"chat_id":"{{ gatus_telegram_chat_id }}","text":"[ENDPOINT_NAME] — resolved: [RESOLVED]"}
+    headers:
+      Content-Type: application/json
     default-alert:
-      enabled: true
+      send-on-resolved: true
       failure-threshold: 3
       success-threshold: 2
-      send-on-resolved: true
 
 endpoints:
 {% for service in services.services | selectattr('url', 'defined') %}
   - name: "{{ service.name }}"
+    group: services
     url: "{{ service.protocol | default('https') }}://{{ service.url }}"
     interval: 1m
     conditions:
@@ -20,5 +24,31 @@ endpoints:
       insecure: true
 {% endif %}
     alerts:
-      - type: telegram
+      - type: custom
+{% endfor %}
+
+  - name: "Mousehole Cookie State"
+    group: smoke
+    url: "https://mousehole.julianverse.net/state"
+    interval: 1m
+    headers:
+      Authorization: "Bearer {{ mousehole_auth_token }}"
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].hasCookie == true"
+    alerts:
+      - type: custom
+
+{% for host in groups['vms'] + groups['linuxhosts'] + groups['truenasvms'] + groups['otherhosts'] %}
+{% if hostvars[host].exporter_port is defined %}
+  - name: "{{ host }}"
+    group: hosts
+    url: "http://{{ hostvars[host].ansible_host }}:{{ hostvars[host].exporter_port }}/"
+    interval: 1m
+    conditions:
+      - "[STATUS] < 500"
+      - "[RESPONSE_TIME] < 5000"
+    alerts:
+      - type: custom
+{% endif %}
 {% endfor %}
