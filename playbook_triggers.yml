@@ -34,6 +34,7 @@ services:
       - templates/grafana-compose.yml.j2
       - templates/grafana.ini.j2
       - playbooks/services/deploy_grafana.yaml
+      - grafana/**
 
   - name: myflix
     playbook: playbooks/services/deploy_myflix.yaml
