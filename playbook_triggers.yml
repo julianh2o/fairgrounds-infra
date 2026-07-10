@@ -1,0 +1,151 @@
+# Maps deploy playbooks to the file patterns that should trigger them.
+# Read by .github/scripts/compute_matrix.py to build the CI deploy matrix.
+#
+# - services[].paths: glob patterns (fnmatch-style, ** matches any depth)
+
+services:
+  - name: caddy
+    playbook: playbooks/services/deploy_caddy.yaml
+    paths:
+      - templates/caddy.j2
+      - templates/caddy-compose.yml.j2
+      - templates/Dockerfile.caddy.j2
+      - playbooks/services/deploy_caddy.yaml
+      - config/services.yaml
+
+  - name: dashboard
+    playbook: playbooks/services/deploy_dashboard.yaml
+    paths:
+      - templates/dashboard.compose.yml.j2
+      - templates/dashboard.html.j2
+      - playbooks/services/deploy_dashboard.yaml
+      - config/services.yaml
+
+  - name: prometheus
+    playbook: playbooks/services/deploy_prometheus.yaml
+    paths:
+      - templates/prometheus.yml.j2
+      - templates/prometheus.config.yml.j2
+      - playbooks/services/deploy_prometheus.yaml
+
+  - name: grafana
+    playbook: playbooks/services/deploy_grafana.yaml
+    paths:
+      - templates/grafana-compose.yml.j2
+      - templates/grafana.ini.j2
+      - playbooks/services/deploy_grafana.yaml
+
+  - name: myflix
+    playbook: playbooks/services/deploy_myflix.yaml
+    paths:
+      - templates/myflix-compose.yml.j2
+      - playbooks/services/deploy_myflix.yaml
+
+  - name: immich
+    playbook: playbooks/services/deploy_immich.yaml
+    paths:
+      - templates/immich-compose.yml.j2
+      - playbooks/services/deploy_immich.yaml
+
+  - name: uneventful
+    playbook: playbooks/services/deploy_uneventful.yaml
+    paths:
+      - templates/uneventful-compose.yml.j2
+      - playbooks/services/deploy_uneventful.yaml
+
+  - name: vikunja
+    playbook: playbooks/services/deploy_vikunja.yaml
+    paths:
+      - templates/vikunja-compose.yml.j2
+      - playbooks/services/deploy_vikunja.yaml
+
+  - name: copyparty
+    playbook: playbooks/services/deploy_copyparty.yaml
+    paths:
+      - templates/copyparty-compose.yml.j2
+      - templates/copyparty.conf.j2
+      - playbooks/services/deploy_copyparty.yaml
+
+  - name: pihole
+    playbook: playbooks/services/deploy_pihole.yaml
+    paths:
+      - templates/pihole.compose.yml.j2
+      - templates/pihole-custom-dns.conf.j2
+      - playbooks/services/deploy_pihole.yaml
+
+  - name: traccar
+    playbook: playbooks/services/deploy_traccar.yaml
+    paths:
+      - templates/traccar-compose.yml.j2
+      - playbooks/services/deploy_traccar.yaml
+
+  - name: paperless
+    playbook: playbooks/services/deploy_paperless.yaml
+    paths:
+      - templates/paperless-compose.yml.j2
+      - playbooks/services/deploy_paperless.yaml
+
+  - name: kopia
+    playbook: playbooks/services/deploy_kopia.yaml
+    paths:
+      - templates/kopia-compose.yml.j2
+      - playbooks/services/deploy_kopia.yaml
+
+  - name: comfyui
+    playbook: playbooks/services/deploy_comfyui.yaml
+    paths:
+      - templates/comfyui-compose.yml.j2
+      - playbooks/services/deploy_comfyui.yaml
+
+  - name: outreach
+    playbook: playbooks/services/deploy_outreach.yaml
+    paths:
+      - templates/outreach-compose.yml.j2
+      - playbooks/services/deploy_outreach.yaml
+
+  - name: fair_map
+    playbook: playbooks/services/deploy_fair_map.yaml
+    paths:
+      - templates/fair-map-compose.yml.j2
+      - playbooks/services/deploy_fair_map.yaml
+
+  - name: rclone_to_backblaze
+    playbook: playbooks/services/deploy_rclone_to_backblaze.yaml
+    paths:
+      - templates/rclone-to-backblaze-compose.yml.j2
+      - templates/rclone.conf.j2
+      - templates/smbcredentials.j2
+      - playbooks/services/deploy_rclone_to_backblaze.yaml
+
+  - name: cloudflare_ddns
+    playbook: playbooks/services/deploy_cloudflare_ddns.yaml
+    paths:
+      - templates/cloudflare-ddns-compose.yml.j2
+      - templates/cloudflare-ddns-config.json.j2
+      - playbooks/services/deploy_cloudflare_ddns.yaml
+
+  - name: myalpr
+    playbook: playbooks/services/deploy_myalpr.yaml
+    paths:
+      - templates/myalpr-compose.yml.j2
+      - playbooks/services/deploy_myalpr.yaml
+
+  - name: gatus
+    playbook: playbooks/services/deploy_gatus.yaml
+    paths:
+      - templates/gatus-compose.yml.j2
+      - templates/gatus.config.yml.j2
+      - playbooks/services/deploy_gatus.yaml
+      - config/services.yaml
+
+  - name: minecraft
+    playbook: playbooks/services/deploy_minecraft.yaml
+    paths:
+      - templates/minecraft-compose.yml.j2
+      - playbooks/services/deploy_minecraft.yaml
+
+  - name: terraria
+    playbook: playbooks/services/deploy_terraria.yaml
+    paths:
+      - templates/terraria-compose.yml.j2
+      - playbooks/services/deploy_terraria.yaml

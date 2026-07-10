@@ -27,8 +27,6 @@ endpoints:
     group: smoke
     url: "https://mousehole.julianverse.net/state"
     interval: 1m
-    headers:
-      Authorization: "Bearer {{ mousehole_auth_token }}"
     conditions:
       - "[STATUS] == 200"
       - "[BODY].hasCookie == true"
