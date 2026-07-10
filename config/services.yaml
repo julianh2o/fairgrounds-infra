@@ -112,6 +112,16 @@ services:
     stack: prometheus
     path: /opt/prometheus
 
+  - name: Gatus
+    description: Uptime monitoring and status page
+    url: gatus.julianverse.net
+    type: webapp
+    group: infrastructure
+    machine: 10.10.0.12
+    port: 8088
+    stack: gatus
+    path: /opt/gatus
+
   - name: Home Assistant
     description: Home automation platform
     url: home.julianverse.net
@@ -134,7 +144,7 @@ services:
     type: webapp
     group: ai
     machine: 10.10.0.40
-    port: 8188
+    port: 8000
 
   - name: Iris
     description: Iris service
