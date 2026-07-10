@@ -22,7 +22,6 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, 'SKIP') }}
     outputs:
       matrix: ${{ steps.compute.outputs.matrix }}
-      has_deploys: ${{ steps.compute.outputs.has_deploys }}
 
     steps:
       - name: Checkout repository
@@ -50,7 +49,6 @@ jobs:
     name: Deploy ${{ matrix.name }}
     runs-on: ubuntu-latest
     needs: detect-changes
-    if: needs.detect-changes.outputs.has_deploys == 'true'
 
     strategy:
       fail-fast: false  # Continue other deployments if one fails

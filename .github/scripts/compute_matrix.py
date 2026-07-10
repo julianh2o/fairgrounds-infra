@@ -13,7 +13,8 @@ import yaml
 with open("playbook_triggers.yml") as f:
     config = yaml.safe_load(f)
 
-changed_files = json.loads(os.environ["CHANGED_FILES"])
+raw_changed_files = os.environ["CHANGED_FILES"].strip()
+changed_files = json.loads(raw_changed_files) if raw_changed_files else []
 
 
 def matched_pattern(patterns, files):
