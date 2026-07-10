@@ -1,11 +1,7 @@
 alerting:
-  custom:
-    url: "https://api.telegram.org/bot{{ gatus_telegram_bot_token }}/sendMessage"
-    method: POST
-    body: |
-      {"chat_id":"{{ gatus_telegram_chat_id }}","text":"[ENDPOINT_NAME] — resolved: [RESOLVED]"}
-    headers:
-      Content-Type: application/json
+  telegram:
+    token: "{{ gatus_telegram_bot_token }}"
+    id: "{{ gatus_telegram_chat_id }}"
     default-alert:
       send-on-resolved: true
       failure-threshold: 3
@@ -24,7 +20,7 @@ endpoints:
       insecure: true
 {% endif %}
     alerts:
-      - type: custom
+      - type: telegram
 {% endfor %}
 
   - name: "Mousehole Cookie State"
@@ -37,7 +33,7 @@ endpoints:
       - "[STATUS] == 200"
       - "[BODY].hasCookie == true"
     alerts:
-      - type: custom
+      - type: telegram
 
 {% for host in groups['vms'] + groups['linuxhosts'] + groups['truenasvms'] + groups['otherhosts'] %}
 {% if hostvars[host].exporter_port is defined %}
@@ -49,6 +45,6 @@ endpoints:
       - "[STATUS] < 500"
       - "[RESPONSE_TIME] < 5000"
     alerts:
-      - type: custom
+      - type: telegram
 {% endif %}
 {% endfor %}
