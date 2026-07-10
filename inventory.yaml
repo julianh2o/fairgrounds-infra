@@ -29,7 +29,6 @@ linuxhosts:
   hosts:
     truenas:
       ansible_host: 10.10.0.6
-      exporter_port: 9100
       description: Bare metal NAS
     njord:
       ansible_host: 10.10.0.5

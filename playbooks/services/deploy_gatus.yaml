@@ -1,0 +1,23 @@
+---
+- name: Deploy Gatus
+  hosts: europa
+  become: yes
+
+  vars_files:
+    - ../../secrets.yml
+
+  pre_tasks:
+    - name: Load service configurations
+      include_vars:
+        file: "{{ playbook_dir }}/../../config/services.yaml"
+        name: services
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: gatus
+        compose_template: gatus-compose.yml.j2
+        config_files:
+          - src: gatus.config.yml.j2
+            dest: config.yaml
+        docker_compose_state: present

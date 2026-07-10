@@ -1,0 +1,24 @@
+alerting:
+  telegram:
+    token: "{{ gatus_telegram_bot_token }}"
+    id: "{{ gatus_telegram_chat_id }}"
+    default-alert:
+      enabled: true
+      failure-threshold: 3
+      success-threshold: 2
+      send-on-resolved: true
+
+endpoints:
+{% for service in services.services | selectattr('url', 'defined') %}
+  - name: "{{ service.name }}"
+    url: "{{ service.protocol | default('https') }}://{{ service.url }}"
+    interval: 1m
+    conditions:
+      - "[STATUS] < 500"
+{% if service.tls_skip_verify | default(false) %}
+    client:
+      insecure: true
+{% endif %}
+    alerts:
+      - type: telegram
+{% endfor %}

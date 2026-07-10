@@ -189,7 +189,7 @@ services:
       - ./prowlarr:/config
     restart: unless-stopped
   readarr-nonfiction-audiobooks:
-    image: ghcr.io/pennydreadful/bookshelf:hardcover
+    image: ghcr.io/pennydreadful/bookshelf:hardcover-v0.4.20.119
     container_name: readarr-nonfiction-audiobooks
     network_mode: service:vpn
     depends_on:
@@ -205,7 +205,7 @@ services:
       - /mnt/Media/library/books/nonfiction_audio:/books
     restart: unless-stopped
   readarr-fiction-audiobooks:
-    image: ghcr.io/pennydreadful/bookshelf:hardcover
+    image: ghcr.io/pennydreadful/bookshelf:hardcover-v0.4.20.119
     container_name: readarr-fiction-audiobooks
     network_mode: service:vpn
     depends_on:
@@ -221,7 +221,7 @@ services:
       - /mnt/Media/library/books/fiction_audio:/books
     restart: unless-stopped
   readarr-fiction-books:
-    image: ghcr.io/pennydreadful/bookshelf:hardcover
+    image: ghcr.io/pennydreadful/bookshelf:hardcover-v0.4.20.119
     container_name: readarr-fiction-books
     network_mode: service:vpn
     depends_on:
@@ -237,7 +237,7 @@ services:
       - /mnt/Media/library/books/fiction_text:/books
     restart: unless-stopped
   readarr-nonfiction-books:
-    image: ghcr.io/pennydreadful/bookshelf:hardcover
+    image: ghcr.io/pennydreadful/bookshelf:hardcover-v0.4.20.119
     container_name: readarr-nonfiction-books
     network_mode: service:vpn
     depends_on:
@@ -258,6 +258,10 @@ services:
     network_mode: service:vpn
     depends_on:
       - vpn
+    environment:
+        MOUSEHOLE_INSECURE_ALLOW_NO_AUTH: true
+        MOUSEHOLE_ALLOWED_HOSTS: mousehole.julianverse.net
+        MOUSEHOLE_ALLOWED_ORIGINS: https://mousehole.julianverse.net
     volumes:
       - ./mousehole:/srv/mousehole
     restart: unless-stopped
