@@ -36,6 +36,7 @@ jobs:
           base_sha: ${{ github.event.before }}
           sha: ${{ github.event.after }}
           json: true
+          escape_json: false
 
       - name: Compute deploy matrix
         id: compute
