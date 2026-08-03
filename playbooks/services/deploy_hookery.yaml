@@ -1,0 +1,27 @@
+- name: Deploy Hookery
+  hosts: daphne
+  become: yes
+
+  vars_files:
+    - ../../secrets.yml
+
+  vars:
+    hookery_port: 8099
+    photo_freshness_threshold_days: 5
+    photo_freshness_targets:
+      julian: /photos/library/iPhoneUploads
+      briana: /photos/briana
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: hookery
+        compose_template: hookery-compose.yml.j2
+        service_directories:
+          - hooks
+        config_files:
+          - src: hookery.py.j2
+            dest: hookery.py
+          - src: hookery.photo_freshness.py.j2
+            dest: hooks/photo_freshness.py
+        docker_compose_state: present

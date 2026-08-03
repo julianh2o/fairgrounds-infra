@@ -40,11 +40,11 @@
 - name: Deploy Copyparty
   import_playbook: services/deploy_copyparty.yaml
 
+- name: Deploy Hookery
+  import_playbook: services/deploy_hookery.yaml
+
 - name: Deploy ComfyUI
   import_playbook: services/deploy_comfyui.yaml
-
-- name: Deploy Speech Services
-  import_playbook: services/deploy_speech_services.yaml
 
 - name: Deploy Outreach
   import_playbook: services/deploy_outreach.yaml

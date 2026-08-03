@@ -1,0 +1,56 @@
+"""hookery - tiny hook-based HTTP service.
+
+Each file in hooks/ defines run(*args) returning a dict, served as JSON at
+/<module_name>/<args...>. Any exception raised by a hook becomes a 500, so
+hooks never need error-handling boilerplate and failures alert loudly.
+"""
+import importlib.util
+import json
+import os
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+PORT = {{ hookery_port }}
+HOOKS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hooks")
+
+
+def load_hooks():
+    hooks = {}
+    for filename in sorted(os.listdir(HOOKS_DIR)):
+        if not filename.endswith(".py"):
+            continue
+        name = filename[:-3]
+        spec = importlib.util.spec_from_file_location(name, os.path.join(HOOKS_DIR, filename))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        hooks[name] = module.run
+    return hooks
+
+
+HOOKS = load_hooks()
+
+
+class Handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        name, *args = self.path.split("?")[0].strip("/").split("/")
+        if not name:
+            self.respond(200, {"hooks": sorted(HOOKS)})
+        elif name not in HOOKS:
+            self.respond(404, {"error": "unknown hook: %s" % name})
+        else:
+            try:
+                self.respond(200, HOOKS[name](*args))
+            except Exception as e:
+                self.respond(500, {"error": "%s: %s" % (type(e).__name__, e)})
+
+    def respond(self, status, body):
+        payload = json.dumps(body).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
+
+
+if __name__ == "__main__":
+    print("hookery serving %s on port %d" % (sorted(HOOKS), PORT), flush=True)
+    ThreadingHTTPServer(("", PORT), Handler).serve_forever()

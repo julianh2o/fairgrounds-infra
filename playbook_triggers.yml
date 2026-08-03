@@ -150,3 +150,11 @@ services:
     paths:
       - templates/terraria-compose.yml.j2
       - playbooks/services/deploy_terraria.yaml
+
+  - name: hookery
+    playbook: playbooks/services/deploy_hookery.yaml
+    paths:
+      - templates/hookery-compose.yml.j2
+      - templates/hookery.py.j2
+      - templates/hookery.photo_freshness.py.j2
+      - playbooks/services/deploy_hookery.yaml

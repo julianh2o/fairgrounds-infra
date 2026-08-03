@@ -1,0 +1,13 @@
+services:
+  hookery:
+    image: python:3.12-alpine
+    container_name: hookery
+    restart: unless-stopped
+    command: ["python", "-u", "/app/hookery.py"]
+    ports:
+      - "{{ hookery_port }}:{{ hookery_port }}"
+    volumes:
+      - ./hookery.py:/app/hookery.py:ro
+      - ./hooks:/app/hooks:ro
+      # rslave so a host remount of the CIFS share propagates into the container
+      - /mnt/Photos:/photos:ro,rslave

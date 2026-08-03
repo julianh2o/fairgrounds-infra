@@ -1,0 +1,23 @@
+"""Is there any file in the target dir modified within the threshold?"""
+import os
+import time
+
+THRESHOLD_DAYS = {{ photo_freshness_threshold_days }}
+TARGETS = {
+{% for name, path in photo_freshness_targets.items() %}
+    "{{ name }}": "{{ path }}",
+{% endfor %}
+}
+
+
+def run(target):
+    cutoff = time.time() - THRESHOLD_DAYS * 86400
+    stack = [TARGETS[target]]  # missing mount -> FileNotFoundError -> 500 -> alert
+    while stack:
+        with os.scandir(stack.pop()) as entries:
+            for entry in entries:
+                if entry.is_dir(follow_symlinks=False):
+                    stack.append(entry.path)
+                elif entry.is_file(follow_symlinks=False) and entry.stat().st_mtime >= cutoff:
+                    return {"fresh": True, "thresholdDays": THRESHOLD_DAYS}
+    return {"fresh": False, "thresholdDays": THRESHOLD_DAYS}

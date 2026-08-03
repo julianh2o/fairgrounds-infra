@@ -33,6 +33,32 @@ endpoints:
     alerts:
       - type: telegram
 
+  - name: "Photo Sync - Julian"
+    group: photos
+    url: "http://{{ hostvars['daphne'].ansible_host }}:8099/photo_freshness/julian"
+    interval: 1h
+    client:
+      timeout: 120s
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].fresh == true"
+    alerts:
+      - type: telegram
+        description: "No new photos in iPhoneUploads for 5+ days - check PhotoSync on Julian's phone"
+
+  - name: "Photo Sync - Briana"
+    group: photos
+    url: "http://{{ hostvars['daphne'].ansible_host }}:8099/photo_freshness/briana"
+    interval: 1h
+    client:
+      timeout: 120s
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].fresh == true"
+    alerts:
+      - type: telegram
+        description: "No new photos in briana folder for 5+ days - check PhotoSync on Briana's phone"
+
 {% for host in groups['vms'] + groups['linuxhosts'] + groups['truenasvms'] + groups['otherhosts'] %}
 {% if hostvars[host].exporter_port is defined %}
   - name: "{{ host }}"
