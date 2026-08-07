@@ -158,3 +158,9 @@ services:
       - templates/hookery.py.j2
       - templates/hookery.photo_freshness.py.j2
       - playbooks/services/deploy_hookery.yaml
+
+  - name: cydraw
+    playbook: playbooks/services/deploy_cydraw.yaml
+    paths:
+      - templates/cydraw-compose.yml.j2
+      - playbooks/services/deploy_cydraw.yaml

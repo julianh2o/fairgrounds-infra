@@ -1,0 +1,10 @@
+- name: Deploy CYDraw
+  hosts: daphne
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: cydraw
+        compose_template: cydraw-compose.yml.j2
+        docker_compose_state: present

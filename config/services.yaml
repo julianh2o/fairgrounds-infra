@@ -350,6 +350,16 @@ services:
     machine: 10.10.0.13
     port: 8082
 
+  - name: CYDraw
+    description: Collaborative drawing app for ESP32 CYD devices
+    url: cydraw.julianverse.net
+    type: webapp
+    group: utilities
+    machine: 10.10.0.13
+    port: 8085
+    stack: cydraw
+    path: /opt/cydraw
+
   - name: Paperless-ngx
     description: Document management system
     url: paperless.julianverse.net
