@@ -352,7 +352,7 @@ services:
 
   - name: CYDraw
     description: Collaborative drawing app for ESP32 CYD devices
-    url: cydraw.julianverse.net
+    url: cydraw.bawdyshop.space
     type: webapp
     group: utilities
     machine: 10.10.0.13
