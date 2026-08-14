@@ -7,7 +7,7 @@ services:
       - NET_ADMIN
     environment:
       - PRIVATE_KEY={{ myflix_vpn_private_key }}
-      - QUERY=filters\[country_id\]=228 #US Servers
+      - SERVER_HOSTNAME=us13942.nordvpn.com
       - NET_LOCAL=10.10.0.0/24
       - DNS=8.8.8.8
     ports: # HOST:CONTAINER
