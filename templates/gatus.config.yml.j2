@@ -30,6 +30,7 @@ endpoints:
     conditions:
       - "[STATUS] == 200"
       - "[BODY].hasCookie == true"
+      - "[BODY].lastMamContact.reached == true"
     alerts:
       - type: telegram
 
