@@ -61,6 +61,9 @@
 - name: Deploy CYDraw
   import_playbook: services/deploy_cydraw.yaml
 
+- name: Deploy Bookwyrm
+  import_playbook: services/deploy_bookwyrm.yaml
+
 - name: Deploy Minecraft
   import_playbook: services/deploy_minecraft.yaml
 

@@ -1,0 +1,20 @@
+---
+- name: Deploy Bookwyrm
+  hosts: daphne
+  become: yes
+
+  vars_files:
+    - ../../secrets.yml
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: bookwyrm
+        compose_template: bookwyrm-compose.yml.j2
+        service_directories:
+          - data
+          - config
+        config_files:
+          - src: bookwyrm-readarr.json.j2
+            dest: config/readarr.json
+        docker_compose_state: present

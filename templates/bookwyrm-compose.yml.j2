@@ -1,0 +1,21 @@
+services:
+  bookwyrm:
+    image: julianh2o/bookwyrm:latest
+    container_name: bookwyrm
+    restart: unless-stopped
+    ports:
+      - "2999:2999"
+    environment:
+      - NODE_ENV=production
+      - PORT=2999
+      - DATABASE_URL=file:./data/db.db
+      - RREADING_GLASSES_URL=https://rreading-glasses.julianverse.net
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:2999/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

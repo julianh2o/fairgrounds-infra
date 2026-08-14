@@ -360,6 +360,16 @@ services:
     stack: cydraw
     path: /opt/cydraw
 
+  - name: Bookwyrm
+    description: Book tracking and Readarr management
+    url: bookwyrm.julianverse.net
+    type: webapp
+    group: media
+    machine: 10.10.0.13
+    port: 2999
+    stack: bookwyrm
+    path: /opt/bookwyrm
+
   - name: Paperless-ngx
     description: Document management system
     url: paperless.julianverse.net

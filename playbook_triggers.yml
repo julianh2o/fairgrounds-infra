@@ -164,3 +164,10 @@ services:
     paths:
       - templates/cydraw-compose.yml.j2
       - playbooks/services/deploy_cydraw.yaml
+
+  - name: bookwyrm
+    playbook: playbooks/services/deploy_bookwyrm.yaml
+    paths:
+      - templates/bookwyrm-compose.yml.j2
+      - templates/bookwyrm-readarr.json.j2
+      - playbooks/services/deploy_bookwyrm.yaml
