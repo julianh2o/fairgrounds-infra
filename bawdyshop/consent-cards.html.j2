@@ -1,0 +1,160 @@
+{# Build: python3 build.py > consent-cards.html #}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Conscious Consent Cards</title>
+<style>
+  :root {
+    --cols: 2;
+    --rows: 3;
+  }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #ddd;
+    margin: 0;
+    padding: 24px;
+  }
+  .toolbar {
+    max-width: 8.5in;
+    margin: 0 auto 16px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  .toolbar button {
+    font-size: 14px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin: 0 6px;
+  }
+  .toolbar p {
+    font-size: 12px;
+    color: #444;
+    max-width: 500px;
+    margin: 8px auto 0;
+  }
+  .sheet {
+    width: 8.5in;
+    height: 11in;
+    box-sizing: border-box;
+    background: white;
+    margin: 0 auto 24px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    padding: 0.25in;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
+  }
+  .cell {
+    border: 1px dashed #aaa;
+    box-sizing: border-box;
+    padding: 0.2in;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .cell.empty { border-style: dashed; opacity: 0.3; }
+  .card-number {
+    font-size: 9px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .prompt {
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: bold;
+  }
+  .questions {
+    font-size: 10.5px;
+    line-height: 1.35;
+    padding-left: 14px;
+    margin: 0;
+  }
+  .questions li {
+    margin-bottom: 5px;
+  }
+  .back-label {
+    font-size: 9px;
+    color: #bbb;
+    font-family: Arial, sans-serif;
+    text-align: right;
+  }
+
+  @media print {
+    body { background: white; padding: 0; margin: 0; }
+    .toolbar { display: none; }
+    .sheet {
+      box-shadow: none;
+      margin: 0;
+      page-break-after: always;
+    }
+    .sheet:last-child { page-break-after: auto; }
+  }
+  @page {
+    size: letter portrait;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button onclick="window.print()">Print / Save as PDF</button>
+  <p>
+    Prints 6 cards per sheet, landscape-oriented, front and back alternating (front sheet, then its matching back sheet, repeat).
+    In your print dialog, use <strong>duplex printing, flip on long edge</strong> — this layout assumes that setting so fronts and backs line up after cutting.
+    If your printer flips on the short edge instead, tell me and I'll adjust the mirroring.
+  </p>
+</div>
+
+<div id="sheets">
+{%- set COLS = 2 %}
+{%- set ROWS = 3 %}
+{%- set PER_SHEET = COLS * ROWS %}
+{%- for sheet_start in range(0, cards|length, PER_SHEET) %}
+{%- set chunk = cards[sheet_start:sheet_start + PER_SHEET] %}
+
+<!-- Front sheet -->
+<div class="sheet">
+{%- for i in range(PER_SHEET) %}
+{%- if i < chunk|length %}
+  <div class="cell">
+    <div class="card-number">Card {{ sheet_start + i + 1 }}</div>
+    <div class="prompt">{{ chunk[i].prompt }}</div>
+  </div>
+{%- else %}
+  <div class="cell empty"></div>
+{%- endif %}
+{%- endfor %}
+</div>
+
+<!-- Back sheet (mirrored columns for duplex flip on long edge) -->
+<div class="sheet">
+{%- for row in range(ROWS) %}
+{%- for col in range(COLS - 1, -1, -1) %}
+{%- set i = row * COLS + col %}
+{%- set original_index = sheet_start + i %}
+{%- if i < chunk|length %}
+  <div class="cell">
+    <div class="back-label">Card {{ original_index + 1 }}</div>
+    <ul class="questions">
+{%- for q in chunk[i].questions %}
+      <li>{{ q }}</li>
+{%- endfor %}
+    </ul>
+  </div>
+{%- else %}
+  <div class="cell empty"></div>
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
+</div>
+
+{%- endfor %}
+</div>
+
+</body>
+</html>

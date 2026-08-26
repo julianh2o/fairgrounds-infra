@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Conscious Consent Cards</title>
+<style>
+  :root {
+    --cols: 2;
+    --rows: 3;
+  }
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #ddd;
+    margin: 0;
+    padding: 24px;
+  }
+  .toolbar {
+    max-width: 8.5in;
+    margin: 0 auto 16px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  .toolbar button {
+    font-size: 14px;
+    padding: 8px 16px;
+    cursor: pointer;
+    margin: 0 6px;
+  }
+  .toolbar p {
+    font-size: 12px;
+    color: #444;
+    max-width: 500px;
+    margin: 8px auto 0;
+  }
+  .sheet {
+    width: 8.5in;
+    height: 11in;
+    box-sizing: border-box;
+    background: white;
+    margin: 0 auto 24px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    padding: 0.25in;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
+  }
+  .cell {
+    border: 1px dashed #aaa;
+    box-sizing: border-box;
+    padding: 0.2in;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .cell.empty { border-style: dashed; opacity: 0.3; }
+  .card-number {
+    font-size: 9px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+  }
+  .prompt {
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: bold;
+  }
+  .questions {
+    font-size: 10.5px;
+    line-height: 1.35;
+    padding-left: 14px;
+    margin: 0;
+  }
+  .questions li {
+    margin-bottom: 5px;
+  }
+  .back-label {
+    font-size: 9px;
+    color: #bbb;
+    font-family: Arial, sans-serif;
+    text-align: right;
+  }
+
+  @media print {
+    body { background: white; padding: 0; margin: 0; }
+    .toolbar { display: none; }
+    .sheet {
+      box-shadow: none;
+      margin: 0;
+      page-break-after: always;
+    }
+    .sheet:last-child { page-break-after: auto; }
+  }
+  @page {
+    size: letter portrait;
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button onclick="window.print()">Print / Save as PDF</button>
+  <p>
+    Prints 6 cards per sheet, landscape-oriented, front and back alternating (front sheet, then its matching back sheet, repeat).
+    In your print dialog, use <strong>duplex printing, flip on long edge</strong> — this layout assumes that setting so fronts and backs line up after cutting.
+    If your printer flips on the short edge instead, tell me and I'll adjust the mirroring.
+  </p>
+</div>
+
+<div id="sheets">
+
+<!-- Front sheet -->
+<div class="sheet">
+  <div class="cell">
+    <div class="card-number">Card 1</div>
+    <div class="prompt">You&#39;re on the dance floor and dancing near a cutie you&#39;ve never met before — they&#39;re grooving to the music and you&#39;re interested in dancing and flirting with them. What are some steps you might take to show interest and things you might look for to gauge their interest?</div>
+  </div>
+  <div class="cell">
+    <div class="card-number">Card 2</div>
+    <div class="prompt">You&#39;ve been chatting with a person you&#39;ve just met for about 30 minutes and the conversation has been going well, but you notice them not holding eye contact and looking around the room. What other non-verbal signals might you look for, and what might you do next?</div>
+  </div>
+  <div class="cell">
+    <div class="card-number">Card 3</div>
+    <div class="prompt">You&#39;re in the hot tub and a few new people have recently gotten in — you&#39;ve scooted over to make room, but now you&#39;re unavoidably in skin contact with a cutie you don&#39;t know well next to you. How do you navigate this to ensure you&#39;re being respectful of their space?</div>
+  </div>
+  <div class="cell">
+    <div class="card-number">Card 4</div>
+    <div class="prompt">You&#39;ve just walked into the red room and two of your close friends are making out naked on one of the beds there. How do you evaluate whether this scene is one you could join, and what steps might you take to check in?</div>
+  </div>
+  <div class="cell">
+    <div class="card-number">Card 5</div>
+    <div class="prompt">You&#39;ve been talking to someone you&#39;ve just met casually about pets, and you&#39;ve been excited about the chance to tie a rope suspension on someone during this play party. How would you test the waters or evaluate appropriateness of a direct invitation for this kind of play?</div>
+  </div>
+  <div class="cell">
+    <div class="card-number">Card 6</div>
+    <div class="prompt">You&#39;ve been lightly flirting with someone you&#39;re moderately familiar with and the vibes have been good, and you&#39;d like to make out with them. What steps might you take in order to ask respectfully?</div>
+  </div>
+</div>
+
+<!-- Back sheet (mirrored columns for duplex flip on long edge) -->
+<div class="sheet">
+  <div class="cell">
+    <div class="back-label">Card 2</div>
+    <ul class="questions">
+      <li>Are they turning toward you or away from you? Are they engaging in conversation or are you doing most of the talking?</li>
+      <li>What are ways you could give them an &#34;out&#34; to gracefully end the conversation without feeling like they need to directly reject you?</li>
+      <li>What could you say or ask to check in with them in a low-pressure way?</li>
+    </ul>
+  </div>
+  <div class="cell">
+    <div class="back-label">Card 1</div>
+    <ul class="questions">
+      <li>Are they dancing alone or with others? What might you infer from how they&#39;re dancing about whether they&#39;d welcome company before approaching them?</li>
+      <li>How might you approach this person and get their attention, and what would you look for as a signal that they might be interested in dancing together?</li>
+      <li>Now that you&#39;ve been vibing and making eye contact, what would be a low-pressure way to see if they&#39;re interested in dancing with more physical contact?</li>
+    </ul>
+  </div>
+  <div class="cell">
+    <div class="back-label">Card 4</div>
+    <ul class="questions">
+      <li>Is there any existing signal (open invitation, established dynamic, prior conversation) that suggests this scene is open to others?</li>
+      <li>How would you get the attention of both people involved without interrupting or pressuring the scene?</li>
+      <li>What would an explicit ask to join look like, and how would you gracefully back off if either person hesitates?</li>
+    </ul>
+  </div>
+  <div class="cell">
+    <div class="back-label">Card 3</div>
+    <ul class="questions">
+      <li>Is the contact something you can shift or adjust without drawing attention to it, and would that be the more respectful move?</li>
+      <li>How might you check in verbally or read their body language to see if the contact is unbothersome or unwelcome?</li>
+      <li>What would you say if you wanted to name the situation directly (&#34;hey, we&#39;re a little squished, is this okay?&#34;) without making it awkward?</li>
+    </ul>
+  </div>
+  <div class="cell">
+    <div class="back-label">Card 6</div>
+    <ul class="questions">
+      <li>What signals so far suggest mutual interest, and how would you distinguish friendliness from flirtation?</li>
+      <li>How might you ask directly or check in (&#34;can I kiss you?&#34;) in a way that feels natural rather than clinical?</li>
+      <li>What would you do if they hesitate or give a lukewarm response?</li>
+    </ul>
+  </div>
+  <div class="cell">
+    <div class="back-label">Card 5</div>
+    <ul class="questions">
+      <li>How would you gauge their familiarity with rope/suspension before bringing it up, given the conversation has been casual and unrelated?</li>
+      <li>What would a low-stakes way to introduce the topic look like, and how would you read their reaction to it?</li>
+      <li>If they express interest, what questions would you need to ask about experience, limits, and consent before moving forward?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- Front sheet -->
+<div class="sheet">
+  <div class="cell">
+    <div class="card-number">Card 7</div>
+    <div class="prompt">You&#39;re a bit lit and have been feeling yourself — you&#39;ve finally plucked up the courage to approach someone you&#39;ve had your eye on throughout the night. How do you make sure the attention/approach is welcome, and what steps might you take to ensure the interaction goes well?</div>
+  </div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+</div>
+
+<!-- Back sheet (mirrored columns for duplex flip on long edge) -->
+<div class="sheet">
+  <div class="cell empty"></div>
+  <div class="cell">
+    <div class="back-label">Card 7</div>
+    <ul class="questions">
+      <li>How might being a bit lit affect your ability to read their signals, and what could you do to compensate for that?</li>
+      <li>What would an easygoing opener look like that gives them an easy way to disengage if they&#39;re not interested?</li>
+      <li>How would you check in with yourself about whether you&#39;re in a good state to gauge consent accurately, and what would you do if you&#39;re unsure?</li>
+    </ul>
+  </div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+  <div class="cell empty"></div>
+</div>
+</div>
+
+</body>
+</html>

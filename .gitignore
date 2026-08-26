@@ -31,3 +31,4 @@ terraform/*.tfstate.backup
 
 # Temporary debug/troubleshooting output
 tmp/
+.DS_Store

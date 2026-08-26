@@ -1,0 +1,115 @@
+# Conscious Consent Cards data
+# Build: python3 build.py > consent-cards.html
+
+cards:
+  - prompt: >-
+      You're on the dance floor and dancing near a cutie you've never met
+      before. They're grooving to the music and you're interested in dancing
+      and flirting with them. How might you guauge interest and approach them?
+    questions:
+      - >-
+        Are they dancing alone or with others? What might you look for in how
+        they're dancing to determine how open they are to dancing together?
+      - >-
+        As you get their attention, what would be a positive indication that welcomes
+        an approach? What would be a negative one?
+      - >-
+        Now that you've been vibing and making eye contact, what would be a
+        low-pressure way to see if they're interested in dancing with more
+        physical contact?
+
+  - prompt: >-
+      You've been chatting with a person you've just met for about 30 minutes
+      and the conversation has been going well, but you notice them not holding
+      eye contact and looking around the room. How might you interpret this and
+      what are other signals you might you look for in this situation?
+      What might you do next?
+    questions:
+      - >-
+        What conversational signals may indicate that they're engaged or not
+        engaged in the conversation?
+      - >-
+        What are other explanations for why they're not holding eye contact?
+      - >-
+        What are ways you could give them an "out" to gracefully end the
+        conversation without feeling like they need to directly reject you?
+      - >-
+        What could you say or ask to check in with them in a low-pressure way?
+
+  - prompt: >-
+      You're in the hot tub and a few new people have recently gotten in.
+      You've scooted over to make room, but now you're unavoidably in skin
+      contact with a cutie you don't know very well next to you. How do you navigate
+      this to ensure you're being respectful of their space?
+    questions:
+      - >-
+        What body language might indicate that a person is more or less comfortable
+        in such a situation?
+      - >-
+        How might you check in verbally or read their body language to see if
+        the contact is unbothersome or unwelcome?
+      - >-
+        What would you say if you wanted to name the situation directly ("hey,
+        we're a little squished, is this okay?") without making it awkward?
+
+  - prompt: >-
+      You've just walked into the red room and two of your close friends are
+      making out naked on one of the beds there. How do you evaluate whether
+      this scene is one you could join, and what steps might you take to check
+      in?
+    questions:
+      - >-
+        Is there any existing signal (open invitation, established dynamic,
+        prior conversation) that suggests this scene is open to others?
+      - >-
+        How would you get the attention of both people involved without
+        interrupting or pressuring the scene?
+      - >-
+        What would an explicit ask to join look like, and how would you
+        gracefully back off if either person hesitates?
+
+  - prompt: >-
+      You've been talking to someone you've just met casually about pets, and
+      you've been excited about the chance to tie a rope suspension on someone
+      during this play party. How would you test the waters or evaluate
+      appropriateness of a direct invitation for this kind of play?
+    questions:
+      - >-
+        How would you gauge their familiarity with rope/suspension before
+        bringing it up, given the conversation has been casual and unrelated?
+      - >-
+        What would a low-stakes way to introduce the topic look like, and how
+        would you read their reaction to it?
+      - >-
+        If they express interest, what questions would you need to ask about
+        experience, limits, and consent before moving forward?
+
+  - prompt: >-
+      You've been lightly flirting with someone you're moderately familiar with
+      and the vibes have been good, and you'd like to make out with them. What
+      steps might you take in order to ask respectfully?
+    questions:
+      - >-
+        What signals so far suggest mutual interest, and how would you
+        distinguish friendliness from flirtation?
+      - >-
+        How might you ask directly or check in ("can I kiss you?") in a way
+        that feels natural rather than clinical?
+      - What would you do if they hesitate or give a lukewarm response?
+
+  - prompt: >-
+      You're a bit lit and have been feeling yourself — you've finally plucked
+      up the courage to approach someone you've had your eye on throughout the
+      night. How do you make sure the attention/approach is welcome, and what
+      steps might you take to ensure the interaction goes well?
+    questions:
+      - >-
+        How might being a bit lit affect your ability to read their signals,
+        and what could you do to compensate for that?
+      - >-
+        What would an easygoing opener look like that gives them an easy way to
+        disengage if they're not interested?
+      - >-
+        How would you check in with yourself about whether you're in a good
+        state to gauge consent accurately, and what would you do if you're
+        unsure?
