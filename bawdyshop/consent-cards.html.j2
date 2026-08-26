@@ -54,12 +54,39 @@
     overflow: hidden;
   }
   .cell.empty { border-style: dashed; opacity: 0.3; }
-  .card-number {
-    font-size: 9px;
+  .card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 6px;
+  }
+  .brand {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .brand svg {
+    width: 0.7in;
+    height: auto;
+  }
+  .brand-text {
+    font-size: 6px;
     color: #999;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 4px;
+    font-family: Arial, sans-serif;
+    margin-top: 2px;
+  }
+  .card-index {
+    font-size: 9px;
+    color: #999;
     font-family: Arial, sans-serif;
   }
   .prompt {
@@ -75,12 +102,6 @@
   }
   .questions li {
     margin-bottom: 5px;
-  }
-  .back-label {
-    font-size: 9px;
-    color: #bbb;
-    font-family: Arial, sans-serif;
-    text-align: right;
   }
 
   @media print {
@@ -114,6 +135,16 @@
 {%- set COLS = 2 %}
 {%- set ROWS = 3 %}
 {%- set PER_SHEET = COLS * ROWS %}
+{%- set TOTAL = cards|length %}
+{%- macro card_footer(number) %}
+  <div class="card-footer">
+    <div class="brand">
+      {% include "TheBawdyShopLogo.svg" %}
+      <div class="brand-text">Consent Cards</div>
+    </div>
+    <div class="card-index">{{ number }}/{{ TOTAL }}</div>
+  </div>
+{%- endmacro %}
 {%- for sheet_start in range(0, cards|length, PER_SHEET) %}
 {%- set chunk = cards[sheet_start:sheet_start + PER_SHEET] %}
 
@@ -122,8 +153,10 @@
 {%- for i in range(PER_SHEET) %}
 {%- if i < chunk|length %}
   <div class="cell">
-    <div class="card-number">Card {{ sheet_start + i + 1 }}</div>
-    <div class="prompt">{{ chunk[i].prompt }}</div>
+    <div class="card-content">
+      <div class="prompt">{{ chunk[i].prompt }}</div>
+    </div>
+    {{- card_footer(sheet_start + i + 1) }}
   </div>
 {%- else %}
   <div class="cell empty"></div>
@@ -139,12 +172,14 @@
 {%- set original_index = sheet_start + i %}
 {%- if i < chunk|length %}
   <div class="cell">
-    <div class="back-label">Card {{ original_index + 1 }}</div>
-    <ul class="questions">
+    <div class="card-content">
+      <ul class="questions">
 {%- for q in chunk[i].questions %}
-      <li>{{ q }}</li>
+        <li>{{ q }}</li>
 {%- endfor %}
-    </ul>
+      </ul>
+    </div>
+    {{- card_footer(original_index + 1) }}
   </div>
 {%- else %}
   <div class="cell empty"></div>
