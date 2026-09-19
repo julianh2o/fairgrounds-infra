@@ -40,6 +40,7 @@ ansible-playbook playbooks/services/deploy_myflix.yaml
 ansible-playbook playbooks/services/deploy_immich.yaml
 ansible-playbook playbooks/services/deploy_rreading_glasses.yaml
 ansible-playbook playbooks/services/deploy_uneventful.yaml
+ansible-playbook playbooks/services/deploy_partyfoal.yaml
 ansible-playbook playbooks/services/deploy_tautulli.yaml
 ansible-playbook playbooks/services/deploy_discord_ollama.yaml
 ansible-playbook playbooks/services/deploy_rclone_to_backblaze.yaml
@@ -59,6 +60,21 @@ ansible-playbook playbooks/setup/github_keys_puller.yml
 ansible-galaxy collection install -r requirements.yaml  # collections
 ansible-galaxy role install -r requirements.yaml -p ~/.ansible/roles  # roles
 ```
+
+### Managing Secrets
+
+Secrets referenced by playbooks/templates live in the encrypted `secrets.yml`
+(ansible-vault). Use `scripts/manage_secret.py` instead of hand-editing the vault:
+
+```bash
+python3 scripts/manage_secret.py new <key> [value]   # add a secret (random value if omitted)
+python3 scripts/manage_secret.py list                # list all secret keys
+python3 scripts/manage_secret.py get <key>           # print a secret's value
+```
+
+Keys follow a `<service>_<name>` convention (e.g. `uneventful_twilio_auth_token`), and
+are referenced in compose templates as `{{ <key> }}` after the playbook declares
+`vars_files: [../../secrets.yml]`. See `scripts/README.md` for more.
 
 ### Working with Specific Hosts
 

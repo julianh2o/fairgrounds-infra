@@ -14,6 +14,16 @@ services:
     stack: uneventful
     path: /opt/uneventful
 
+  - name: Partyfoal
+    description: Event landing pages and RSVP collection
+    url: partyfoal.bawdyshop.space
+    type: webapp
+    group: custom
+    machine: 10.10.0.11
+    port: 2051
+    stack: partyfoal
+    path: /opt/partyfoal
+
   # ============================================================================
   # julianhartline.com
   # ============================================================================

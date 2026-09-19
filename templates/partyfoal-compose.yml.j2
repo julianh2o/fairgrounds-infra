@@ -1,0 +1,15 @@
+services:
+  partyfoal:
+    image: julianh2o/partyfoal:latest
+    container_name: partyfoal-prod
+    ports:
+      - "2051:2999"
+    environment:
+      - APP_BASE_URL={{ partyfoal_app_base_url }}
+      - RESEND_API_KEY={{ partyfoal_resend_api_key }}
+      - EMAIL_FROM={{ partyfoal_email_from }}
+      - NODE_ENV=production
+      - DATABASE_URL=file:./data/partyfoal.db
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
