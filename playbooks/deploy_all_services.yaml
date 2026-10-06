@@ -9,6 +9,9 @@
 - name: Deploy Prometheus
   import_playbook: services/deploy_prometheus.yaml
 
+- name: Deploy cAdvisor
+  import_playbook: services/deploy_cadvisor.yaml
+
 - name: Deploy Grafana
   import_playbook: services/deploy_grafana.yaml
 

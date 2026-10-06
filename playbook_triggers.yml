@@ -28,6 +28,12 @@ services:
       - templates/prometheus.config.yml.j2
       - playbooks/services/deploy_prometheus.yaml
 
+  - name: cadvisor
+    playbook: playbooks/services/deploy_cadvisor.yaml
+    paths:
+      - templates/cadvisor-compose.yml.j2
+      - playbooks/services/deploy_cadvisor.yaml
+
   - name: grafana
     playbook: playbooks/services/deploy_grafana.yaml
     paths:
