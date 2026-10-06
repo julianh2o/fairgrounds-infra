@@ -1,30 +1,15 @@
 services:
-  deepseek:
-    image: ollama/ollama:latest
-    container_name: deepseek
+  deepseek-harness:
+    image: moelin/deepseek-harness:latest
+    container_name: deepseek-harness
     restart: unless-stopped
     ports:
-      - "11435:11434"
+      - "8085:8080"
     environment:
-      - OLLAMA_KEEP_ALIVE=10m
-      - OLLAMA_MAX_LOADED_MODELS=1
-      - OLLAMA_NUM_PARALLEL=1
+      - PUBLIC_URL=https://deepseek.julianverse.net
+      - AUTH_USERNAME={{ deepseek_harness_username | default('admin') }}
+      - AUTH_PASSWORD={{ deepseek_harness_password }}
+      - DSH_TELEMETRY_DISABLED=1
     volumes:
-      - ./data:/root/.ollama
-    healthcheck:
-      test: ["CMD", "ollama", "list"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 20s
-
-  deepseek-pull:
-    image: ollama/ollama:latest
-    container_name: deepseek-pull
-    restart: "no"
-    depends_on:
-      deepseek:
-        condition: service_healthy
-    environment:
-      - OLLAMA_HOST=deepseek:11434
-    entrypoint: ["ollama", "pull", "{{ deepseek_model | default('deepseek-r1:1.5b') }}"]
+      - ./data:/data
+      - ./workspace:/workspace

@@ -70,7 +70,7 @@
 - name: Deploy Minecraft
   import_playbook: services/deploy_minecraft.yaml
 
-- name: Deploy DeepSeek
+- name: Deploy DeepSeek Harness
   import_playbook: services/deploy_deepseek.yaml
 
 # Backup services

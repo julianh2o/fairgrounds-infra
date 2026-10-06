@@ -138,13 +138,13 @@ services:
     machine: 10.10.0.40
     port: 11434
 
-  - name: DeepSeek
-    description: Self-hosted DeepSeek-R1 (Ollama, CPU) API
+  - name: DeepSeek Harness
+    description: Coordinates environments and multiple LLMs
     url: deepseek.julianverse.net
-    type: api
+    type: webapp
     group: ai
     machine: 10.10.0.13
-    port: 11435
+    port: 8085
 
   - name: ComfyUI
     description: AI image generation interface
