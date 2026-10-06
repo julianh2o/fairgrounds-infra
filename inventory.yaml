@@ -4,6 +4,8 @@ all:
     ansible_connection: ssh
 
 vms:
+  vars:
+    cadvisor_port: 9338
   hosts:
     ceto:
       ansible_host: 10.10.0.10

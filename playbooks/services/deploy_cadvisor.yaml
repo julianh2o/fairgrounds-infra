@@ -1,0 +1,10 @@
+- name: Deploy cAdvisor
+  hosts: vms
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: cadvisor
+        compose_template: cadvisor-compose.yml.j2
+        docker_compose_state: present
