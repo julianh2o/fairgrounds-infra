@@ -1,0 +1,17 @@
+---
+# daphne is a CPU-only VM (1 vCPU / 4 GB, no GPU passthrough), so this runs
+# Ollama on CPU with a small distilled DeepSeek-R1 model. Override the model
+# with -e deepseek_model=<tag> (see templates/deepseek-compose.yml.j2).
+- name: Deploy DeepSeek
+  hosts: daphne
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: deepseek
+        compose_template: deepseek-compose.yml.j2
+        config_files: []
+        service_directories:
+          - data
+        docker_compose_state: present

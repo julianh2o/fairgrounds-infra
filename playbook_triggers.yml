@@ -177,3 +177,9 @@ services:
       - templates/bookwyrm-compose.yml.j2
       - templates/bookwyrm-readarr.json.j2
       - playbooks/services/deploy_bookwyrm.yaml
+
+  - name: deepseek
+    playbook: playbooks/services/deploy_deepseek.yaml
+    paths:
+      - templates/deepseek-compose.yml.j2
+      - playbooks/services/deploy_deepseek.yaml
