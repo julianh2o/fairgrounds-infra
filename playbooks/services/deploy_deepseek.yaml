@@ -1,0 +1,14 @@
+---
+# CPU-only: daphne has no GPU. Override the model with -e deepseek_model=<tag>
+- name: Deploy DeepSeek
+  hosts: daphne
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: deepseek
+        compose_template: deepseek-compose.yml.j2
+        docker_compose_state: present
+        service_directories:
+          - data

@@ -1,0 +1,25 @@
+services:
+  deepseek:
+    image: ollama/ollama:latest
+    container_name: deepseek
+    restart: unless-stopped
+    ports:
+      - "11435:11434"
+    volumes:
+      - ./data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  deepseek-pull:
+    image: ollama/ollama:latest
+    container_name: deepseek-pull
+    restart: "no"
+    depends_on:
+      deepseek:
+        condition: service_healthy
+    environment:
+      - OLLAMA_HOST=deepseek:11434
+    entrypoint: ["ollama", "pull", "{{ deepseek_model | default('deepseek-r1:1.5b') }}"]

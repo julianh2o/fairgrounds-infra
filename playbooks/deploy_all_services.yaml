@@ -49,6 +49,9 @@
 - name: Deploy ComfyUI
   import_playbook: services/deploy_comfyui.yaml
 
+- name: Deploy DeepSeek
+  import_playbook: services/deploy_deepseek.yaml
+
 - name: Deploy Outreach
   import_playbook: services/deploy_outreach.yaml
 

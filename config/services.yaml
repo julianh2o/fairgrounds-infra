@@ -138,6 +138,14 @@ services:
     machine: 10.10.0.40
     port: 11434
 
+  - name: DeepSeek
+    description: DeepSeek-R1 language model API (CPU)
+    url: deepseek.julianverse.net
+    type: api
+    group: ai
+    machine: 10.10.0.13
+    port: 11435
+
   - name: ComfyUI
     description: AI image generation interface
     url: comfyui.julianverse.net
