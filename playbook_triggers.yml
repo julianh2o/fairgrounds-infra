@@ -60,6 +60,12 @@ services:
       - templates/uneventful-compose.yml.j2
       - playbooks/services/deploy_uneventful.yaml
 
+  - name: partyfoal
+    playbook: playbooks/services/deploy_partyfoal.yaml
+    paths:
+      - templates/partyfoal-compose.yml.j2
+      - playbooks/services/deploy_partyfoal.yaml
+
   - name: vikunja
     playbook: playbooks/services/deploy_vikunja.yaml
     paths:
