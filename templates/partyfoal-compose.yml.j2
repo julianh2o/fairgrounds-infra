@@ -3,10 +3,13 @@ services:
     image: julianh2o/partyfoal:latest
     container_name: partyfoal-prod
     ports:
-      - "2051:3000"
+      - "2051:2999"
     environment:
       - RESEND_API_KEY={{ resend_api_key }}
       - NODE_ENV=production
+      - PORT=2999
+      - DATABASE_URL=file:./data/db.db
+      - APP_BASE_URL=https://events.bawdyshop.space
     volumes:
       - ./data:/app/data
     restart: unless-stopped
