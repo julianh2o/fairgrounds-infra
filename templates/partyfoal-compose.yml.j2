@@ -6,6 +6,7 @@ services:
       - "2051:2999"
     environment:
       - RESEND_API_KEY={{ resend_api_key }}
+      - EMAIL_FROM=Partyfoal <noreply@events.bawdyshop.space>
       - NODE_ENV=production
       - PORT=2999
       - DATABASE_URL=file:./data/db.db
