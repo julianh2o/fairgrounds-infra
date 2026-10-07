@@ -1,0 +1,15 @@
+services:
+  deepseek-harness:
+    image: moelin/deepseek-harness:latest
+    container_name: deepseek-harness
+    restart: unless-stopped
+    ports:
+      - "8085:8080"
+    environment:
+      - PUBLIC_URL=https://deepseek.julianverse.net
+      - AUTH_USERNAME={{ deepseek_harness_username | default('admin') }}
+      - AUTH_PASSWORD={{ deepseek_harness_password }}
+      - DSH_TELEMETRY_DISABLED=1
+    volumes:
+      - ./data:/data
+      - ./workspace:/workspace

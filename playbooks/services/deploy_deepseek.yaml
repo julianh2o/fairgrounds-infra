@@ -1,0 +1,21 @@
+---
+# DeepSeek Harness coordinates environments and multiple LLMs. Ollama runs on
+# another machine, so this only deploys the harness. Requires
+# deepseek_harness_password (min 12 chars) in secrets.yml.
+- name: Deploy DeepSeek Harness
+  hosts: daphne
+  become: yes
+
+  vars_files:
+    - ../../secrets.yml
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: deepseek
+        compose_template: deepseek-compose.yml.j2
+        config_files: []
+        service_directories:
+          - data
+          - workspace
+        docker_compose_state: present
