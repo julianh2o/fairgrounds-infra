@@ -4,7 +4,7 @@ module "metis" {
   hostname    = "metis"
   description = "Docker Services VM"
   node_name   = var.proxmox_node_name
-  vm_id       = 101
+  vm_id       = 105
 
   # Resources
   cpu_cores    = 4
