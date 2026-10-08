@@ -112,6 +112,7 @@ resource "proxmox_virtual_environment_vm" "vm" {
   lifecycle {
     ignore_changes = [
       cdrom,
+      initialization[0].user_account,
     ]
   }
 }
