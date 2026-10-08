@@ -15,4 +15,4 @@
             mode: "0755"
           - path: downloads
             mode: "0755"
-        docker_compose_state: present
+        docker_compose_state: stopped  # disabled: containers stopped, config and data kept; set to present to re-enable
