@@ -31,6 +31,10 @@ Use `-- --limit <host>` to target specific hosts.
 
 **Reverse proxy**: Caddy with automatic HTTPS. Service definitions in `config/services.yaml` generate the Caddyfile.
 
+## Terraform State
+
+State is tracked in git as `terraform/state.vault` (ansible-vault encrypted); the plaintext `terraform/terraform.tfstate` is gitignored. Always `./run terraform state-pull` before running terraform and `./run terraform state-push` after, then commit `state.vault`. Both commands refuse to overwrite newer state with older (by `serial`) unless given `--force`.
+
 ## Adding a New Service
 
 1. `templates/<service>-compose.yml.j2` - Docker Compose template

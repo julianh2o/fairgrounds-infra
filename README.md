@@ -45,6 +45,17 @@ Required secrets:
 - `kopia_server_password` - Kopia web UI password
 - `kopia_repository_password` - Kopia repository encryption password
 
+# Terraform State
+
+The plaintext `terraform/terraform.tfstate` is gitignored because it contains secrets. An ansible-vault encrypted copy, `terraform/state.vault`, is committed instead.
+
+```bash
+./run terraform state-pull   # decrypt state.vault -> terraform.tfstate (before terraform)
+./run terraform state-push   # encrypt terraform.tfstate -> state.vault (after terraform, then commit)
+```
+
+Both commands compare the state's `serial` and refuse to replace newer state with older; pass `-- --force` to override (`state-pull --force` keeps the old file as `terraform.tfstate.pre-pull.backup`). There is no locking, so pull before you apply. Past versions stay in git history, protected only by the vault password.
+
 
 
 # Run Script
