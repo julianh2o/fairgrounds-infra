@@ -12,6 +12,12 @@ scripts:
     setup:
       name: Setup Terraform variables
       cmd: ansible-playbook playbooks/setup/terraform_vars.yaml
+    state-pull:
+      name: Decrypt terraform/state.vault to terraform.tfstate
+      cmd: python3 scripts/tfstate.py pull
+    state-push:
+      name: Encrypt terraform.tfstate to terraform/state.vault
+      cmd: python3 scripts/tfstate.py push
 
   # Services deployment
   services:
