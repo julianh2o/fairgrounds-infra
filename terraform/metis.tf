@@ -8,7 +8,7 @@ module "metis" {
 
   # Resources
   cpu_cores    = 4
-  memory_mb    = 4096
+  memory_mb    = 8192
   disk_size_gb = 200
 
   network_bridge = "vmbr0"

@@ -21,7 +21,7 @@ Ansible-based infrastructure repo managing Linux VMs with Docker Compose service
 ./run apt_upgrade                  # Update packages on all hosts
 ```
 
-Use `-- --limit <host>` to target specific hosts.
+Use `--limit <host>` to target specific hosts (e.g. `./run services deploy cadvisor --limit metis`). Don't put a `--` before it; it gets passed to ansible-playbook literally and fails.
 
 ## Architecture
 
