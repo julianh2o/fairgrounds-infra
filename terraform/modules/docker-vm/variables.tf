@@ -52,7 +52,7 @@ variable "ballooning" {
 variable "disk_size_gb" {
   description = "Disk size in GB"
   type        = number
-  default     = 32
+  default     = 200
 }
 
 variable "datastore_id" {

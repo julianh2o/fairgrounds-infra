@@ -10,7 +10,7 @@ module "daphne" {
   # Resources
   cpu_cores    = 1
   memory_mb    = 4096
-  disk_size_gb = 50
+  disk_size_gb = 200
 
   network_bridge = "vmbr0"
   ip_address     = "10.10.0.13/24"

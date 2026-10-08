@@ -11,7 +11,7 @@ module "ceto" {
   # Resources
   cpu_cores    = 2
   memory_mb    = 16384
-  disk_size_gb = 50
+  disk_size_gb = 200
 
   network_bridge = "vmbr0"
   ip_address     = "10.10.0.10/24"
