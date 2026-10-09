@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     ports:
       - "8085:8080"
+      - "3080:3080"
     environment:
       - PUBLIC_URL=https://deepseek.julianverse.net
       - AUTH_USERNAME={{ deepseek_harness_username | default('admin') }}
