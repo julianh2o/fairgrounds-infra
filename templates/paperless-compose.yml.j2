@@ -40,6 +40,9 @@ services:
       PAPERLESS_URL: https://paperless.julianverse.net
 
   paperless-ai:
+    # Disabled: the "disabled" profile is never activated, so compose skips this service.
+    # Remove the profiles line (and uncomment its services.yaml entry) to re-enable.
+    profiles: ["disabled"]
     image: clusterzx/paperless-ai
     container_name: paperless-ai
     restart: unless-stopped
