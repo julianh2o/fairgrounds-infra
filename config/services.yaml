@@ -154,7 +154,7 @@ services:
     type: webapp
     group: ai
     machine: 10.10.0.13
-    port: 8085
+    port: 8086
 
   - name: ComfyUI
     description: AI image generation interface
