@@ -396,13 +396,14 @@ services:
     machine: 10.10.0.13
     port: 8000
 
-  - name: Paperless AI
-    description: AI assistant for Paperless-ngx
-    url: paperless-ai.julianverse.net
-    type: webapp
-    group: utilities
-    machine: 10.10.0.13
-    port: 3000
+  # Disabled (see paperless-ai in templates/paperless-compose.yml.j2)
+  # - name: Paperless AI
+  #   description: AI assistant for Paperless-ngx
+  #   url: paperless-ai.julianverse.net
+  #   type: webapp
+  #   group: utilities
+  #   machine: 10.10.0.13
+  #   port: 3000
 
   - name: Kopia
     description: Backup management
