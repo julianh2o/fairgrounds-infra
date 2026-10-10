@@ -1,13 +1,13 @@
 ---
-- name: Deploy Bawdy
+- name: Deploy Lights
   hosts: ceto
   become: yes
 
   roles:
     - role: docker_service
       vars:
-        service_name: bawdy
-        compose_template: bawdy-compose.yml.j2
+        service_name: lights
+        compose_template: lights-compose.yml.j2
         service_directories:
           - config
           - path: sequences

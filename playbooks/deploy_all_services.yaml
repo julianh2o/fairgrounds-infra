@@ -37,8 +37,8 @@
 - name: Deploy Partyfoal
   import_playbook: services/deploy_partyfoal.yaml
 
-- name: Deploy Bawdy
-  import_playbook: services/deploy_bawdy.yaml
+- name: Deploy Lights
+  import_playbook: services/deploy_lights.yaml
 
 - name: Deploy Vikunja
   import_playbook: services/deploy_vikunja.yaml
