@@ -1,0 +1,33 @@
+services:
+  daemon:
+    image: julianh2o/bawdy-daemon:latest
+    container_name: bawdy-daemon
+    # Host networking so the DDP frame-sync broadcast reaches the WLED boards on 10.10.0.0/24
+    network_mode: host
+    environment:
+      - WLED_API_HOST=0.0.0.0
+      - WLED_API_PORT=8765
+      - WLED_FPS=30
+      - WLED_BROADCAST_IP=10.10.0.255
+      - WLED_PRESET=concert_hall
+      # Dry-run until the boards are wired: drop this and set WLED_CONTROLLERS=/config/controllers.json
+      - WLED_DRY_RUN=true
+    volumes:
+      - ./config:/config:ro
+    stop_grace_period: 10s
+    restart: unless-stopped
+
+  web:
+    image: julianh2o/bawdy-web:latest
+    container_name: bawdy-web
+    network_mode: host
+    environment:
+      - SEQUENCER_HOST=0.0.0.0
+      - SEQUENCER_PORT=2060
+      - ENGINE_URL=http://127.0.0.1:8765
+    volumes:
+      - ./sequences:/data/sequences
+    depends_on:
+      daemon:
+        condition: service_healthy
+    restart: unless-stopped

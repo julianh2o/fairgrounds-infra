@@ -92,6 +92,16 @@ services:
     port: 8006
     tls_skip_verify: true
 
+  - name: Bawdy Lights
+    description: WLED lighting engine and web sequencer
+    url: lights.julianverse.net
+    type: webapp
+    group: custom
+    machine: 10.10.0.10
+    port: 2060
+    stack: bawdy
+    path: /opt/bawdy
+
   - name: Fair-map
     description: Interactive map of the fairgrounds
     url: map.julianverse.net
