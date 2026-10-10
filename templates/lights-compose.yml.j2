@@ -1,7 +1,7 @@
 services:
   daemon:
-    image: julianh2o/bawdy-daemon:latest
-    container_name: lights-daemon
+    image: julianh2o/bawdy-lights-daemon:latest
+    container_name: bawdy-lights-daemon
     # Host networking so the DDP frame-sync broadcast reaches the WLED boards on 10.10.0.0/24
     network_mode: host
     environment:
@@ -18,8 +18,8 @@ services:
     restart: unless-stopped
 
   web:
-    image: julianh2o/bawdy-web:latest
-    container_name: lights-web
+    image: julianh2o/bawdy-lights-web:latest
+    container_name: bawdy-lights-web
     network_mode: host
     environment:
       - SEQUENCER_HOST=0.0.0.0
