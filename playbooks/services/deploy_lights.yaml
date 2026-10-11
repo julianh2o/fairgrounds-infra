@@ -1,0 +1,15 @@
+---
+- name: Deploy Lights
+  hosts: ceto
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: lights
+        compose_template: lights-compose.yml.j2
+        service_directories:
+          - config
+          - path: sequences
+            mode: "0777"
+        docker_compose_state: present

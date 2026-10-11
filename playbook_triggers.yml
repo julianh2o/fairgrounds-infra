@@ -116,6 +116,12 @@ services:
       - templates/outreach-compose.yml.j2
       - playbooks/services/deploy_outreach.yaml
 
+  - name: lights
+    playbook: playbooks/services/deploy_lights.yaml
+    paths:
+      - templates/lights-compose.yml.j2
+      - playbooks/services/deploy_lights.yaml
+
   - name: fair_map
     playbook: playbooks/services/deploy_fair_map.yaml
     paths:
