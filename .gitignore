@@ -18,6 +18,7 @@ secrets/id_ed25519
 
 # Claude Code local settings (machine-specific)
 .claude/settings.local.json
+.claude/worktrees/
 
 # Custom roles are in roles/ and committed to git
 # Galaxy roles install to ~/.ansible/roles (not in repo)

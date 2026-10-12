@@ -109,6 +109,13 @@ scripts:
       name: Get secret value for '$1'
       cmd: python3 scripts/manage_secret.py get $1
 
+  # GitHub
+  github:
+    name: GitHub repo management
+    secrets:
+      name: Push Actions secrets from the vault (config/github_secrets.yaml)
+      cmd: ansible-playbook playbooks/setup/github_secrets.yaml
+
   # Maintenance commands
   maintenance:
     name: Maintenance and backup commands
