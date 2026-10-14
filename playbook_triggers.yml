@@ -122,6 +122,12 @@ services:
       - templates/lights-compose.yml.j2
       - playbooks/services/deploy_lights.yaml
 
+  - name: iris
+    playbook: playbooks/services/deploy_iris.yaml
+    paths:
+      - templates/iris-compose.yml.j2
+      - playbooks/services/deploy_iris.yaml
+
   - name: fair_map
     playbook: playbooks/services/deploy_fair_map.yaml
     paths:

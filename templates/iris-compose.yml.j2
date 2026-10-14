@@ -1,0 +1,18 @@
+services:
+  iris:
+    image: node:22-alpine
+    container_name: iris-board
+    # runs as julian so Iris can edit app/ and data/ directly on arethusa
+    user: "1003:1003"
+    working_dir: /app
+    command: ["node", "server.js"]
+    ports:
+      - "2030:2030"
+    environment:
+      - PORT=2030
+      - DATA_DIR=/data
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./app:/app:ro
+      - ./data:/data
+    restart: unless-stopped

@@ -1,0 +1,18 @@
+---
+- name: Deploy Iris
+  hosts: arethusa
+  become: yes
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: iris
+        compose_template: iris-compose.yml.j2
+        # lives in julian's home so Iris (the assistant on arethusa) can edit app/ and data/ directly
+        service_base_dir: /home/julian/iris
+        service_owner: julian
+        service_group: julian
+        service_directories:
+          - app
+          - data
+        docker_compose_state: present

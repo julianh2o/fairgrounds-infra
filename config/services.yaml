@@ -175,12 +175,14 @@ services:
     port: 8000
 
   - name: Iris
-    description: Iris service
+    description: Iris's scratch pad board (notes, drops, docs)
     url: iris.julianverse.net
     type: webapp
     group: utilities
     machine: 10.10.0.14
-    port: 18789
+    port: 2030
+    stack: iris
+    path: /home/julian/iris
 
   # ----------------------------------------------------------------------------
   # Myflix Stack (deployed via deploy_myflix.yaml)
