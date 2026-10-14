@@ -9,7 +9,9 @@
         service_name: lights
         compose_template: lights-compose.yml.j2
         service_directories:
-          - config
+          # lightd runs as uid 10001 and writes controllers.json, patterns/ and lightd-state.json here
+          - path: config
+            mode: "0777"
           - path: sequences
             mode: "0777"
         docker_compose_state: present

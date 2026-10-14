@@ -1,19 +1,18 @@
 services:
   daemon:
+    # lightd: runs Lua patterns on WLED controller channels and owns ./config
+    # (controllers.json, patterns/, lightd-state.json), edited through the web UI's /config page.
     image: julianh2o/bawdy-lights-daemon:latest
     container_name: bawdy-lights-daemon
-    # Host networking so the DDP frame-sync broadcast reaches the WLED boards on 10.10.0.0/24
+    # Host networking so lightd can discover WLED boards over mDNS and reach them over DDP
     network_mode: host
     environment:
-      - WLED_API_HOST=0.0.0.0
-      - WLED_API_PORT=8765
-      - WLED_FPS=30
-      - WLED_BROADCAST_IP=10.10.0.255
-      - WLED_PRESET=concert_hall
-      # Dry-run until the boards are wired: drop this and set WLED_CONTROLLERS=/config/controllers.json
-      - WLED_DRY_RUN=true
+      - LIGHTD_HOST=0.0.0.0
+      - LIGHTD_PORT=8765
+      - LIGHTD_FPS=30
     volumes:
-      - ./config:/config:ro
+      # Read-write: lightd (uid 10001) saves its configuration here
+      - ./config:/config
     stop_grace_period: 10s
     restart: unless-stopped
 

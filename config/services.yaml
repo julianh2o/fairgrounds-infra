@@ -93,7 +93,7 @@ services:
     tls_skip_verify: true
 
   - name: Lights
-    description: WLED lighting engine and web sequencer
+    description: WLED pattern daemon (lightd) and web UI
     url: lights.julianverse.net
     type: webapp
     group: custom
