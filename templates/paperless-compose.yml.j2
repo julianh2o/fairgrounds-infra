@@ -38,6 +38,7 @@ services:
       PAPERLESS_DBUSER: {{ paperless_db_user | default('paperless') }}
       PAPERLESS_DBPASS: {{ paperless_db_password | default('paperless') }}
       PAPERLESS_URL: https://paperless.julianverse.net
+      PAPERLESS_SECRET_KEY: "{{ paperless_secret_key }}"
 
   paperless-ai:
     # Disabled: the "disabled" profile is never activated, so compose skips this service.
