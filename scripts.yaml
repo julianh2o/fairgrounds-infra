@@ -116,6 +116,13 @@ scripts:
       name: Push Actions secrets from the vault (config/github_secrets.yaml)
       cmd: ansible-playbook playbooks/setup/github_secrets.yaml
 
+  # Proxmox host
+  njord:
+    name: Proxmox host (njord) commands
+    push-migration-scripts:
+      name: Copy scripts/njord-migration to njord:/root/njord-migration (backup.sh / restore.sh)
+      cmd: ansible njord -b -m copy -a "src=scripts/njord-migration/ dest=/root/njord-migration/ mode=0755"
+
   # Maintenance commands
   maintenance:
     name: Maintenance and backup commands
