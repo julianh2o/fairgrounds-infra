@@ -14,9 +14,8 @@
   vars:
     terraform_dir: "{{ playbook_dir }}/../../terraform"
     gateway: "10.10.0.1"
-    dns_servers:
-      - "1.1.1.1"
-      - "8.8.8.8"
+    # Pi-hole on europa first; europa itself uses upstream DNS since it hosts Pi-hole
+    dns_servers: "{{ ['1.1.1.1', '8.8.8.8'] if inventory_hostname == 'europa' else ['10.10.0.12', '1.1.1.1'] }}"
 
   tasks:
     - name: Read Terraform file for this host
@@ -70,6 +69,14 @@
         owner: root
         group: root
       register: netplan_config
+
+    - name: Stop cloud-init from regenerating netplan config on boot
+      ansible.builtin.copy:
+        dest: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+        content: "network: {config: disabled}\n"
+        mode: "0644"
+        owner: root
+        group: root
 
     - name: Remove old cloud-init netplan config
       ansible.builtin.file:
