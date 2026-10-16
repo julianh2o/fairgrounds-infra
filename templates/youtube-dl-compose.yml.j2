@@ -1,0 +1,15 @@
+services:
+  youtube-dl:
+    image: modenaf360/youtube-dl-nas:latest
+    container_name: youtube-dl
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - MY_ID={{ youtube_dl_user }}
+      - MY_PW={{ youtube_dl_password }}
+      - TZ=America/Los_Angeles
+      - COOKIE_SECURE=true
+    volumes:
+      - /mnt/Media/youtube:/downfolder
+      - ./metadata:/usr/src/app/metadata

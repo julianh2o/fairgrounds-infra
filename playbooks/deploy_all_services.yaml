@@ -64,6 +64,9 @@
 - name: Deploy Fair Map
   import_playbook: services/deploy_fair_map.yaml
 
+- name: Deploy youtube-dl-nas
+  import_playbook: services/deploy_youtube_dl.yaml
+
 - name: Deploy MyALPR
   import_playbook: services/deploy_myalpr.yaml
 

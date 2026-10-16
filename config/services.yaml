@@ -112,6 +112,16 @@ services:
     stack: fair-map
     path: /opt/fair-map
 
+  - name: YouTube-DL
+    description: yt-dlp web download queue
+    url: youtube.julianverse.net
+    type: webapp
+    group: media
+    machine: 10.10.0.11
+    port: 8080
+    stack: youtube-dl
+    path: /opt/youtube-dl
+
   - name: Grafana
     description: Metrics visualization and dashboards
     url: grafana.julianverse.net

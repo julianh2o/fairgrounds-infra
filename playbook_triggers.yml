@@ -134,6 +134,12 @@ services:
       - templates/fair-map-compose.yml.j2
       - playbooks/services/deploy_fair_map.yaml
 
+  - name: youtube_dl
+    playbook: playbooks/services/deploy_youtube_dl.yaml
+    paths:
+      - templates/youtube-dl-compose.yml.j2
+      - playbooks/services/deploy_youtube_dl.yaml
+
   - name: rclone_to_backblaze
     playbook: playbooks/services/deploy_rclone_to_backblaze.yaml
     paths:
