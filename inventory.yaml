@@ -56,4 +56,4 @@ otherhosts:
     demeter:
       ansible_host: 10.10.0.50
       exporter_port: 9182
-      description: Windows desktop with WSL2, GPU-enabled for AI workloads
+      description: macOS machine (fixed IP via UniFi DHCP reservation)
