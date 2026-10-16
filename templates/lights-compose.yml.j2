@@ -29,6 +29,9 @@ services:
       - ASSISTANT_BASE_URL=http://10.10.0.40:11434/v1
       - ASSISTANT_MODEL=qwen-lights
       - ASSISTANT_REASONING_EFFORT=low
+      # Dashboard (/): drives HA bulbs server-side; the token never reaches the browser
+      - HA_URL=http://10.10.0.30:8123
+      - HA_TOKEN={{ lights_homeassistant_token }}
     volumes:
       - ./sequences:/data/sequences
     depends_on:

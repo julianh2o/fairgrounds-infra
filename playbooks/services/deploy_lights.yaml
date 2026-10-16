@@ -2,6 +2,8 @@
 - name: Deploy Lights
   hosts: ceto
   become: yes
+  vars_files:
+    - ../../secrets.yml
 
   roles:
     - role: docker_service
