@@ -1,21 +1,11 @@
 services:
-  traccar-db:
-    image: timescale/timescaledb-ha:pg16
-    container_name: traccar-db
-    restart: unless-stopped
-    environment:
-      - POSTGRES_DB=traccar
-      - POSTGRES_USER=traccar
-      - POSTGRES_PASSWORD=traccar
-    volumes:
-      - ./data:/home/postgres/pgdata/data
-
   traccar:
     image: traccar/traccar:latest
     container_name: traccar
     restart: unless-stopped
-    depends_on:
-      - traccar-db
+    # Explicit JVM heap bounds; the default (1/4 of RAM) let Traccar grow to ~1.2 GB and OOM daphne.
+    command: ["-Xms256m", "-Xmx512m", "-jar", "tracker-server.jar", "conf/traccar.xml"]
+    mem_limit: 768m
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost:8082/api/health"]
       interval: 2m
@@ -26,6 +16,8 @@ services:
       - "5000-5150:5000-5150/udp"
     volumes:
       - ./logs:/opt/traccar/logs:rw
+      # Traccar's embedded H2 database (conf/traccar.xml points at ./data/database)
+      - ./data:/opt/traccar/data:rw
 
   autoheal:
     image: willfarrell/autoheal:latest

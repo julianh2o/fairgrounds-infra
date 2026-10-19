@@ -4,6 +4,10 @@ services:
     container_name: cadvisor
     restart: always
     privileged: true
+    # cAdvisor grew to ~750 MB on daphne. GOMEMLIMIT makes Go GC harder before the hard cap kicks in.
+    environment:
+      - GOMEMLIMIT=200MiB
+    mem_limit: 320m
     devices:
       - /dev/kmsg
     ports:
