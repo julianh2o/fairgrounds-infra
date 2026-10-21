@@ -12,6 +12,9 @@ services:
       - DATABASE_URL=file:./data/db.db
       - APP_BASE_URL=https://events.bawdyshop.space
       - EVENT_TIME_ZONE=America/Los_Angeles
+      - VAPID_PUBLIC_KEY={{ partyfoal_vapid_public_key }}
+      - VAPID_PRIVATE_KEY={{ partyfoal_vapid_private_key }}
+      - VAPID_SUBJECT=mailto:noreply@events.bawdyshop.space
     volumes:
       - ./data:/app/data
     restart: unless-stopped
