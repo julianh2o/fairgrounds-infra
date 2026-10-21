@@ -39,6 +39,7 @@ services:
       PAPERLESS_DBUSER: {{ paperless_db_user | default('paperless') }}
       PAPERLESS_DBPASS: {{ paperless_db_password | default('paperless') }}
       PAPERLESS_URL: https://paperless.julianverse.net
+      PAPERLESS_SECRET_KEY: "{{ paperless_secret_key }}"
       PAPERLESS_CONSUMPTION_DIR: /usr/src/paperless/dropbox
       # CIFS share: inotify misses files written by other SMB clients, so poll instead
       PAPERLESS_CONSUMER_POLLING: 30
