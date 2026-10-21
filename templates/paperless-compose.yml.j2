@@ -27,17 +27,21 @@ services:
       - /mnt/Store/services/paperless/data:/usr/src/paperless/data
       - /mnt/Store/services/paperless/media:/usr/src/paperless/media
       - /mnt/Store/services/paperless/export:/usr/src/paperless/export
-      - /mnt/Store/services/paperless/consume:/usr/src/paperless/consume
+      # Drop folder: S:\PaperlessDropbox on Windows (Store share)
+      - /mnt/Store/PaperlessDropbox:/usr/src/paperless/dropbox
     environment:
       USERMAP_UID: 0
       USERMAP_GID: 0
       PAPERLESS_REDIS: redis://broker:6379
       PAPERLESS_DBHOST: db
-      PAPERLESS_OCR_USER_ARGS={"invalidate_digital_signatures": true}
+      PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
       PAPERLESS_DBNAME: {{ paperless_db_name | default('paperless') }}
       PAPERLESS_DBUSER: {{ paperless_db_user | default('paperless') }}
       PAPERLESS_DBPASS: {{ paperless_db_password | default('paperless') }}
       PAPERLESS_URL: https://paperless.julianverse.net
+      PAPERLESS_CONSUMPTION_DIR: /usr/src/paperless/dropbox
+      # CIFS share: inotify misses files written by other SMB clients, so poll instead
+      PAPERLESS_CONSUMER_POLLING: 30
 
   paperless-ai:
     # Disabled: the "disabled" profile is never activated, so compose skips this service.
