@@ -160,6 +160,14 @@ services:
     machine: 10.10.0.30
     port: 8123
 
+  - name: Telemeter
+    description: Remote control API for demeter (volume, media, Messages)
+    url: telemeter.julianverse.net
+    type: api
+    group: infrastructure
+    machine: 10.10.0.50
+    port: 8765
+
   - name: Ollama
     description: Large language model API
     url: ollama.julianverse.net
