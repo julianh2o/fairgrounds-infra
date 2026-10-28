@@ -43,7 +43,7 @@
 
     - name: Install build dependencies
       apt:
-        name: [build-essential, git, curl, python3-venv, python3-pip]
+        name: [build-essential, git, curl, python3-venv, python3-pip, acl]
         state: present
         update_cache: yes
         cache_valid_time: 86400
