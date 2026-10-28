@@ -176,6 +176,14 @@ services:
     machine: 10.10.0.40
     port: 11434
 
+  - name: Strata
+    description: Qwen3.8-Flash-Next LLM API (OpenAI/Anthropic-compatible)
+    url: strata.julianverse.net
+    type: webapp
+    group: ai
+    machine: 10.10.0.40
+    port: 8080
+
   - name: DeepSeek Harness
     description: Coordinates environments and multiple LLMs
     url: deepseek.julianverse.net

@@ -207,3 +207,9 @@ services:
     paths:
       - templates/deepseek-compose.yml.j2
       - playbooks/services/deploy_deepseek.yaml
+
+  - name: strata
+    playbook: playbooks/services/deploy_strata.yaml
+    paths:
+      - templates/strata.service.j2
+      - playbooks/services/deploy_strata.yaml
