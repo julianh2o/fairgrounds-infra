@@ -11,6 +11,7 @@ services:
       - AUTH_USERNAME={{ deepseek_harness_username | default('admin') }}
       - AUTH_PASSWORD={{ deepseek_harness_password }}
       - DSH_TELEMETRY_DISABLED=1
+      - STRATA_API_KEY={{ strata_api_key }}
     volumes:
       - ./data:/data
       - ./workspace:/workspace
