@@ -1,0 +1,20 @@
+[Unit]
+Description=Strata ({{ strata_family }} {{ strata_model }}, {{ strata_version }})
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=strata
+Group=strata
+WorkingDirectory={{ strata_src }}
+Environment=HOME={{ strata_root }}
+Environment=PATH={{ strata_path }}
+EnvironmentFile=/etc/strata.env
+ExecStart={{ strata_src }}/.venv/bin/python serve/server.py --engine strata --config {{ strata_config }} --host 0.0.0.0 --port {{ strata_port }}
+Restart=on-failure
+RestartSec=30
+TimeoutStopSec=60
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=multi-user.target

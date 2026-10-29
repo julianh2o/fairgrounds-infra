@@ -4,6 +4,8 @@ services:
     container_name: comfyui
     restart: unless-stopped
     runtime: nvidia
+    # shares kvasir's 48 GB WSL VM with Strata (~44 GB); overflow goes to swap
+    mem_limit: 8g
     ports:
       - "8188:8188"
     environment:

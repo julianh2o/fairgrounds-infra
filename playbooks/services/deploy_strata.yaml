@@ -1,0 +1,166 @@
+---
+# Strata (github.com/Niko1221/Strata) serving Qwen3.8-Flash-Next on kvasir's WSL as a
+# systemd service, no Docker. The engine is compiled from a pinned git tag: to update,
+# bump strata_version and deploy. Strata's own self-updater is never run.
+# Needs kvasir's .wslconfig memory=48GB (Q2_0 keeps ~34 GB of experts in RAM) and
+# strata_api_key in secrets.yml. First deploy downloads ~75 GB and compiles (~1 h).
+- name: Deploy Strata
+  hosts: kvasir
+  become: yes
+
+  vars_files:
+    - ../../secrets.yml
+
+  vars:
+    strata_version: v0.2.7.1
+    strata_family: qwen
+    strata_model: Q2_0
+    strata_context: 65536
+    strata_port: 8080
+    strata_root: /opt/strata
+    strata_src: /opt/strata/src
+    strata_data: /opt/strata/data
+    strata_config: "/opt/strata/src/strata-{{ strata_model | lower }}.json"
+    strata_path: /usr/local/cuda-13.0/bin:/usr/lib/wsl/lib:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    strata_setup_args: >-
+      --family {{ strata_family }} --model {{ strata_model }} --context {{ strata_context }}
+      --vision cpu --data-dir {{ strata_data }} --build --cuda 13 --no-browser --no-start --yes
+
+  tasks:
+    # memory facts come back empty on the WSL kernel, so read meminfo directly
+    - name: Read WSL memory
+      command: awk '/^MemTotal/ {print int($2 / 1024)}' /proc/meminfo
+      register: strata_mem
+      changed_when: false
+      check_mode: no
+
+    - name: Check WSL has enough RAM for the experts
+      assert:
+        that: strata_mem.stdout | int >= 44 * 1024
+        fail_msg: >-
+          WSL sees {{ ((strata_mem.stdout | int) / 1024) | round(1) }} GB. Set memory=48GB under [wsl2] in
+          C:\Users\Julian\.wslconfig, then run wsl --shutdown.
+
+    - name: Install build dependencies
+      apt:
+        name: [build-essential, git, curl, python3-venv, python3-pip, acl]
+        state: present
+        update_cache: yes
+        cache_valid_time: 86400
+
+    - name: Install NVIDIA's WSL CUDA repository key
+      apt:
+        deb: https://developer.download.nvidia.com/compute/cuda/repos/wsl-ubuntu/x86_64/cuda-keyring_1.1-1_all.deb
+        state: present
+
+    - name: Install the CUDA 13.0 toolkit (toolkit only, WSL uses the Windows driver)
+      apt:
+        name: cuda-toolkit-13-0
+        state: present
+        update_cache: yes
+
+    - name: Create the strata user
+      user:
+        name: strata
+        system: yes
+        home: "{{ strata_root }}"
+        create_home: no
+        shell: /usr/sbin/nologin
+
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: strata
+        group: strata
+        mode: "0755"
+      loop:
+        - "{{ strata_root }}"
+        - "{{ strata_data }}"
+
+    - name: Check out Strata {{ strata_version }}
+      become_user: strata
+      git:
+        repo: https://github.com/Niko1221/Strata.git
+        dest: "{{ strata_src }}"
+        version: "{{ strata_version }}"
+        force: yes
+      register: strata_git
+
+    - name: Check for an existing install
+      stat:
+        path: "{{ strata_config }}"
+      register: strata_installed
+
+    - name: Install Strata, build the engine, download the model
+      become_user: strata
+      command: "./setup.sh {{ strata_setup_args }}"
+      args:
+        chdir: "{{ strata_src }}"
+      environment:
+        PATH: "{{ strata_path }}"
+        HOME: "{{ strata_root }}"
+      async: 14400
+      poll: 30
+      when: not strata_installed.stat.exists
+      notify: Restart strata
+
+    - name: Update Strata to the new version (engine rebuild, model files kept)
+      become_user: strata
+      command: "./setup.sh --update {{ strata_setup_args }}"
+      args:
+        chdir: "{{ strata_src }}"
+      environment:
+        PATH: "{{ strata_path }}"
+        HOME: "{{ strata_root }}"
+      async: 7200
+      poll: 30
+      when: strata_installed.stat.exists and strata_git.changed
+      notify: Restart strata
+
+    - name: Check that setup wrote the run config
+      stat:
+        path: "{{ strata_config }}"
+      register: strata_config_stat
+      failed_when: not strata_config_stat.stat.exists
+
+    - name: Write the API key environment file
+      copy:
+        dest: /etc/strata.env
+        content: "STRATA_API_KEY={{ strata_api_key }}\n"
+        owner: root
+        group: root
+        mode: "0600"
+      notify: Restart strata
+
+    - name: Install the systemd unit
+      template:
+        src: ../../templates/strata.service.j2
+        dest: /etc/systemd/system/strata.service
+        mode: "0644"
+      notify: Restart strata
+
+    - name: Enable and start strata
+      systemd:
+        name: strata
+        enabled: yes
+        state: started
+        daemon_reload: yes
+
+    - name: Apply pending restarts
+      meta: flush_handlers
+
+    - name: Wait for the model to load
+      uri:
+        url: "http://127.0.0.1:{{ strata_port }}/health"
+      register: strata_health
+      until: strata_health.status == 200
+      retries: 90
+      delay: 10
+
+  handlers:
+    - name: Restart strata
+      systemd:
+        name: strata
+        state: restarted
+        daemon_reload: yes

@@ -85,6 +85,9 @@
 - name: Deploy DeepSeek Harness
   import_playbook: services/deploy_deepseek.yaml
 
+- name: Deploy Strata
+  import_playbook: services/deploy_strata.yaml
+
 # Backup services
 - name: Deploy Rclone to Backblaze
   import_playbook: services/deploy_rclone_to_backblaze.yaml
