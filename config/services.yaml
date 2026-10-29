@@ -168,6 +168,14 @@ services:
     machine: 10.10.0.50
     port: 8765
 
+  - name: BeatSync Studio
+    description: Phase-locked beat matching service feeding lightd from demeter's mic
+    url: beatsync.julianverse.net
+    type: webapp
+    group: custom
+    machine: 10.10.0.50
+    port: 8099
+
   - name: Ollama
     description: Large language model API
     url: ollama.julianverse.net
