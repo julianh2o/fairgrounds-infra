@@ -1,0 +1,44 @@
+services:
+  hindsight:
+    # no published CUDA image: upstream's docker/docker-compose/cuda recipe, built on kvasir
+    image: hindsight-cuda:1.1.0
+    pull_policy: build
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ghcr.io/vectorize-io/hindsight:1.1.0
+        RUN TORCH_BASE_VERSION=$$(/app/api/.venv/bin/python -c 'import torch; print(torch.__version__.split("+", 1)[0])') \
+            && uv pip install --python /app/api/.venv/bin/python --no-cache \
+                --index https://download.pytorch.org/whl/cu126 "torch==$${TORCH_BASE_VERSION}+cu126" \
+            && /app/api/.venv/bin/python -c 'import torch; assert torch.version.cuda'
+    container_name: hindsight
+    restart: unless-stopped
+    stop_grace_period: 75s
+    runtime: nvidia
+    # shares kvasir's 48 GB WSL VM with Strata and ComfyUI
+    mem_limit: 4g
+    shm_size: 1g
+    ports:
+      - "8888:8888"
+      - "9999:9999"
+    environment:
+      - HINDSIGHT_API_LLM_PROVIDER=deepseek
+      - HINDSIGHT_API_LLM_MODEL=deepseek-flash
+      - HINDSIGHT_API_LLM_API_KEY={{ hindsight_deepseek_api_key }}
+      - HINDSIGHT_API_EMBEDDINGS_PROVIDER=local
+      - HINDSIGHT_API_RERANKER_PROVIDER=local
+      - HINDSIGHT_API_RERANKER_LOCAL_FP16=true
+      - HINDSIGHT_API_WORKER_ID=hindsight-kvasir
+      - HINDSIGHT_API_TENANT_EXTENSION=hindsight_api.extensions.builtin.tenant:ApiKeyTenantExtension
+      - HINDSIGHT_API_TENANT_API_KEY={{ hindsight_api_key }}
+      - HINDSIGHT_CP_DATAPLANE_API_KEY={{ hindsight_api_key }}
+      - HINDSIGHT_CP_ACCESS_KEY={{ hindsight_ui_access_key }}
+    volumes:
+      - ./data:/home/hindsight/.pg0
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

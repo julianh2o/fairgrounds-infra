@@ -58,6 +58,9 @@
 - name: Deploy ComfyUI
   import_playbook: services/deploy_comfyui.yaml
 
+- name: Deploy Hindsight
+  import_playbook: services/deploy_hindsight.yaml
+
 - name: Deploy Outreach
   import_playbook: services/deploy_outreach.yaml
 
