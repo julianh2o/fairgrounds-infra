@@ -1,0 +1,18 @@
+---
+- name: Deploy Hindsight
+  hosts: kvasir
+  become: yes
+
+  vars_files:
+    - ../../secrets.yml
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: hindsight
+        compose_template: hindsight-compose.yml.j2
+        docker_compose_state: present
+        service_directories:
+          # embedded Postgres runs as the image's uid 1000
+          - path: data
+            mode: "0777"

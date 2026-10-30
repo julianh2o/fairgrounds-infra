@@ -208,6 +208,14 @@ services:
     machine: 10.10.0.40
     port: 8000
 
+  - name: Hindsight
+    description: Iris's long-term memory (Hindsight control plane)
+    url: hindsight.julianverse.net
+    type: webapp
+    group: ai
+    machine: 10.10.0.40
+    port: 9999
+
   - name: Iris
     description: Iris's scratch pad board (notes, drops, docs)
     url: iris.julianverse.net

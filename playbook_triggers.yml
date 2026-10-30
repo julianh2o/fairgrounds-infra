@@ -110,6 +110,12 @@ services:
       - templates/comfyui-compose.yml.j2
       - playbooks/services/deploy_comfyui.yaml
 
+  - name: hindsight
+    playbook: playbooks/services/deploy_hindsight.yaml
+    paths:
+      - templates/hindsight-compose.yml.j2
+      - playbooks/services/deploy_hindsight.yaml
+
   - name: outreach
     playbook: playbooks/services/deploy_outreach.yaml
     paths:
