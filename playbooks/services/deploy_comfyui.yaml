@@ -1,16 +1,97 @@
 ---
+# ComfyUI, run headlessly on kvasir using the same install, venv and model paths as the
+# Comfy Desktop app (auto-updates itself; we don't maintain a separate Docker image).
+# The launcher script below is the same command Comfy Desktop's Electron GUI runs under
+# the hood, minus the GUI. It's wired to a Windows Scheduled Task ("ComfyUI Service") that
+# starts at boot/logon and restarts on crash.
+#
+# Registering the task needs an elevated (Administrator) PowerShell session, which this
+# playbook's ansible@kvasir connection does not have (same limitation as the WSL sshd boot
+# task). One-time setup, run by Julian as Administrator on kvasir:
+#
+#   $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument '-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "C:\Users\Julian\comfyui-service\run.ps1"'
+#   $trigger1 = New-ScheduledTaskTrigger -AtStartup
+#   $trigger2 = New-ScheduledTaskTrigger -AtLogOn -User "Julian"
+#   $principal = New-ScheduledTaskPrincipal -UserId "Julian" -LogonType S4U -RunLevel Limited
+#   $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -RestartCount 999 -RestartInterval (New-TimeSpan -Minutes 1)
+#   Register-ScheduledTask -TaskName "ComfyUI Service" -Action $action -Trigger @($trigger1,$trigger2) -Principal $principal -Settings $settings -Description "Headless ComfyUI backend (Comfy Desktop install, no GUI)" -Force
+#   Start-ScheduledTask -TaskName "ComfyUI Service"
+#
+# After that, this playbook only updates run.ps1's content and (re)starts the task via
+# schtasks /run. It never force-kills an existing process: ansible@kvasir is a different
+# Windows user than Julian (who the task runs as), and Stop-Process across that boundary is
+# silently denied - it looks like it worked (no error) but the process survives. So if the
+# script changed while the service is already healthy, this playbook can install the new
+# script and tell you to restart it, but can't force the restart itself. Crash recovery still
+# works fine without us: the Scheduled Task's own RestartCount/RestartInterval runs as Julian
+# and has the rights to actually replace itself.
 - name: Deploy ComfyUI
   hosts: kvasir
-  become: yes
+  become: no
 
-  roles:
-    - role: docker_service
-      vars:
-        service_name: comfyui
-        compose_template: comfyui-compose.yml.j2
-        docker_compose_state: present
-        service_directories:
-          - models
-          - output
-          - input
-          - custom_nodes
+  vars:
+    comfyui_port: 8000
+    comfyui_venv_python: 'C:\Users\Julian\Documents\ComfyUI\.venv\Scripts\python.exe'
+    comfyui_install_dir: 'C:\Users\Julian\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI'
+    comfyui_base_directory: 'C:\Users\Julian\Documents\ComfyUI'
+    comfyui_extra_model_paths_config: 'C:\Users\Julian\AppData\Roaming\Comfy Desktop\shared_model_paths.yaml'
+    comfyui_log_path: 'C:\Users\Julian\Documents\ComfyUI\user\comfyui_service.log'
+    comfyui_service_dir: /mnt/c/Users/julian/comfyui-service
+    comfyui_task_name: "ComfyUI Service"
+
+  tasks:
+    - name: Create the service script directory
+      file:
+        path: "{{ comfyui_service_dir }}"
+        state: directory
+
+    - name: Install the launcher script
+      template:
+        src: ../../templates/comfyui-run.ps1.j2
+        dest: "{{ comfyui_service_dir }}/run.ps1"
+      register: comfyui_script
+
+    - name: Check the Scheduled Task is registered
+      command: >
+        /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -Command
+        "if (Get-ScheduledTask -TaskName '{{ comfyui_task_name }}' -ErrorAction SilentlyContinue) { 'present' } else { 'missing' }"
+      register: comfyui_task_check
+      changed_when: false
+
+    - name: Fail with the one-time setup instructions if the task isn't registered yet
+      fail:
+        msg: >-
+          Scheduled Task '{{ comfyui_task_name }}' doesn't exist on kvasir. Run the Register-ScheduledTask
+          block in this playbook's header comment from an elevated PowerShell on kvasir, once, then re-run.
+      when: "'present' not in comfyui_task_check.stdout"
+
+    - name: Check whether ComfyUI is already answering
+      uri:
+        url: "http://127.0.0.1:{{ comfyui_port }}/"
+      register: comfyui_probe
+      ignore_errors: yes
+      changed_when: false
+
+    - name: Start it (only needed on first apply - it isn't answering yet)
+      command: >
+        /mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -Command
+        "schtasks /run /tn '{{ comfyui_task_name }}'"
+      when: comfyui_probe.status | default(0) != 200
+
+    - name: Wait for ComfyUI to answer on {{ comfyui_port }}
+      uri:
+        url: "http://127.0.0.1:{{ comfyui_port }}/"
+      register: comfyui_health
+      until: comfyui_health.status == 200
+      retries: 60
+      delay: 10
+      when: comfyui_probe.status | default(0) != 200
+
+    - name: Note that run.ps1 changed but the running process wasn't restarted
+      debug:
+        msg: >-
+          run.ps1 changed and ComfyUI is already running - restart it yourself to pick up the new
+          config (Task Scheduler GUI: End then Run on '{{ comfyui_task_name }}', or from a kvasir
+          PowerShell as Julian: schtasks /end /tn "{{ comfyui_task_name }}"; schtasks /run /tn
+          "{{ comfyui_task_name }}"). ansible@ can't force-kill a process owned by another user.
+      when: comfyui_script.changed and (comfyui_probe.status | default(0) == 200)

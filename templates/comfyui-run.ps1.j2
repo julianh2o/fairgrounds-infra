@@ -1,0 +1,11 @@
+$py  = "{{ comfyui_venv_python }}"
+$wd  = "{{ comfyui_install_dir }}"
+$args = @(
+  "main.py",
+  "--listen","0.0.0.0",
+  "--port","{{ comfyui_port }}",
+  "--base-directory","`"{{ comfyui_base_directory }}`"",
+  "--extra-model-paths-config","`"{{ comfyui_extra_model_paths_config }}`""
+)
+Set-Location $wd
+& $py @args *>> "{{ comfyui_log_path }}"
