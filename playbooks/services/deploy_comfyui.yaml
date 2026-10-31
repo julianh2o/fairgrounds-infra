@@ -35,7 +35,8 @@
     comfyui_install_dir: 'C:\Users\Julian\AppData\Local\Comfy-Desktop\ComfyUI-Installs\ComfyUI\ComfyUI'
     comfyui_base_directory: 'C:\Users\Julian\Documents\ComfyUI'
     comfyui_extra_model_paths_config: 'C:\Users\Julian\AppData\Roaming\Comfy Desktop\shared_model_paths.yaml'
-    comfyui_log_path: 'C:\Users\Julian\Documents\ComfyUI\user\comfyui_service.log'
+    comfyui_log_path: 'C:\Users\Julian\Documents\ComfyUI\user\comfyui_service.out.log'
+    comfyui_err_log_path: 'C:\Users\Julian\Documents\ComfyUI\user\comfyui_service.err.log'
     comfyui_service_dir: /mnt/c/Users/julian/comfyui-service
     comfyui_task_name: "ComfyUI Service"
 
