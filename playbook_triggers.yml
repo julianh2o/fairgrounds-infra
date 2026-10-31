@@ -66,6 +66,12 @@ services:
       - templates/partyfoal-compose.yml.j2
       - playbooks/services/deploy_partyfoal.yaml
 
+  - name: bluebell
+    playbook: playbooks/services/deploy_bluebell.yaml
+    paths:
+      - templates/bluebell-compose.yml.j2
+      - playbooks/services/deploy_bluebell.yaml
+
   - name: vikunja
     playbook: playbooks/services/deploy_vikunja.yaml
     paths:
