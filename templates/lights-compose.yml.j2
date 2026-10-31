@@ -38,6 +38,9 @@ services:
       # Dashboard (/): drives HA bulbs server-side; the token never reaches the browser
       - HA_URL=http://10.10.0.30:8123
       - HA_TOKEN={{ lights_homeassistant_token }}
+      # Dashboard music card: shop Spotify/Polk/Jam on demeter via telemeter (token stays server-side)
+      - TELEMETER_URL=http://10.10.0.50:8765
+      - TELEMETER_TOKEN={{ lights_telemeter_token | default(bluebell_telemeter_token) }}
     volumes:
       - ./sequences:/data/sequences
     depends_on:
