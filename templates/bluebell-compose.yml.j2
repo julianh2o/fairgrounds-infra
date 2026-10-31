@@ -1,0 +1,25 @@
+services:
+  bluebell:
+    image: julianh2o/bluebell:latest
+    container_name: bluebell
+    ports:
+      - "2052:2999"
+    environment:
+      - NODE_ENV=production
+      - PORT=2999
+      - DATABASE_URL=file:./data/bluebell.db
+      - TELEMETER_URL=http://10.10.0.50:8765
+      - TELEMETER_TOKEN={{ bluebell_telemeter_token }}
+      - BLUEBELL_SETUP_TOKEN={{ bluebell_setup_token }}
+      - WEBAUTHN_RP_ID=bluebell.julianverse.net
+      - WEBAUTHN_ORIGIN=https://bluebell.julianverse.net
+      - SYNC_INTERVAL_MS=10000
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:2999/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
