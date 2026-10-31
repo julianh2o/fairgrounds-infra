@@ -1,11 +1,9 @@
 $py  = "{{ comfyui_venv_python }}"
 $wd  = "{{ comfyui_install_dir }}"
-$args = @(
-  "main.py",
-  "--listen","0.0.0.0",
-  "--port","{{ comfyui_port }}",
-  "--base-directory","`"{{ comfyui_base_directory }}`"",
-  "--extra-model-paths-config","`"{{ comfyui_extra_model_paths_config }}`""
-)
-Set-Location $wd
-& $py @args *>> "{{ comfyui_log_path }}"
+$argline = 'main.py --listen 0.0.0.0 --port {{ comfyui_port }} --base-directory "{{ comfyui_base_directory }}" --extra-model-paths-config "{{ comfyui_extra_model_paths_config }}"'
+# Redirect via Start-Process so python gets real file handles. Piping a native exe through
+# PowerShell (*>>) in a hidden S4U task leaves stderr unflushable: tqdm's flush raises
+# OSError 22 and every sampler node fails.
+Start-Process -FilePath $py -ArgumentList $argline -WorkingDirectory $wd -NoNewWindow -Wait `
+  -RedirectStandardOutput "{{ comfyui_log_path }}" `
+  -RedirectStandardError "{{ comfyui_err_log_path }}"
