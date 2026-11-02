@@ -15,8 +15,8 @@
 - name: Deploy Grafana
   import_playbook: services/deploy_grafana.yaml
 
-- name: Deploy Pi-hole
-  import_playbook: services/deploy_pihole.yaml
+- name: Deploy Gatus
+  import_playbook: services/deploy_gatus.yaml
 
 - name: Deploy Cloudflare DDNS
   import_playbook: services/deploy_cloudflare_ddns.yaml
@@ -88,6 +88,9 @@
 - name: Deploy Minecraft
   import_playbook: services/deploy_minecraft.yaml
 
+- name: Deploy Terraria
+  import_playbook: services/deploy_terraria.yaml
+
 - name: Deploy DeepSeek Harness
   import_playbook: services/deploy_deepseek.yaml
 
@@ -100,3 +103,8 @@
 
 - name: Deploy Kopia
   import_playbook: services/deploy_kopia.yaml
+
+# Pi-hole last: a failed play that targets only europa aborts the whole run,
+# so nothing else should sit behind it.
+- name: Deploy Pi-hole
+  import_playbook: services/deploy_pihole.yaml

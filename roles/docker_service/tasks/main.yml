@@ -45,19 +45,22 @@
   loop: "{{ config_files }}"
   when: config_files | length > 0
 
-- name: Stop and remove containers
-  community.docker.docker_compose_v2:
-    project_name: "{{ docker_compose_project_name }}"
-    project_src: "{{ service_base_dir }}"
-    state: absent
-  when: docker_compose_state != "stopped"
-
+# Pull before removing the old containers so the running service stays up during
+# the fetch. Matters for pihole: europa resolves DNS through it, so pulling after
+# removal fails.
 - name: Pull latest Docker images
   ansible.builtin.command:
     cmd: docker compose pull
     chdir: "{{ service_base_dir }}"
   register: docker_pull_result
   changed_when: "'Pulled' in docker_pull_result.stdout or 'Pulling' in docker_pull_result.stdout"
+  when: docker_compose_state != "stopped"
+
+- name: Stop and remove containers
+  community.docker.docker_compose_v2:
+    project_name: "{{ docker_compose_project_name }}"
+    project_src: "{{ service_base_dir }}"
+    state: absent
   when: docker_compose_state != "stopped"
 
 - name: Start containers
