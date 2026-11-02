@@ -42,11 +42,15 @@
 
   tasks:
     - name: Create the service script directory
+      become: yes
+      become_user: julian  # /mnt/c (drvfs, no metadata) shows everything as uid 1000; ansible can't chmod there
       file:
         path: "{{ comfyui_service_dir }}"
         state: directory
 
     - name: Install the launcher script
+      become: yes
+      become_user: julian  # /mnt/c (drvfs, no metadata) shows everything as uid 1000; ansible can't chmod there
       template:
         src: ../../templates/comfyui-run.ps1.j2
         dest: "{{ comfyui_service_dir }}/run.ps1"

@@ -142,6 +142,10 @@ scripts:
       name: Reboot a VM
       cmd: ansible-playbook playbooks/maintenance/reboot_vm.yaml
 
+    shutdown-vms:
+      name: Gracefully shut down all VMs (arethusa last)
+      cmd: ansible-playbook playbooks/maintenance/shutdown_vms.yaml
+
     disk-test:
       name: Run disk performance test
       cmd: ansible-playbook playbooks/maintenance/disk_performance_test.yaml
