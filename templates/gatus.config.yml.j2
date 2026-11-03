@@ -8,16 +8,27 @@ alerting:
       success-threshold: 2
 
 endpoints:
+{# A request that never gets a response leaves STATUS at 0, which passes "< 500",
+   so every check also requires CONNECTED. Game servers have no HTTP endpoint
+   (Caddy only proxies webapp/api), so they get a TCP probe of the real port. #}
 {% for service in services.services | selectattr('url', 'defined') %}
   - name: "{{ service.name }}"
     group: services
+{% if service.type == 'gameserver' %}
+    url: "tcp://{{ service.machine }}:{{ service.port }}"
+    interval: 1m
+    conditions:
+      - "[CONNECTED] == true"
+{% else %}
     url: "{{ service.protocol | default('https') }}://{{ service.url }}"
     interval: 1m
     conditions:
+      - "[CONNECTED] == true"
       - "[STATUS] < 500"
 {% if service.tls_skip_verify | default(false) %}
     client:
       insecure: true
+{% endif %}
 {% endif %}
     alerts:
       - type: telegram
