@@ -19,7 +19,14 @@
     strata_version: v0.2.7.1
     strata_family: qwen
     strata_model: Q2_0
-    strata_context: 65536
+    # 192K of the model's trained 262K. INT8 KV is ~20 KiB/token (~3.75 GiB at 192K), taken
+    # out of the auto-sized GPU expert cache rather than spilling to RAM.
+    strata_context: 196608
+    # keep this much VRAM free after the expert cache fills the card: below ~512 MiB the
+    # driver can page GPU memory to system RAM and decode collapses (engine warns, #2065).
+    # The verify windows are allocated after the reserve is applied, so 832 still left
+    # ~330 MiB free; 1280 clears the 512 MiB line with margin.
+    strata_vram_reserve_mib: 1280
     strata_port: 8080
     strata_root: /opt/strata
     strata_src: /opt/strata/src
@@ -32,7 +39,7 @@
     strata_setup_args: >-
       --family {{ strata_family }} --model {{ strata_model }} --context {{ strata_context }}
       --vision cpu --data-dir {{ strata_data }} --build --cuda 13 --no-browser --no-start --yes
-      --experimental-speed-projection on
+      --experimental-speed-projection on --vram-reserve-mib {{ strata_vram_reserve_mib }}
     strata_setup_stamp: /opt/strata/setup-args
 
   tasks:
