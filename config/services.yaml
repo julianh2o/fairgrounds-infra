@@ -32,11 +32,24 @@ services:
     description: All The Mods 9 modded Minecraft server
     url: atm9.julianhartline.com
     type: gameserver
+    optional: true
+    enabled: false
     group: games
     machine: 10.10.0.10
     port: 25565
     stack: minecraft
     path: /opt/minecraft
+
+  - name: Terraria
+    description: Terraria server
+    url: terraria.julianhartline.com
+    type: gameserver
+    optional: true
+    group: games
+    machine: 10.10.0.10
+    port: 7777
+    stack: terraria
+    path: /opt/terraria
 
   - name: Audiobookshelf
     description: Audiobook and podcast server
@@ -198,6 +211,7 @@ services:
     description: Qwen3.8-Flash-Next LLM API (OpenAI/Anthropic-compatible)
     url: strata.julianverse.net
     type: webapp
+    optional: true
     group: ai
     machine: 10.10.0.40
     port: 8080

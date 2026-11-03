@@ -10,10 +10,12 @@ alerting:
 endpoints:
 {# A request that never gets a response leaves STATUS at 0, which passes "< 500",
    so every check also requires CONNECTED. Game servers have no HTTP endpoint
-   (Caddy only proxies webapp/api), so they get a TCP probe of the real port. #}
-{% for service in services.services | selectattr('url', 'defined') %}
+   (Caddy only proxies webapp/api), so they get a TCP probe of the real port.
+   Services marked optional: true are expected to be off at times and sit in
+   their own group. enabled: false drops the check entirely. #}
+{% for service in services.services | selectattr('url', 'defined') | rejectattr('enabled', 'sameas', false) %}
   - name: "{{ service.name }}"
-    group: services
+    group: {{ 'optional' if service.optional | default(false) else 'services' }}
 {% if service.type == 'gameserver' %}
     url: "tcp://{{ service.machine }}:{{ service.port }}"
     interval: 1m
