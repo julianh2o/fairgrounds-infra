@@ -26,9 +26,14 @@
     strata_data: /opt/strata/data
     strata_config: "/opt/strata/src/strata-{{ strata_model | lower }}.json"
     strata_path: /usr/local/cuda-13.0/bin:/usr/lib/wsl/lib:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    # --experimental-speed-projection on: Strata's bundled refusal-direction vector
+    # (abliteration at run time); a request can turn it off with
+    # "experimental_speed_projection": false
     strata_setup_args: >-
       --family {{ strata_family }} --model {{ strata_model }} --context {{ strata_context }}
       --vision cpu --data-dir {{ strata_data }} --build --cuda 13 --no-browser --no-start --yes
+      --experimental-speed-projection on
+    strata_setup_stamp: /opt/strata/setup-args
 
   tasks:
     - name: Check for the strata unit
@@ -113,7 +118,15 @@
         path: "{{ strata_config }}"
       register: strata_installed
 
-    - name: Install Strata, build the engine, download the model
+    # setup only runs on a first install, so changed setup args would otherwise never apply
+    - name: Read the setup args the install was made with
+      command: cat {{ strata_setup_stamp }}
+      register: strata_stamp
+      changed_when: false
+      failed_when: false
+      check_mode: no
+
+    - name: Install Strata, build the engine, download the model (or apply new setup args)
       become_user: strata
       command: "./setup.sh {{ strata_setup_args }}"
       args:
@@ -123,7 +136,7 @@
         HOME: "{{ strata_root }}"
       async: 14400
       poll: 30
-      when: not strata_installed.stat.exists
+      when: not strata_installed.stat.exists or (strata_stamp.stdout | trim) != (strata_setup_args | trim)
       notify: Restart strata
 
     - name: Update Strata to the new version (engine rebuild, model files kept)
@@ -144,6 +157,14 @@
         path: "{{ strata_config }}"
       register: strata_config_stat
       failed_when: not strata_config_stat.stat.exists
+
+    - name: Remember the setup args
+      copy:
+        dest: "{{ strata_setup_stamp }}"
+        content: "{{ strata_setup_args | trim }}"
+        owner: strata
+        group: strata
+        mode: "0644"
 
     - name: Write the API key environment file
       copy:
