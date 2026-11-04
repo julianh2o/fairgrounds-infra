@@ -36,6 +36,19 @@ scrape_configs:
 {% endif %}
 {% endfor %}
 
+  # nvidia_gpu_exporter (VRAM, utilization) on GPU hosts
+  - job_name: 'gpu_exporter'
+
+    static_configs:
+{% for host in groups['all'] %}
+{% if hostvars[host].get('gpu_exporter_port') %}
+      - targets: ['{{ hostvars[host].ansible_host }}:{{ hostvars[host].gpu_exporter_port }}']
+        labels:
+          instance: '{{ host }}'
+          host: '{{ host }}'
+{% endif %}
+{% endfor %}
+
   # cAdvisor container metrics for docker hosts
   - job_name: 'cadvisor'
 

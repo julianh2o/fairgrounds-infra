@@ -225,3 +225,9 @@ services:
     paths:
       - templates/strata.service.j2
       - playbooks/services/deploy_strata.yaml
+
+  - name: nvidia_gpu_exporter
+    playbook: playbooks/services/deploy_nvidia_gpu_exporter.yaml
+    paths:
+      - templates/nvidia_gpu_exporter.service.j2
+      - playbooks/services/deploy_nvidia_gpu_exporter.yaml

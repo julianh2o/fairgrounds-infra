@@ -48,6 +48,7 @@ otherhosts:
     kvasir:
       ansible_host: 10.10.0.40
       exporter_port: 9182
+      gpu_exporter_port: 9835
       description: Windows desktop with WSL2, GPU-enabled for AI workloads
     octopi:
       ansible_host: 10.10.1.32

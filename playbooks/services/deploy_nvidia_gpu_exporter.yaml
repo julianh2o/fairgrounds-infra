@@ -1,0 +1,94 @@
+---
+# nvidia_gpu_exporter (github.com/utkuozdemir/nvidia_gpu_exporter) on kvasir's WSL as a
+# systemd service, no Docker. It shells out to WSL's nvidia-smi (/usr/lib/wsl/lib, backed
+# by the Windows driver), so it sees the 4090. Serves Prometheus metrics on
+# :{{ gpu_exporter_port }}; WSL ports already reach the LAN (Strata's :8080 does).
+# Scraped by the gpu_exporter job in prometheus.config.yml.j2 and read directly by the
+# Iris board's resource monitor (VRAM meter). To update, bump the version + checksum.
+- name: Deploy nvidia_gpu_exporter
+  hosts: kvasir
+  become: yes
+
+  vars:
+    gpu_exporter_version: 1.17.0
+    gpu_exporter_sha256: c0d0843e3c3659d6613373353f6552c041226f3627eab0e4892e45dfb03a6e02
+    gpu_exporter_root: /opt/nvidia_gpu_exporter
+    gpu_exporter_bin: /usr/local/bin/nvidia_gpu_exporter
+    gpu_exporter_nvidia_smi: /usr/lib/wsl/lib/nvidia-smi
+    gpu_exporter_tarball: "nvidia_gpu_exporter_{{ gpu_exporter_version }}_linux_x86_64.tar.gz"
+
+  tasks:
+    - name: Check WSL's nvidia-smi is there
+      stat:
+        path: "{{ gpu_exporter_nvidia_smi }}"
+      register: gpu_smi
+      failed_when: not gpu_smi.stat.exists
+
+    - name: Create the exporter user
+      user:
+        name: nvidia_gpu_exporter
+        system: yes
+        home: "{{ gpu_exporter_root }}"
+        create_home: no
+        shell: /usr/sbin/nologin
+
+    - name: Create the install directory
+      file:
+        path: "{{ gpu_exporter_root }}/{{ gpu_exporter_version }}"
+        state: directory
+        mode: "0755"
+
+    - name: Download nvidia_gpu_exporter {{ gpu_exporter_version }}
+      get_url:
+        url: "https://github.com/utkuozdemir/nvidia_gpu_exporter/releases/download/v{{ gpu_exporter_version }}/{{ gpu_exporter_tarball }}"
+        dest: "{{ gpu_exporter_root }}/{{ gpu_exporter_tarball }}"
+        checksum: "sha256:{{ gpu_exporter_sha256 }}"
+        mode: "0644"
+
+    - name: Unpack it
+      unarchive:
+        src: "{{ gpu_exporter_root }}/{{ gpu_exporter_tarball }}"
+        dest: "{{ gpu_exporter_root }}/{{ gpu_exporter_version }}"
+        remote_src: yes
+        creates: "{{ gpu_exporter_root }}/{{ gpu_exporter_version }}/nvidia_gpu_exporter"
+
+    - name: Install the binary
+      copy:
+        src: "{{ gpu_exporter_root }}/{{ gpu_exporter_version }}/nvidia_gpu_exporter"
+        dest: "{{ gpu_exporter_bin }}"
+        remote_src: yes
+        mode: "0755"
+      notify: Restart nvidia_gpu_exporter
+
+    - name: Install the systemd unit
+      template:
+        src: ../../templates/nvidia_gpu_exporter.service.j2
+        dest: /etc/systemd/system/nvidia_gpu_exporter.service
+        mode: "0644"
+      notify: Restart nvidia_gpu_exporter
+
+    - name: Enable and start nvidia_gpu_exporter
+      systemd:
+        name: nvidia_gpu_exporter
+        enabled: yes
+        state: started
+        daemon_reload: yes
+
+    - name: Apply pending restarts
+      meta: flush_handlers
+
+    - name: Check it reports the GPU
+      uri:
+        url: "http://127.0.0.1:{{ gpu_exporter_port }}/metrics"
+        return_content: yes
+      register: gpu_metrics
+      until: gpu_metrics.status == 200 and 'nvidia_smi_memory_total_bytes' in gpu_metrics.content
+      retries: 10
+      delay: 3
+
+  handlers:
+    - name: Restart nvidia_gpu_exporter
+      systemd:
+        name: nvidia_gpu_exporter
+        state: restarted
+        daemon_reload: yes
