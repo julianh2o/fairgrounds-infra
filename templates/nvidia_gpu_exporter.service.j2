@@ -1,0 +1,15 @@
+[Unit]
+Description=nvidia_gpu_exporter {{ gpu_exporter_version }} (Prometheus metrics from nvidia-smi)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=nvidia_gpu_exporter
+Group=nvidia_gpu_exporter
+Environment=PATH=/usr/lib/wsl/lib:/usr/local/bin:/usr/bin:/bin
+ExecStart={{ gpu_exporter_bin }} --web.listen-address=:{{ gpu_exporter_port }} --nvidia-smi-command={{ gpu_exporter_nvidia_smi }}
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
