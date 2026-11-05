@@ -135,6 +135,16 @@ services:
     stack: bluebell
     path: /opt/bluebell
 
+  - name: Flora
+    description: Blind LoRA/workflow comparisons against kvasir's ComfyUI
+    url: flora.julianverse.net
+    type: webapp
+    group: custom
+    machine: 10.10.0.11
+    port: 2054
+    stack: flora
+    path: /opt/flora
+
   - name: Fair-map
     description: Interactive map of the fairgrounds
     url: map.julianverse.net

@@ -1,0 +1,15 @@
+services:
+  flora:
+    image: julianh2o/flora:latest
+    container_name: flora
+    ports:
+      - "2054:2054"
+    environment:
+      - FLORA_STORE=/store/Flora
+      - FLORA_DB=/data/flora.db
+      - COMFY_URL=http://10.10.0.40:8000
+    volumes:
+      # SQLite stays on local disk; renders, configs and workflows live on Store
+      - ./data:/data
+      - /mnt/Store/Flora:/store/Flora
+    restart: unless-stopped
