@@ -24,6 +24,16 @@ services:
     stack: partyfoal
     path: /opt/partyfoal
 
+  - name: Bawdy Basecamp
+    description: Password-gated home base for the shop (chore list, links)
+    url: bawdyshop.space
+    type: webapp
+    group: custom
+    machine: 10.10.0.11
+    port: 2053
+    stack: bawdy-basecamp
+    path: /opt/bawdy-basecamp
+
   # ============================================================================
   # julianhartline.com
   # ============================================================================

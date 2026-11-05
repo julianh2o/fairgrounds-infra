@@ -1,0 +1,16 @@
+services:
+  bawdy-basecamp:
+    image: julianh2o/bawdy-basecamp:latest
+    container_name: bawdy-basecamp-prod
+    ports:
+      - "2053:2999"
+    environment:
+      - NODE_ENV=production
+      - PORT=2999
+      - DATABASE_URL=file:./data/db.db
+      - APP_BASE_URL=https://bawdyshop.space
+      - SITE_PASSWORD={{ bawdy_basecamp_site_password }}
+      - COOKIE_SECRET={{ bawdy_basecamp_cookie_secret }}
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

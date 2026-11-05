@@ -66,6 +66,12 @@ services:
       - templates/partyfoal-compose.yml.j2
       - playbooks/services/deploy_partyfoal.yaml
 
+  - name: bawdy_basecamp
+    playbook: playbooks/services/deploy_bawdy_basecamp.yaml
+    paths:
+      - templates/bawdy-basecamp-compose.yml.j2
+      - playbooks/services/deploy_bawdy_basecamp.yaml
+
   - name: bluebell
     playbook: playbooks/services/deploy_bluebell.yaml
     paths:

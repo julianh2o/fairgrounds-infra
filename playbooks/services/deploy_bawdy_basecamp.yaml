@@ -1,0 +1,16 @@
+---
+- name: Deploy Bawdy Basecamp
+  hosts: metis
+  become: yes
+
+  vars_files:
+    - ../../secrets.yml
+
+  roles:
+    - role: docker_service
+      vars:
+        service_name: bawdy-basecamp
+        compose_template: bawdy-basecamp-compose.yml.j2
+        service_directories:
+          - data
+        docker_compose_state: present
