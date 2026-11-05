@@ -11,6 +11,18 @@ $argline = 'main.py --listen 0.0.0.0 --port {{ comfyui_port }} --base-directory 
 # Redirect via Start-Process so python gets real file handles. Piping a native exe through
 # PowerShell (*>>) in a hidden S4U task leaves stderr unflushable: tqdm's flush raises
 # OSError 22 and every sampler node fails.
-Start-Process -FilePath $py -ArgumentList $argline -WorkingDirectory $wd -NoNewWindow -Wait `
+$p = Start-Process -FilePath $py -ArgumentList $argline -WorkingDirectory $wd -NoNewWindow -PassThru `
   -RedirectStandardOutput "{{ comfyui_log_path }}" `
   -RedirectStandardError "{{ comfyui_err_log_path }}"
+# kvasir-svc ("comfy stop", the board's toggle) drops this flag. Only this task's token may kill
+# the python tree, so the kill happens here.
+$flag = "{{ comfyui_stop_flag }}"
+Remove-Item $flag -ErrorAction SilentlyContinue
+while (-not $p.HasExited) {
+  if (Test-Path $flag) {
+    taskkill.exe /PID $p.Id /T /F | Out-Null
+    Remove-Item $flag -ErrorAction SilentlyContinue
+    break
+  }
+  Start-Sleep 2
+}

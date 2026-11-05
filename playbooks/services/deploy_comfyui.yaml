@@ -38,6 +38,7 @@
     comfyui_log_path: 'C:\Users\Julian\Documents\ComfyUI\user\comfyui_service.out.log'
     comfyui_err_log_path: 'C:\Users\Julian\Documents\ComfyUI\user\comfyui_service.err.log'
     comfyui_service_dir: /mnt/c/Users/julian/comfyui-service
+    comfyui_stop_flag: 'C:\Users\Julian\comfyui-service\stop.flag'  # kvasir-svc's "comfy stop" (deploy_kvasir_svc.yaml)
     comfyui_task_name: "ComfyUI Service"
 
   tasks:
