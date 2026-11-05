@@ -10,6 +10,7 @@ COMFY_TASK="{{ comfyui_task_name }}"
 COMFY_FLAG="{{ comfyui_stop_flag }}"
 OLLAMA_EXE='{{ ollama_exe }}'
 OLLAMA_LOG='{{ ollama_log }}'
+OLLAMA_MODELS='{{ ollama_models }}'
 
 read -r svc action extra <<< "${SSH_ORIGINAL_COMMAND:-$*}"
 if [ -n "${extra:-}" ] || [ -z "${action:-}" ]; then echo "usage: <strata|comfy|ollama> <start|stop>" >&2; exit 2; fi
@@ -29,7 +30,7 @@ wait_for() { # wait_for <svc> <up|down> <seconds>
   done
   return 1
 }
-ps_run() { timeout 25 "$PS" -NoProfile -NonInteractive -Command "$1" < /dev/null; }
+ps_run() { timeout 10 "$PS" -NoProfile -NonInteractive -Command "$1" < /dev/null; }
 
 case "$svc $action" in
   "strata start")
@@ -51,8 +52,9 @@ case "$svc $action" in
     else echo "comfy still answering after 30 s: its run.ps1 predates the stop flag; End + Run 'ComfyUI Service' once" >&2; exit 1; fi ;;
   "ollama start")
     if up ollama; then echo "ollama already up"; exit 0; fi
+    # the Ollama app normally sets HOST/MODELS from its own settings (Machine env still says D:\models, a drive that's gone)
     # Start-Process keeps it alive after this ssh session ends; timeout because Windows can hold the pipe open
-    ps_run "\$env:OLLAMA_HOST='0.0.0.0:11434'; Start-Process -WindowStyle Hidden -FilePath '$OLLAMA_EXE' -ArgumentList 'serve' -RedirectStandardError '$OLLAMA_LOG'" > /dev/null 2>&1
+    ps_run "\$env:OLLAMA_HOST='0.0.0.0:11434'; \$env:OLLAMA_MODELS='$OLLAMA_MODELS'; Start-Process -WindowStyle Hidden -FilePath '$OLLAMA_EXE' -ArgumentList 'serve' -RedirectStandardError '$OLLAMA_LOG'" > /dev/null 2>&1
     if wait_for ollama up 20; then echo "ollama up"; else echo "ollama didn't answer within 20 s (log: $OLLAMA_LOG)" >&2; exit 1; fi ;;
   "ollama stop")
     if ! up ollama; then echo "ollama already down"; exit 0; fi
