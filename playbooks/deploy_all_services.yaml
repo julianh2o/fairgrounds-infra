@@ -43,6 +43,9 @@
 - name: Deploy Bluebell
   import_playbook: services/deploy_bluebell.yaml
 
+- name: Deploy Flora
+  import_playbook: services/deploy_flora.yaml
+
 - name: Deploy Lights
   import_playbook: services/deploy_lights.yaml
 

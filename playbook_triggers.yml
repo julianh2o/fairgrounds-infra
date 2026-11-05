@@ -78,6 +78,12 @@ services:
       - templates/bluebell-compose.yml.j2
       - playbooks/services/deploy_bluebell.yaml
 
+  - name: flora
+    playbook: playbooks/services/deploy_flora.yaml
+    paths:
+      - templates/flora-compose.yml.j2
+      - playbooks/services/deploy_flora.yaml
+
   - name: vikunja
     playbook: playbooks/services/deploy_vikunja.yaml
     paths:
