@@ -37,6 +37,9 @@
 - name: Deploy Partyfoal
   import_playbook: services/deploy_partyfoal.yaml
 
+- name: Deploy Bawdy Basecamp
+  import_playbook: services/deploy_bawdy_basecamp.yaml
+
 - name: Deploy Bluebell
   import_playbook: services/deploy_bluebell.yaml
 
