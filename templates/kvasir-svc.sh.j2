@@ -1,0 +1,64 @@
+#!/bin/bash
+# kvasir-svc: start/stop strata, comfy or ollama. It's the forced command on the Iris board's
+# toggle key in julian's authorized_keys, so that key can run exactly this and nothing else.
+#   ssh -i iris_kvasir_ctl julian@kvasir "<strata|comfy|ollama> <start|stop>"
+# Waits briefly for the change to land and exits non-zero (with a reason) when it didn't.
+set -u
+PS=/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe
+SCHTASKS=/mnt/c/Windows/System32/schtasks.exe
+COMFY_TASK="{{ comfyui_task_name }}"
+COMFY_FLAG="{{ comfyui_stop_flag }}"
+OLLAMA_EXE='{{ ollama_exe }}'
+OLLAMA_LOG='{{ ollama_log }}'
+
+read -r svc action extra <<< "${SSH_ORIGINAL_COMMAND:-$*}"
+if [ -n "${extra:-}" ] || [ -z "${action:-}" ]; then echo "usage: <strata|comfy|ollama> <start|stop>" >&2; exit 2; fi
+
+up() { # is the service answering?
+  case "$1" in
+    strata) systemctl is-active --quiet strata ;;
+    comfy)  curl -fs -m 3 -o /dev/null http://127.0.0.1:{{ comfyui_port }}/queue ;;
+    ollama) curl -fs -m 3 -o /dev/null http://127.0.0.1:11434/api/version ;;
+  esac
+}
+wait_for() { # wait_for <svc> <up|down> <seconds>
+  local i
+  for ((i = 0; i < $3; i += 2)); do
+    if up "$1"; then [ "$2" = up ] && return 0; else [ "$2" = down ] && return 0; fi
+    sleep 2
+  done
+  return 1
+}
+ps_run() { timeout 25 "$PS" -NoProfile -NonInteractive -Command "$1" < /dev/null; }
+
+case "$svc $action" in
+  "strata start")
+    # systemd only starts the process; the model takes ~40-90 s more to load before /health answers
+    sudo -n /usr/bin/systemctl start strata && echo "strata starting (model loads in ~1 min)" ;;
+  "strata stop")
+    sudo -n /usr/bin/systemctl stop strata && echo "strata stopped" ;;
+  "comfy start")
+    rm -f "$COMFY_FLAG"
+    if up comfy; then echo "comfy already up"; exit 0; fi
+    "$SCHTASKS" /run /tn "$COMFY_TASK" < /dev/null || exit 1
+    echo "comfy task started (answers in ~20-40 s)" ;;
+  "comfy stop")
+    if ! up comfy; then echo "comfy already down"; exit 0; fi
+    # run.ps1 holds the task's own token, so it does the kill when it sees the flag
+    # (from here, Windows answers Access denied on that python)
+    touch "$COMFY_FLAG"
+    if wait_for comfy down 30; then echo "comfy stopped"
+    else echo "comfy still answering after 30 s: its run.ps1 predates the stop flag; End + Run 'ComfyUI Service' once" >&2; exit 1; fi ;;
+  "ollama start")
+    if up ollama; then echo "ollama already up"; exit 0; fi
+    # Start-Process keeps it alive after this ssh session ends; timeout because Windows can hold the pipe open
+    ps_run "\$env:OLLAMA_HOST='0.0.0.0:11434'; Start-Process -WindowStyle Hidden -FilePath '$OLLAMA_EXE' -ArgumentList 'serve' -RedirectStandardError '$OLLAMA_LOG'" > /dev/null 2>&1
+    if wait_for ollama up 20; then echo "ollama up"; else echo "ollama didn't answer within 20 s (log: $OLLAMA_LOG)" >&2; exit 1; fi ;;
+  "ollama stop")
+    if ! up ollama; then echo "ollama already down"; exit 0; fi
+    ps_run "Stop-Process -Name 'ollama app','ollama' -Force -ErrorAction SilentlyContinue" > /dev/null 2>&1
+    if wait_for ollama down 15; then echo "ollama stopped"
+    else echo "ollama still answering: it was probably started from the desktop tray, which this account can't stop" >&2; exit 1; fi ;;
+  *)
+    echo "unknown: '$svc $action' (want <strata|comfy|ollama> <start|stop>)" >&2; exit 2 ;;
+esac

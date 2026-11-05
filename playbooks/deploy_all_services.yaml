@@ -61,6 +61,9 @@
 - name: Deploy ComfyUI
   import_playbook: services/deploy_comfyui.yaml
 
+- name: Deploy kvasir-svc
+  import_playbook: services/deploy_kvasir_svc.yaml
+
 - name: Deploy Hindsight
   import_playbook: services/deploy_hindsight.yaml
 

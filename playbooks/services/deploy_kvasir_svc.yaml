@@ -1,0 +1,43 @@
+---
+# kvasir-svc: lets the Iris board (arethusa) start/stop strata, ComfyUI and Ollama on kvasir.
+# The board's key (arethusa ~/.ssh/iris_kvasir_ctl) goes into julian's authorized_keys with a
+# forced command, so it can only run /usr/local/bin/kvasir-svc "<svc> <start|stop>". strata
+# needs root for systemctl, so julian gets passwordless sudo for exactly those two commands.
+# ComfyUI stops through the stop flag that templates/comfyui-run.ps1.j2 watches (only the
+# task's own token may kill its python).
+- name: Deploy kvasir-svc (board service toggles)
+  hosts: kvasir
+  become: yes
+
+  vars:
+    comfyui_task_name: "ComfyUI Service"
+    comfyui_port: 8000
+    comfyui_stop_flag: /mnt/c/Users/Julian/comfyui-service/stop.flag
+    ollama_exe: 'C:\Users\Julian\AppData\Local\Programs\Ollama\ollama.exe'
+    ollama_log: 'C:\Users\Julian\AppData\Local\Ollama\iris-serve.log'
+    kvasir_svc_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMTvzQJQp6Z+qoQID3awOQVmBcRJ0rZHnx6t0vhmtsto iris-board kvasir toggles (forced command)"
+
+  tasks:
+    - name: Install kvasir-svc
+      template:
+        src: ../../templates/kvasir-svc.sh.j2
+        dest: /usr/local/bin/kvasir-svc
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Let julian start/stop strata without a password
+      copy:
+        dest: /etc/sudoers.d/kvasir-svc
+        content: "julian ALL=(root) NOPASSWD: /usr/bin/systemctl start strata, /usr/bin/systemctl stop strata\n"
+        owner: root
+        group: root
+        mode: "0440"
+        validate: visudo -cf %s
+
+    - name: Authorize the board's key, forced to kvasir-svc
+      authorized_key:
+        user: julian
+        key: "{{ kvasir_svc_key }}"
+        key_options: 'command="/usr/local/bin/kvasir-svc",restrict'
+        state: present
