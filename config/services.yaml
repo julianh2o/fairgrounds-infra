@@ -1,4 +1,5 @@
 ---
+# access: internal (default, Fairgrounds/VPN/Tailscale) | guest (+ Bawdy Shop) | public (internet)
 services:
   # ============================================================================
   # bawdyshop.space
@@ -7,6 +8,7 @@ services:
   - name: Uneventful
     description: Custom event scheduling application
     url: uneventful.bawdyshop.space
+    access: public
     type: webapp
     group: custom
     machine: 10.10.0.11
@@ -17,6 +19,7 @@ services:
   - name: Partyfoal
     description: Party and event invitations
     url: events.bawdyshop.space
+    access: public
     type: webapp
     group: custom
     machine: 10.10.0.11
@@ -27,6 +30,7 @@ services:
   - name: Bawdy Basecamp
     description: Password-gated home base for the shop (chore list, links)
     url: bawdyshop.space
+    access: public
     type: webapp
     group: custom
     machine: 10.10.0.11
@@ -64,6 +68,7 @@ services:
   - name: Audiobookshelf
     description: Audiobook and podcast server
     url: books.julianhartline.com
+    access: public
     type: webapp
     group: media
     machine: 10.10.0.11
@@ -74,6 +79,7 @@ services:
   - name: Immich
     description: Photo and video management
     url: photos.julianhartline.com
+    access: public
     type: webapp
     group: utilities
     machine: 10.10.0.10
@@ -84,6 +90,7 @@ services:
   - name: Ombi
     description: Request media
     url: plex.julianhartline.com
+    access: public
     type: webapp
     group: media
     machine: 10.10.0.11
@@ -118,6 +125,7 @@ services:
   - name: Lights
     description: WLED pattern daemon (lightd) and web UI
     url: lights.julianverse.net
+    access: guest
     type: webapp
     group: custom
     machine: 10.10.0.10
@@ -148,6 +156,7 @@ services:
   - name: Fair-map
     description: Interactive map of the fairgrounds
     url: map.julianverse.net
+    access: guest
     type: webapp
     group: custom
     machine: 10.10.0.11
@@ -453,6 +462,7 @@ services:
   - name: Copyparty
     description: File server with resumable uploads
     url: files.julianhartline.com
+    access: public
     type: webapp
     group: utilities
     machine: 10.10.0.13
@@ -469,6 +479,7 @@ services:
   - name: CYDraw
     description: Collaborative drawing app for ESP32 CYD devices
     url: cydraw.bawdyshop.space
+    access: public
     type: webapp
     group: utilities
     machine: 10.10.0.13

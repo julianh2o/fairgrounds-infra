@@ -13,10 +13,33 @@
   }
 }
 
+# Access tiers (services.yaml `access:`). 10.10.0.1 is hairpin NAT (WAN IP from inside), so never trusted.
+# Trusted: Fairgrounds 10.10.0.0/24, WireGuard 192.168.2.0/24, Tailscale 100.64.0.0/10, europa containers 172.16.0.0/12.
+(tier_internal) {
+  @hairpin remote_ip 10.10.0.1/32
+  abort @hairpin
+  @outsider not remote_ip 10.10.0.0/24 192.168.2.0/24 100.64.0.0/10 172.16.0.0/12
+  abort @outsider
+}
+
+(tier_guest) {
+  @hairpin remote_ip 10.10.0.1/32
+  abort @hairpin
+  @outsider not remote_ip 10.10.0.0/24 10.10.1.0/24 192.168.2.0/24 100.64.0.0/10 172.16.0.0/12
+  abort @outsider
+}
+
 ### Ansible Managed Proxies - Do not modify anything below this line ###
 {% for service in services.services %}
 {% if service.type in ['webapp', 'api'] %}
+{% set access = service.access | default('internal') %}
+{% if access not in ['internal', 'guest', 'public'] %}
+{{ unknown_access_tier_in_services_yaml }}
+{% endif %}
 https://{{ service.url }} {
+{% if access != 'public' %}
+  import tier_{{ access }}
+{% endif %}
   reverse_proxy {{ service.protocol | default('http') }}://{{ service.machine }}:{{ service.port }} {
 {% if service.tls_skip_verify | default(false) %}
     transport http {
