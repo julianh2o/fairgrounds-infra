@@ -13,7 +13,7 @@ endpoints:
    (Caddy only proxies webapp/api), so they get a TCP probe of the real port.
    Services marked optional: true are expected to be off at times and sit in
    their own group. enabled: false drops the check entirely. #}
-{% for service in services.services | selectattr('url', 'defined') | rejectattr('enabled', 'sameas', false) %}
+{% for service in services.services | selectattr('url', 'defined') if service.enabled | default(true) %}
   - name: "{{ service.name }}"
     group: {{ 'optional' if service.optional | default(false) else 'services' }}
 {% if service.type == 'gameserver' %}
