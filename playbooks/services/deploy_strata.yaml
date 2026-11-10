@@ -2,11 +2,12 @@
 # Strata (github.com/Niko1221/Strata) serving Qwen3.8-Flash-Next on kvasir's WSL as a
 # systemd service, no Docker. The engine is compiled from a pinned git tag: to update,
 # bump strata_version and deploy. Strata's own self-updater is never run.
-# Needs kvasir's .wslconfig memory=48GB (Q2_0 keeps ~34 GB of experts in RAM) and
-# strata_api_key in secrets.yml. First deploy downloads ~75 GB and compiles (~1 h).
-# strata_enabled: false stops and disables the service (install and model kept) and
-# skips the build; set to true to bring it back. The model holds ~42 GB of RAM while
-# running, so keep it off unless it is actually in use.
+# Needs kvasir's .wslconfig memory=104GB (UD-Q4_K_XL keeps ~77 GB of experts in RAM;
+# 128 GB installed) and strata_api_key in secrets.yml. First deploy downloads ~111 GB
+# and compiles (~1 h). strata_enabled: false stops and disables the service (install
+# and model kept) and skips the build; set to true to bring it back. The model holds
+# ~88 GB of RAM while running, so keep it off unless it is actually in use.
+# Back to Q2_0: strata_family qwen, strata_model Q2_0, strata_tag Q2_0, strata_min_ram_gb 44.
 - name: Deploy Strata
   hosts: kvasir
   become: yes
@@ -17,8 +18,13 @@
   vars:
     strata_enabled: false
     strata_version: v0.2.7.1
-    strata_family: qwen
-    strata_model: Q2_0
+    # Unsloth's 4-bit file: 93.1% top-1 agreement with Q8_0 (Q2_0: 80.6%)
+    strata_family: unsloth
+    strata_model: UD-Q4_K_XL
+    # setup names the model dir, config and pack "<family tag><model>" (the qwen family's tag is empty)
+    strata_tag: unsloth-UD-Q4_K_XL
+    # every expert in RAM plus setup's 16 GB to spare; below this setup reads experts from the SSD
+    strata_min_ram_gb: 92
     # 192K of the model's trained 262K. INT8 KV is ~20 KiB/token (~3.75 GiB at 192K), taken
     # out of the auto-sized GPU expert cache rather than spilling to RAM.
     strata_context: 196608
@@ -31,7 +37,20 @@
     strata_root: /opt/strata
     strata_src: /opt/strata/src
     strata_data: /opt/strata/data
-    strata_config: "/opt/strata/src/strata-{{ strata_model | lower }}.json"
+    strata_config: "/opt/strata/src/strata-{{ strata_tag | lower }}.json"
+    # setup applies the refusal projection only to the qwen/coder families ("not tested with
+    # UD-Q4_K_XL: left off"), so for other families the same engine flags are added to the run
+    # config by hand. Setup carries hand-added args over on later runs (user_args).
+    strata_cvec_args:
+      - --control-vector-scaled
+      - "{{ strata_src }}/data/experimental-speed-projection/Qwen3.8-Flash-Next-experimental-speed-projection.gguf:1.0"
+      - --control-vector-layer-range
+      - "4"
+      - "44"
+      - --cvec-mode
+      - project
+      - --cvec-dir
+      - per-layer
     strata_path: /usr/local/cuda-13.0/bin:/usr/lib/wsl/lib:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
     # --experimental-speed-projection on: Strata's bundled refusal-direction vector
     # (abliteration at run time); a request can turn it off with
@@ -69,10 +88,10 @@
 
     - name: Check WSL has enough RAM for the experts
       assert:
-        that: strata_mem.stdout | int >= 44 * 1024
+        that: strata_mem.stdout | int >= strata_min_ram_gb * 1000
         fail_msg: >-
-          WSL sees {{ ((strata_mem.stdout | int) / 1024) | round(1) }} GB. Set memory=48GB under [wsl2] in
-          C:\Users\Julian\.wslconfig, then run wsl --shutdown.
+          WSL sees {{ ((strata_mem.stdout | int) / 1024) | round(1) }} GB. Raise memory= under [wsl2] in
+          C:\Users\Julian\.wslconfig (104GB for UD-Q4_K_XL), then run wsl --shutdown.
 
     - name: Install build dependencies
       apt:
@@ -133,6 +152,15 @@
       failed_when: false
       check_mode: no
 
+    # setup sizes the RAM-resident experts from free RAM, so a running engine (another
+    # model's ~34-77 GB) must not be holding it while setup measures
+    - name: Stop strata before setup re-runs
+      systemd:
+        name: strata
+        state: stopped
+      failed_when: false
+      when: not strata_installed.stat.exists or (strata_stamp.stdout | trim) != (strata_setup_args | trim)
+
     - name: Install Strata, build the engine, download the model (or apply new setup args)
       become_user: strata
       command: "./setup.sh {{ strata_setup_args }}"
@@ -164,6 +192,28 @@
         path: "{{ strata_config }}"
       register: strata_config_stat
       failed_when: not strata_config_stat.stat.exists
+
+    - name: Add the refusal projection to the run config (setup leaves it off outside qwen/coder)
+      become_user: strata
+      command:
+        argv:
+          - python3
+          - -c
+          - |
+            import json, sys
+            path, extra = sys.argv[1], json.loads(sys.argv[2])
+            cfg = json.load(open(path))
+            if "--control-vector-scaled" in cfg["args"]:
+                print("present"); sys.exit(0)
+            cfg["args"] += extra
+            json.dump(cfg, open(path, "w"), indent=4)
+            print("added")
+          - "{{ strata_config }}"
+          - "{{ strata_cvec_args | to_json }}"
+      register: strata_cvec
+      changed_when: "'added' in strata_cvec.stdout"
+      when: strata_family not in ['qwen', 'coder']
+      notify: Restart strata
 
     - name: Remember the setup args
       copy:
