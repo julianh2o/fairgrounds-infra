@@ -1,6 +1,6 @@
 services:
   copyparty:
-    image: copyparty/ac:latest
+    image: julianh2o/copyparty-drive:v1.20.26-7-g82d7a4c4
     container_name: copyparty
     restart: unless-stopped
     ports:
@@ -10,6 +10,7 @@ services:
       - /mnt/Store/sharedfiles:/data
       - ./hists:/cfg/hists
     command:
+      - --drive
       - --xff-hdr=x-forwarded-for
       - --xff-src=10.10.0.0/16
       - --rproxy=1

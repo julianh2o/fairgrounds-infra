@@ -31,8 +31,16 @@
     # keep this much VRAM free after the expert cache fills the card: below ~512 MiB the
     # driver can page GPU memory to system RAM and decode collapses (engine warns, #2065).
     # The verify windows are allocated after the reserve is applied, so 832 still left
-    # ~330 MiB free; 1280 clears the 512 MiB line with margin.
-    strata_vram_reserve_mib: 1280
+    # ~330 MiB free; 1280 cleared it at start, but UD-Q4_K_XL still dipped to 105-490 MiB
+    # mid-request (4 warnings in a day), so 1600 (A/B on 2026-11-10: no measurable speed cost).
+    strata_vram_reserve_mib: 1600
+    # engine flags setup doesn't write, appended to the run config when missing.
+    # --kv-grow: unused context's VRAM goes to the expert cache (UD-Q4_K_XL at 196K on the
+    # 4090: 3,670 -> 4,441 slots, decode ~51-56 -> ~62-65 tok/s, A/B 2026-11-10).
+    # Tested and rejected: --pool-workers 7 (P-cores only, ~35 tok/s), --pool-workers 23
+    # (no gain; WSL hides the hybrid topology), STRATA_MMQ_KQ=1 (prompt reads unchanged).
+    strata_extra_args:
+      - --kv-grow
     strata_port: 8080
     strata_root: /opt/strata
     strata_src: /opt/strata/src
@@ -213,6 +221,29 @@
       register: strata_cvec
       changed_when: "'added' in strata_cvec.stdout"
       when: strata_family not in ['qwen', 'coder']
+      notify: Restart strata
+
+    - name: Add the extra engine flags to the run config
+      become_user: strata
+      command:
+        argv:
+          - python3
+          - -c
+          - |
+            import json, sys
+            path, extra = sys.argv[1], json.loads(sys.argv[2])
+            cfg = json.load(open(path))
+            missing = [a for a in extra if a not in cfg["args"]]
+            if not missing:
+                print("present"); sys.exit(0)
+            cfg["args"] += missing
+            json.dump(cfg, open(path, "w"), indent=4)
+            print("added", missing)
+          - "{{ strata_config }}"
+          - "{{ strata_extra_args | to_json }}"
+      register: strata_extra
+      changed_when: "'added' in strata_extra.stdout"
+      when: strata_extra_args | length > 0
       notify: Restart strata
 
     - name: Remember the setup args
