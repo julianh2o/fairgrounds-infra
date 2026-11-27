@@ -1,0 +1,14 @@
+[Unit]
+Description=Wait for the NAS shares before starting Docker
+Wants=network-online.target
+After=network-online.target remote-fs.target
+Before=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/sbin/nas-mounts wait
+TimeoutStartSec={{ nas_wait_seconds + 120 }}
+
+[Install]
+WantedBy=multi-user.target docker.service

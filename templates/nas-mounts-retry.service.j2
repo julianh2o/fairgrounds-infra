@@ -1,0 +1,7 @@
+[Unit]
+Description=Mount any missing NAS shares and restart the containers that use them
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/nas-mounts retry
