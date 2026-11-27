@@ -9,6 +9,8 @@
     smb_server: "10.10.0.6"
     credentials_file: "/mnt/smbcredentials"
     stop_containers: false
+    # At boot, Docker waits this long for the NAS (e.g. when a power blip restarts it with the VMs)
+    nas_wait_seconds: 300
 
     # Common performance options for all CIFS mounts
     common_cifs_opts: "vers=3.1.1,actimeo=30,rsize=4194304,wsize=4194304,file_mode=0777,dir_mode=0777"
@@ -38,6 +40,7 @@
         src: "//{{ smb_server }}/EricBackup"
         path: /mnt/EricBackup
         opts: "credentials={{ credentials_file }},uid=eric,gid=eric,{{ common_cifs_opts }}"
+        retry: false  # never mounts (there's no eric user), so nas-mounts skips it
 
   tasks:
     - name: Ensure cifs-utils is installed
@@ -62,6 +65,12 @@
     - name: Unmount all filesystems under /mnt
       ansible.builtin.shell:
         cmd: umount /mnt/* 2>/dev/null || true
+      when: stop_containers | bool
+
+    - name: Unlock mount point directories
+      ansible.builtin.shell:
+        cmd: "mountpoint -q {{ item.path }} || chattr -i {{ item.path }} 2>/dev/null || true"
+      loop: "{{ mounts }}"
       when: stop_containers | bool
 
     - name: Remove mount point directories
@@ -98,6 +107,38 @@
         cmd: mount -a
       changed_when: false
       failed_when: false
+
+    - name: Install the nas-mounts script
+      ansible.builtin.template:
+        src: "{{ inventory_dir }}/templates/nas-mounts.sh.j2"
+        dest: /usr/local/sbin/nas-mounts
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Install the nas-mounts units
+      ansible.builtin.template:
+        src: "{{ inventory_dir }}/templates/{{ item }}.j2"
+        dest: "/etc/systemd/system/{{ item }}"
+        mode: "0644"
+      loop:
+        - nas-mounts-wait.service
+        - nas-mounts-retry.service
+        - nas-mounts-retry.timer
+
+    - name: Enable nas-mounts (Docker waits for the NAS at boot, a timer remounts anything missing)
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: yes
+        daemon_reload: yes
+      loop:
+        - nas-mounts-wait.service
+        - nas-mounts-retry.timer
+
+    - name: Start the nas-mounts retry timer
+      ansible.builtin.systemd:
+        name: nas-mounts-retry.timer
+        state: started
 
     - name: Start all Docker containers
       ansible.builtin.shell:

@@ -1,0 +1,76 @@
+#!/bin/bash
+# Keeps the TrueNAS CIFS shares mounted when the NAS comes up after the VM (e.g. after a power blip).
+#   nas-mounts wait   at boot, before docker: wait up to WAIT s for the NAS, then mount
+#   nas-mounts retry  from the timer: mount whatever is missing, then restart the containers that use it
+# Unmounted mount points get chattr +i, so containers can't write into the bare local directory
+# (they get EPERM instead of silently filling the VM's disk with files the share later hides).
+set -u
+NAS={{ smb_server }}
+WAIT={{ nas_wait_seconds }}
+PATHS=({% for m in mounts if m.retry | default(true) %}{{ m.path }} {% endfor %})
+{% raw %}
+log() { echo "nas-mounts: $*" >&2; }
+nas_up() { timeout 3 bash -c "</dev/tcp/$NAS/445" 2>/dev/null; }
+
+guard() {  # lock the bare directory under an unmounted mount point
+  local p=$1
+  mountpoint -q "$p" && return
+  mkdir -p "$p"
+  if [ -n "$(ls -A "$p" 2>/dev/null)" ]; then
+    log "WARNING: $p is not mounted but has local files; mounting will hide them"
+  fi
+  chattr +i "$p" 2>/dev/null || true
+}
+
+mount_missing() {  # prints each path it mounted
+  local p
+  for p in "${PATHS[@]}"; do
+    mountpoint -q "$p" && continue
+    guard "$p"
+    if mount "$p"; then log "mounted $p"; echo "$p"; else log "mount $p failed"; fi
+  done
+}
+
+restart_users() {  # restart containers that bind something under the given paths
+  command -v docker >/dev/null || return 0
+  local c srcs p state
+  for c in $(docker ps -aq); do
+    # running/crash-looping ones, plus ones that failed to start (State.Error set, e.g. docker couldn't
+    # create a bind source inside the locked dir); intentionally stopped containers stay stopped
+    state=$(docker inspect "$c" --format '{{.State.Status}}|{{.State.Error}}')
+    case "$state" in running\|* | restarting\|*) ;; *\|) continue ;; esac
+    srcs=" $(docker inspect "$c" --format '{{range .Mounts}}{{.Source}} {{end}}{{range .HostConfig.Binds}}{{.}} {{end}}')"
+    for p in "$@"; do
+      case "$srcs" in
+        *" $p "* | *" $p/"* | *" $p:"*)
+          log "restarting $(docker inspect "$c" --format '{{.Name}}') (uses $p)"
+          docker restart "$c" >/dev/null
+          break ;;
+      esac
+    done
+  done
+}
+
+case "${1:-}" in
+  wait)
+    for p in "${PATHS[@]}"; do guard "$p"; done
+    for ((i = 0; i < WAIT; i += 5)); do nas_up && break; sleep 5; done
+    nas_up || { log "NAS $NAS not reachable after ${WAIT}s; starting without it (the retry timer keeps trying)"; exit 0; }
+    for try in 1 2 3; do  # the shares can lag a few seconds behind port 445
+      mount_missing >/dev/null
+      missing=0
+      for p in "${PATHS[@]}"; do mountpoint -q "$p" || missing=1; done
+      [ "$missing" = 0 ] && break
+      sleep 10
+    done
+    exit 0 ;;
+  retry)
+    nas_up || exit 0
+    mapfile -t mounted < <(mount_missing)
+    [ "${#mounted[@]}" -gt 0 ] && restart_users "${mounted[@]}"
+    exit 0 ;;
+  *)
+    echo "usage: $0 wait|retry" >&2
+    exit 2 ;;
+esac
+{% endraw %}
