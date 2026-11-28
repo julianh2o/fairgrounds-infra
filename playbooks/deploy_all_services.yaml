@@ -61,6 +61,9 @@
 - name: Deploy Copyparty
   import_playbook: services/deploy_copyparty.yaml
 
+- name: Deploy Albums
+  import_playbook: services/deploy_albums.yaml
+
 - name: Deploy Hookery
   import_playbook: services/deploy_hookery.yaml
 

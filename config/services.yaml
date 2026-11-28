@@ -468,6 +468,15 @@ services:
     machine: 10.10.0.13
     port: 3923
 
+  - name: Albums
+    description: Unlisted trip photo albums (static, one random path per album)
+    url: albums.julianhartline.com
+    access: public
+    type: webapp
+    group: utilities
+    machine: 10.10.0.13
+    port: 2080
+
   - name: Traccar
     description: GPS tracking server
     url: traccar.julianverse.net

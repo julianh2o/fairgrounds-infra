@@ -97,6 +97,13 @@ services:
       - templates/copyparty.conf.j2
       - playbooks/services/deploy_copyparty.yaml
 
+  - name: albums
+    playbook: playbooks/services/deploy_albums.yaml
+    paths:
+      - templates/albums-compose.yml.j2
+      - templates/albums-nginx.conf.j2
+      - playbooks/services/deploy_albums.yaml
+
   - name: pihole
     playbook: playbooks/services/deploy_pihole.yaml
     paths:
