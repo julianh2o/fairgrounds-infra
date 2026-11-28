@@ -1,0 +1,35 @@
+# Unlisted photo albums: each lives at /<long random token>/, written to /mnt/Store/albums by Iris.
+# Nothing is listable or indexable; the root and any other path give nothing away.
+server {
+    listen 80;
+    root /srv/albums;
+    autoindex off;
+    absolute_redirect off;
+    server_tokens off;
+    add_header X-Robots-Tag "noindex, nofollow, noarchive, noimageindex" always;
+    add_header Referrer-Policy "no-referrer" always;
+    add_header X-Content-Type-Options "nosniff" always;
+
+    location = / {
+        default_type text/plain;
+        return 200 "albums\n";
+    }
+    location = /robots.txt {
+        default_type text/plain;
+        return 200 "User-agent: *\nDisallow: /\n";
+    }
+    location ~ "^/([A-Za-z0-9_-]{24,})$" {
+        return 301 /$1/;
+    }
+    location ~ "^/[A-Za-z0-9_-]{24,}/.*\.(webp|jpg|png|js|css)$" {
+        expires 30d;
+        try_files $uri =404;
+    }
+    location ~ "^/[A-Za-z0-9_-]{24,}/" {
+        expires 10m;
+        try_files $uri $uri/index.html =404;
+    }
+    location / {
+        return 404;
+    }
+}
